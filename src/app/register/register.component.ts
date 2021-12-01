@@ -1,6 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, NgForm} from '@angular/forms';
 import {UserService} from '../service/user.service';
+import {User} from '../model/user';
+import {Router} from '@angular/router';
+import Swal from 'sweetalert2'
+import {showToastError, showToastSuccess} from '../note';
 
 @Component({
   selector: 'app-register',
@@ -11,35 +15,32 @@ export class RegisterComponent implements OnInit {
   isShowPassword: boolean = false;
   isShowConfirmPassword: boolean = false;
 
-  user: FormGroup = new FormGroup(
-    {
-      username: new FormControl(),
-      password: new FormControl(),
-      email: new FormControl(),
-    }
-  )
+  user: User = {};
 
   avatar: any;
 
-  constructor(private _userService: UserService) { }
+  constructor(private _userService: UserService,
+              private _router: Router) {
+  }
 
   ngOnInit() {
   }
 
-  register() {
-    const formData = new FormData();
-    formData.append('username', this.user.get('username').value);
-    formData.append('password', this.user.get('password').value);
-    formData.append('email', this.user.get('email').value);
-    formData.append('avatar', this.avatar);
-    this._userService.registerAccount(formData).subscribe(
+  register(formRegister: NgForm) {
+    this.user = formRegister.value;
+    this._userService.registerAccount(this.user).subscribe(
       (data) => {
-        console.log(data);
+        let title = 'Đăng ký thành công';
+        this._router.navigateByUrl('/login');
+        showToastSuccess(title);
       },
       (error) => {
+        let title = 'Thông báo';
+        let content = 'Đăng ký thất bại';
+        showToastError(title, content);
         console.log(error);
       }
-    )
+    );
   }
 
   showPassword() {
@@ -65,10 +66,5 @@ export class RegisterComponent implements OnInit {
       result = '';
     }
     document.getElementById('confirm-password-error').innerHTML = result;
-  }
-
-  getImage($event: Event) {
-    this.avatar = $event.target['files'][0];
-    console.log(this.avatar);
   }
 }

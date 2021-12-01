@@ -10,6 +10,10 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('./register/register.module').then(m => m.RegisterModule)
+  },
+  {
+    path: 'home',
+    loadChildren: () => import('./shared/shared.module').then(m => m.SharedModule)
   }
 ];
 
