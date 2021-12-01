@@ -15,8 +15,9 @@ export class LoginComponent implements OnInit {
 
   isShowPassword: boolean = false;
 
-  constructor(private authenticationService: AuthenticationService,
-              private router: Router) {
+  constructor(private _authenticationService: AuthenticationService,
+              private _router: Router) {
+    this._authenticationService.logout();
   }
 
   ngOnInit() {
@@ -24,11 +25,11 @@ export class LoginComponent implements OnInit {
 
   login(formLogin: NgForm) {
     this.user = formLogin.value;
-    this.authenticationService.login(this.user.username, this.user.password).subscribe(() => {
+    this._authenticationService.login(this.user.username, this.user.password).subscribe(() => {
       console.log('login success');
       let title = 'Đăng nhập thành công';
       showToastSuccess(title);
-      this.router.navigateByUrl("/home");
+      this._router.navigateByUrl("/home");
     }, error => {
       let title = 'Thông báo';
       let content = 'Tên đăng nhập hoặc mật khẩu không đúng';
@@ -39,4 +40,5 @@ export class LoginComponent implements OnInit {
   changeShowPass() {
     this.isShowPassword = !this.isShowPassword;
   }
+
 }

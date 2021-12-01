@@ -5,6 +5,7 @@ import {User} from '../model/user';
 import {Router} from '@angular/router';
 import Swal from 'sweetalert2'
 import {showToastError, showToastSuccess} from '../note';
+import {AuthenticationService} from '../service/authentication.service';
 
 @Component({
   selector: 'app-register',
@@ -20,7 +21,11 @@ export class RegisterComponent implements OnInit {
   avatar: any;
 
   constructor(private _userService: UserService,
-              private _router: Router) {
+              private _router: Router,
+              private _authenticationService: AuthenticationService) {
+    if (this._authenticationService.currentUser != null) {
+      this._authenticationService.logout();
+    }
   }
 
   ngOnInit() {

@@ -9,16 +9,16 @@ import {AuthenticationService} from '../../service/authentication.service';
 })
 export class AuthGuard implements CanActivate {
 
-  constructor(private authenticationService: AuthenticationService,
-              private router: Router) {
+  constructor(private _authenticationService: AuthenticationService,
+              private _router: Router) {
   }
 
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    const currentUser = this.authenticationService.currentUserValue;
+    const currentUser = this._authenticationService.currentUserValue;
     if (currentUser == null) {
-      this.router.navigate(['/login']);
+      this._router.navigate(['/login']);
       return false;
     }
     return true;

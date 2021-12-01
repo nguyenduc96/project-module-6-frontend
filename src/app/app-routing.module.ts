@@ -2,6 +2,7 @@ import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
 
 
+
 const routes: Routes = [
   {
     path: '',
@@ -12,8 +13,8 @@ const routes: Routes = [
     loadChildren: () => import('./register/register.module').then(m => m.RegisterModule)
   },
   {
-    path: 'home',
-    loadChildren: () => import('./shared/shared.module').then(m => m.SharedModule)
+    path: '',
+    loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
   }
 ];
 

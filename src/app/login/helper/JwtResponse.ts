@@ -5,10 +5,10 @@ import {AuthenticationService} from '../../service/authentication.service';
 
 @Injectable()
 export class JwtResponse implements HttpInterceptor {
-  constructor(private authenticationService: AuthenticationService) { }
+  constructor(private _authenticationService: AuthenticationService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const currentUser = this.authenticationService.currentUserValue;
+    const currentUser = this._authenticationService.currentUserValue;
     if (currentUser && currentUser.token) {
       request = request.clone({
         setHeaders: {
