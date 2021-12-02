@@ -1,2 +1,8 @@
-<app-navbar></app-navbar>
+<ng-container *ngIf="currentUser != null">
+  <app-navbar></app-navbar>
+</ng-container>
+
 <router-outlet></router-outlet>
+
+
+

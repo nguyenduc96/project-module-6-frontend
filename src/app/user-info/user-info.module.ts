@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { UserInfoComponent } from './user-info.component';
 import {RouterModule} from '@angular/router';
+import {UserInfoRoutingModule} from './user-info-routing.module';
 
 
 @NgModule({
@@ -11,7 +12,8 @@ import {RouterModule} from '@angular/router';
   ],
   imports: [
     CommonModule,
-    RouterModule
+    UserInfoRoutingModule,
+    RouterModule,
   ]
 })
 export class UserInfoModule { }

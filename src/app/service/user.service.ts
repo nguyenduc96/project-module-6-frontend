@@ -16,4 +16,12 @@ export class UserService {
   registerAccount(formData): Observable<User> {
     return this._http.post<User>(URL + '/user/register', formData);
   }
+
+  setAvatar(avatar): Observable<User> {
+    return this._http.post<User>(URL + '/user/set-avatar', avatar);
+  }
+
+  getUser(): Observable<User> {
+    return this._http.get<User>(URL + '/user/get-user/');
+  }
 }
