@@ -4,7 +4,7 @@ import {UserService} from '../service/user.service';
 import {User} from '../model/user';
 import {Router} from '@angular/router';
 import Swal from 'sweetalert2'
-import {showToastError, showToastSuccess} from '../note';
+import {showPopupError, showToastSuccess} from '../note';
 import {AuthenticationService} from '../service/authentication.service';
 
 @Component({
@@ -42,7 +42,7 @@ export class RegisterComponent implements OnInit {
       (error) => {
         let title = 'Thông báo';
         let content = 'Đăng ký thất bại';
-        showToastError(title, content);
+        showPopupError(title, content);
         console.log(error);
       }
     );

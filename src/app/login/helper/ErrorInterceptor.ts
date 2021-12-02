@@ -4,7 +4,7 @@ import { Observable} from 'rxjs';
 import {tap} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {AuthenticationService} from '../../service/authentication.service';
-import {showToastError} from '../../note';
+import {showPopupError} from '../../note';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -25,7 +25,7 @@ export class ErrorInterceptor implements HttpInterceptor {
           this.router.navigate(['/']);
           let title = 'Thông báo';
           let content = 'Bạn không có quyền truy cập vào trang này';
-          showToastError(title, content);
+          showPopupError(title, content);
         }
       }
     }));

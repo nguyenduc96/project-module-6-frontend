@@ -3,7 +3,7 @@ import {AuthenticationService} from '../service/authentication.service';
 import {Router} from '@angular/router';
 import {User} from '../model/user';
 import {NgForm} from '@angular/forms';
-import {showToastError, showToastSuccess} from '../note';
+import {showPopupError, showToastSuccess} from '../note';
 
 @Component({
   selector: 'app-login',
@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
     }, error => {
       let title = 'Thông báo';
       let content = 'Tên đăng nhập hoặc mật khẩu không đúng';
-      showToastError(title, content);
+      showPopupError(title, content);
     });
   }
 

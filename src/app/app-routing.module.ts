@@ -15,8 +15,13 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
+  },
+  {
+    path: 'status',
+    loadChildren: () => import('./status/status.module').then(module => module.StatusModule)
   }
 ];
+
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

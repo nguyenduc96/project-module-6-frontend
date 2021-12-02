@@ -1,2 +1,156 @@
-<h1>Dday la home</h1>
 
+
+
+   partial
+  <div class="container-fluid page-body-wrapper">
+    <!-- partial:partials/_sidebar.html -->
+    <nav class="sidebar sidebar-offcanvas" id="sidebar">
+      <ul class="nav">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">
+            <i class="ti-shield menu-icon"></i>
+            <span class="menu-title">Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+            <i class="ti-palette menu-icon"></i>
+            <span class="menu-title">UI Elements</span>
+            <i class="menu-arrow"></i>
+          </a>
+          <div class="collapse" id="ui-basic">
+            <ul class="nav flex-column sub-menu">
+              <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Buttons</a></li>
+              <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li>
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="pages/forms/basic_elements.html">
+            <i class="ti-layout-list-post menu-icon"></i>
+            <span class="menu-title">Form elements</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="pages/charts/chartjs.html">
+            <i class="ti-pie-chart menu-icon"></i>
+            <span class="menu-title">Charts</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="pages/tables/basic-table.html">
+            <i class="ti-view-list-alt menu-icon"></i>
+            <span class="menu-title">Tables</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="pages/icons/themify.html">
+            <i class="ti-star menu-icon"></i>
+            <span class="menu-title">Icons</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
+            <i class="ti-user menu-icon"></i>
+            <span class="menu-title">User Pages</span>
+            <i class="menu-arrow"></i>
+          </a>
+          <div class="collapse" id="auth">
+            <ul class="nav flex-column sub-menu">
+              <li class="nav-item"> <a class="nav-link" href="pages/samples/login.html"> Login </a></li>
+              <li class="nav-item"> <a class="nav-link" href="pages/samples/login-2.html"> Login 2 </a></li>
+              <li class="nav-item"> <a class="nav-link" href="pages/samples/register.html"> Register </a></li>
+              <li class="nav-item"> <a class="nav-link" href="pages/samples/register-2.html"> Register 2 </a></li>
+              <li class="nav-item"> <a class="nav-link" href="pages/samples/lock-screen.html"> Lockscreen </a></li>
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="documentation/documentation.html">
+            <i class="ti-write menu-icon"></i>
+            <span class="menu-title">Documentation</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <!-- partial -->
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="row">
+          <div class="col-md-12 grid-margin">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h4 class="font-weight-bold mb-0">RoyalUI Dashboard</h4>
+              </div>
+              <div>
+                <button type="button" class="btn btn-primary btn-icon-text btn-rounded">
+                  <i class="ti-clipboard btn-icon-prepend"></i>Report
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <p class="card-title text-md-center text-xl-left">Sales</p>
+                <div class="d-flex flex-wrap justify-content-between justify-content-md-center justify-content-xl-between align-items-center">
+                  <h3 class="mb-0 mb-md-2 mb-xl-0 order-md-1 order-xl-0">34040</h3>
+                  <i class="ti-calendar icon-md text-muted mb-0 mb-md-3 mb-xl-0"></i>
+                </div>
+                <p class="mb-0 mt-2 text-danger">0.12% <span class="text-black ml-1"><small>(30 days)</small></span></p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <p class="card-title text-md-center text-xl-left">Revenue</p>
+                <div class="d-flex flex-wrap justify-content-between justify-content-md-center justify-content-xl-between align-items-center">
+                  <h3 class="mb-0 mb-md-2 mb-xl-0 order-md-1 order-xl-0">47033</h3>
+                  <i class="ti-user icon-md text-muted mb-0 mb-md-3 mb-xl-0"></i>
+                </div>
+                <p class="mb-0 mt-2 text-danger">0.47% <span class="text-black ml-1"><small>(30 days)</small></span></p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <p class="card-title text-md-center text-xl-left">Downloads</p>
+                <div class="d-flex flex-wrap justify-content-between justify-content-md-center justify-content-xl-between align-items-center">
+                  <h3 class="mb-0 mb-md-2 mb-xl-0 order-md-1 order-xl-0">40016</h3>
+                  <i class="ti-agenda icon-md text-muted mb-0 mb-md-3 mb-xl-0"></i>
+                </div>
+                <p class="mb-0 mt-2 text-success">64.00%<span class="text-black ml-1"><small>(30 days)</small></span></p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <p class="card-title text-md-center text-xl-left">Returns</p>
+                <div class="d-flex flex-wrap justify-content-between justify-content-md-center justify-content-xl-between align-items-center">
+                  <h3 class="mb-0 mb-md-2 mb-xl-0 order-md-1 order-xl-0">61344</h3>
+                  <i class="ti-layers-alt icon-md text-muted mb-0 mb-md-3 mb-xl-0"></i>
+                </div>
+                <p class="mb-0 mt-2 text-success">23.00%<span class="text-black ml-1"><small>(30 days)</small></span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- content-wrapper ends -->
+      <!-- partial:partials/_footer.html -->
+      <footer class="footer">
+        <div class="d-sm-flex justify-content-center justify-content-sm-between">
+          <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © bootstrapdash.com 2020</span>
+          <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> Team DIOSA</span>
+        </div>
+      </footer>
+      <!-- partial -->
+    </div>
+    <!-- main-panel ends -->
+  </div>
+  <!-- page-body-wrapper ends -->

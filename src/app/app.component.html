@@ -1,8 +1,6 @@
-<ng-container *ngIf="currentUser != null">
-  <app-navbar></app-navbar>
-</ng-container>
-
+<div class="container-scroller">
+<app-navbar *ngIf="currentUser != null"></app-navbar>
 <router-outlet></router-outlet>
-
+</div>
 
 

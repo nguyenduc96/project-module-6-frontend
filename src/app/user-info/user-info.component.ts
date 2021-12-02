@@ -5,6 +5,7 @@ import {finalize} from 'rxjs/operators';
 import {AuthenticationService} from '../service/authentication.service';
 import {UserService} from '../service/user.service';
 import {User} from '../model/user';
+import {showToastError, showToastNotice, showToastSuccess} from '../note';
 
 @Component({
   selector: 'app-user-info',
@@ -40,12 +41,13 @@ export class UserInfoComponent implements OnInit {
   }
 
   onFileSelected(event) {
+    let text = 'Đang cập nhật ảnh đại diện'
+    showToastNotice(text);
     var n = Date.now();
     const file = event.target.files[0];
     const filePath = `RoomsImages/${n}`;
     const fileRef = this.storage.ref(filePath);
     const task = this.storage.upload(`RoomsImages/${n}`, file);
-
     task.snapshotChanges()
       .pipe(
         finalize(() => {
@@ -58,9 +60,13 @@ export class UserInfoComponent implements OnInit {
               this._userService.setAvatar(this.avatar).subscribe(
                 (user) => {
                   this.user = user;
-                  console.log(this.user);
+                  let title = "Cập nhật ảnh đại diện thành công";
+                  showToastSuccess(title)
                 });
             }
+          }, () => {
+            let title = "Cập nhật ảnh đại diện thất bại";
+            showToastError(title)
           });
         })
       )
