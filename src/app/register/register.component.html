@@ -1,0 +1,39 @@
+<div  class="img js-fullheight" style="background-image: url(assets/static/login/images/bg.jpg);">
+  <section class="ftco-section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-5">
+          <h2 class="heading-section" style="color: rgb(187,37,194)">Đăng ký tài khoản</h2>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+          <div class="login-wrap p-0">
+            <form class="signin-form" #formRegister="ngForm" (ngSubmit)="register(formRegister)">
+              <div class="form-group">
+                <input type="text" class="form-control" style="background-color: rgba(91,43,162,0.4)" name="username" ngModel placeholder="Tên đăng nhập" required>
+              </div>
+              <div class="form-group">
+                <input id="password-field" style="background-color: rgba(91,43,162,0.4)" [type]="isShowPassword? 'text' : 'password'" (input)="!checkRePassword()? checkConfirmPassWord() : undefined"  name="password" ngModel  class="form-control" placeholder="Mật khẩu" required>
+                <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password" [title]="!isShowPassword? 'Xem mật khẩu' : 'Ẩn mật khẩu'" (click)="showPassword()"></span>
+              </div>
+              <div class="form-group">
+                <input id="re-password-field" style="background-color: rgba(91,43,162,0.4)" (input)="checkConfirmPassWord()" [type]="isShowConfirmPassword? 'text' : 'password'" name="re-password" class="form-control" placeholder="Nhập lại mật khẩu" required>
+                <span toggle="#re-password-field" class="fa fa-fw fa-eye field-icon toggle-password" [title]="!isShowConfirmPassword? 'Xem mật khẩu' : 'Ẩn mật khẩu'" (click)="showConfirmPassword()"></span>
+                <p id="confirm-password-error"></p>
+              </div>
+              <div class="form-group">
+                <input type="email" class="form-control" style="background-color: rgba(91,43,162,0.4)" name="email" ngModel placeholder="Email" required>
+              </div>
+             <div class="form-group">
+                <button type="submit" class="form-control btn btn-primary submit px-3">Đăng ký</button>
+              </div>
+            </form>
+            <p class="w-100 text-center">&mdash;Bạn đã có tài khoản?
+              <a routerLink="/login"><strong>Đăng nhập</strong></a> &mdash;</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
