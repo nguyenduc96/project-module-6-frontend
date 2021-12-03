@@ -1,9 +1,10 @@
-import {Board} from './board';
+import {Task} from './task';
 
 export interface Status {
   id?: number;
   title?: string;
-  position?: string;
+  position?: number;
+  tasks?: Task[];
   board?: {
     id: number;
   };

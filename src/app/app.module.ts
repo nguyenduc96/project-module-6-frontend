@@ -6,23 +6,24 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {HomeModule} from './home/home.module';
-import {NavbarComponent} from './navbar/navbar.component';
-import {FooterComponent} from './footer/footer.component';
-import {SidebarComponent} from './sidebar/sidebar.component';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import {ReactiveFormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
 import {AngularFireStorageModule} from '@angular/fire/storage';
 import {AngularFireModule} from '@angular/fire';
 import {environment} from '../environments/environment';
 import {JwtResponse} from './login/helper/JwtResponse';
 import {ErrorInterceptor} from './login/helper/ErrorInterceptor';
+import {HomeComponent} from './home/home.component';
+import {SharedModule} from './shared/shared.module';
+import { LayoutComponent } from './layout/layout.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavbarComponent,
-    FooterComponent,
-    SidebarComponent,
+    HomeComponent,
+    LayoutComponent
   ],
   imports: [
     BrowserModule,
@@ -30,9 +31,12 @@ import {ErrorInterceptor} from './login/helper/ErrorInterceptor';
     BrowserAnimationsModule,
     HttpClientModule,
     HomeModule,
+    DragDropModule,
+    ReactiveFormsModule,
     RouterModule,
     AngularFireStorageModule,
-    AngularFireModule.initializeApp(environment.firebaseConfig, "cloud"),
+    AngularFireModule.initializeApp(environment.firebaseConfig, 'cloud'),
+    SharedModule,
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtResponse, multi: true},
@@ -40,7 +44,6 @@ import {ErrorInterceptor} from './login/helper/ErrorInterceptor';
 
   ],
   exports: [
-    NavbarComponent,
   ],
   bootstrap: [AppComponent]
 })

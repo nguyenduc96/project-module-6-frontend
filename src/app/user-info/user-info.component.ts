@@ -8,6 +8,7 @@ import {User} from '../model/user';
 import {showToastError, showToastNotice, showToastSuccess} from '../note';
 import {ChangePassword} from '../model/change-password';
 import {NgForm} from '@angular/forms';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-user-info',
@@ -25,9 +26,9 @@ export class UserInfoComponent implements OnInit {
 
   constructor(private storage: AngularFireStorage,
               private _authenticationService: AuthenticationService,
-              private _userService: UserService) {
+              private _userService: UserService,
+              private _router: Router) {
     this.getUser();
-
   }
 
   getUser() {

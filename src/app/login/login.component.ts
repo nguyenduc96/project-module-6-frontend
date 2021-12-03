@@ -26,10 +26,9 @@ export class LoginComponent implements OnInit {
   login(formLogin: NgForm) {
     this.user = formLogin.value;
     this._authenticationService.login(this.user.username, this.user.password).subscribe(() => {
-      console.log('login success');
       let title = 'Đăng nhập thành công';
       showToastSuccess(title);
-      this._router.navigateByUrl("/home");
+      this._router.navigateByUrl("/user/information");
     }, error => {
       let title = 'Thông báo';
       let content = 'Tên đăng nhập hoặc mật khẩu không đúng';
