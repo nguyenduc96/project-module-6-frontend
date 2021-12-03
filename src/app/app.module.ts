@@ -6,17 +6,13 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {HttpClientModule} from '@angular/common/http';
 import {HomeModule} from './home/home.module';
-import {NavbarComponent} from './navbar/navbar.component';
-import {FooterComponent} from './footer/footer.component';
-import {SidebarComponent} from './sidebar/sidebar.component';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import {ReactiveFormsModule} from '@angular/forms';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavbarComponent,
-    FooterComponent,
-    SidebarComponent
   ],
   imports: [
     BrowserModule,
@@ -24,10 +20,11 @@ import {SidebarComponent} from './sidebar/sidebar.component';
     BrowserAnimationsModule,
     HttpClientModule,
     HomeModule,
+    DragDropModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   exports: [
-    NavbarComponent
   ],
   bootstrap: [AppComponent]
 })

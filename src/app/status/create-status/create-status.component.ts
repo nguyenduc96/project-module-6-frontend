@@ -10,30 +10,25 @@ import {Board} from '../../model/board';
   styleUrls: ['./create-status.component.css']
 })
 export class CreateStatusComponent implements OnInit {
-  statusForm: FormGroup = new FormGroup({
-    title: new FormControl(),
-    position: new FormControl(),
-    board: new FormControl()
-  });
-  boards: Board[] = [];
+  // statusForm: FormGroup = new FormGroup({
+  //   title: new FormControl(),
+  //   position: new FormControl(),
+  //   board: new FormControl()
+  // });
 
-
-  constructor(private statusService: StatusService) {
+  constructor() {
   }
 
   ngOnInit() {
   }
 
-  save() {
-    const stt = this.statusForm.value;
-    stt.board = {
-      id: stt.board
-    };
-    this.statusService.saveStatus(stt).subscribe(() => {
-      this.statusForm.reset();
-      console.log('created');
-    }, e => console.log(e));
-  }
+  // save() {
+  //   const stt = this.statusForm.value;
+  //   this.statusService.saveStatus(stt).subscribe(() => {
+  //     this.statusForm.reset();
+  //     console.log('created');
+  //   }, e => console.log(e));
+  // }
 
 
 }

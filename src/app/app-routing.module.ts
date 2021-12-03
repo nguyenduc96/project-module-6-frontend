@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
+import {LoginComponent} from './login/login.component';
 
 
 
@@ -18,7 +19,10 @@ const routes: Routes = [
   }, {
     path: 'status',
     loadChildren: () => import('./status/status.module').then(module => module.StatusModule)
-  }
+  }, {
+  path: 'tasks',
+    loadChildren: () => import('./task/task.module').then(module =>(module.TaskModule))
+  }     
 ];
 
 

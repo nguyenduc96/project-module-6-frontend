@@ -1,1 +1,15 @@
-<h1>Dday la home</h1>
+<div class="container-fluid" >
+  <!--  navbar-->
+  <ng-container *ngIf="currentUser!= null" >
+    <app-navbar></app-navbar>
+  </ng-container>
+  <div class="main-panel">
+    <!--    content-->
+    <div class="content-wrapper">
+    </div>
+    <!--footer-->
+    <ng-container *ngIf="currentUser!= null">
+      <app-footer></app-footer>
+    </ng-container>
+  </div>
+</div>
