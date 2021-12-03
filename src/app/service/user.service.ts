@@ -24,4 +24,8 @@ export class UserService {
   getUser(): Observable<User> {
     return this._http.get<User>(URL + '/user/get-user/');
   }
+
+  changePassword(formData): Observable<User> {
+    return this._http.post<User>(URL + '/user/set-password', formData);
+  }
 }

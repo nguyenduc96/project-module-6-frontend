@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { UserInfoComponent } from './user-info.component';
 import {RouterModule} from '@angular/router';
 import {UserInfoRoutingModule} from './user-info-routing.module';
+import {FormsModule} from '@angular/forms';
 
 
 @NgModule({
@@ -14,6 +15,7 @@ import {UserInfoRoutingModule} from './user-info-routing.module';
     CommonModule,
     UserInfoRoutingModule,
     RouterModule,
+    FormsModule,
   ]
 })
 export class UserInfoModule { }

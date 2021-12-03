@@ -6,6 +6,8 @@ import {AuthenticationService} from '../service/authentication.service';
 import {UserService} from '../service/user.service';
 import {User} from '../model/user';
 import {showToastError, showToastNotice, showToastSuccess} from '../note';
+import {ChangePassword} from '../model/change-password';
+import {NgForm} from '@angular/forms';
 
 @Component({
   selector: 'app-user-info',
@@ -19,6 +21,7 @@ export class UserInfoComponent implements OnInit {
   downloadURL: Observable<string>;
   currentUser: any;
   user: User;
+  changePassword: ChangePassword = {};
 
   constructor(private storage: AngularFireStorage,
               private _authenticationService: AuthenticationService,
@@ -75,5 +78,40 @@ export class UserInfoComponent implements OnInit {
           console.log(url);
         }
       });
+  }
+
+  changePass(formChangePass: NgForm) {
+    if (this.checkRePassword()) {
+      this.changePassword = formChangePass.value;
+      this._userService.changePassword(this.changePassword).subscribe(
+        (user) => {
+          this.user = user;
+          let title = "Cập nhật mật khẩu thành công";
+          showToastSuccess(title)
+        }, () => {
+          let title = "Cập nhật mật khẩu thất bại";
+          showToastError(title)
+        });
+    } else {
+      let title = "Mật khẩu không khớp";
+      showToastError(title)
+    }
+  }
+
+  checkRePassword(): boolean {
+    let rePassword = document.getElementById('confirmPassword') as HTMLInputElement;
+    return rePassword.value === '' || undefined || null;
+  }
+
+  checkConfirmPassWord() {
+    let password = document.getElementById('newPassword') as HTMLInputElement;
+    let rePassword = document.getElementById('confirmPassword') as HTMLInputElement;
+    let result = '';
+    if (password.value !== rePassword.value) {
+      result = 'Mật khẩu không khớp';
+    } else {
+      result = '';
+    }
+    document.getElementById('confirm-password-error').innerHTML = result;
   }
 }
