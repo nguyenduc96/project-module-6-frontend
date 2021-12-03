@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit {
     this._authenticationService.login(this.user.username, this.user.password).subscribe(() => {
       let title = 'Đăng nhập thành công';
       showToastSuccess(title);
-      this._router.navigateByUrl("/user/information");
+      this._router.navigateByUrl("/home");
     }, error => {
       let title = 'Thông báo';
       let content = 'Tên đăng nhập hoặc mật khẩu không đúng';
