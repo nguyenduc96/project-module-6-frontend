@@ -22,7 +22,7 @@ const routes: Routes = [
   }, {
   path: 'tasks',
     loadChildren: () => import('./task/task.module').then(module =>(module.TaskModule))
-  }     
+  }
 ];
 
 

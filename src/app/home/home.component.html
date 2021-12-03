@@ -1,15 +1,28 @@
-<div class="container-fluid" >
+<div class="container-scroller">
   <!--  navbar-->
   <ng-container *ngIf="currentUser!= null" >
     <app-navbar></app-navbar>
   </ng-container>
-  <div class="main-panel">
+
+
+  <div class="container-fluid page-body-wrapper">
+    <!--  sidebar-->
+    <nav class="sidebar sidebar-offcanvas" id="sidebar">
+      <app-sidebar></app-sidebar>
+    </nav>
+
+
+
+    <div class="main-panel">
     <!--    content-->
     <div class="content-wrapper">
+<!--    <router-outlet></router-outlet>-->
+    <app-task></app-task>
     </div>
     <!--footer-->
     <ng-container *ngIf="currentUser!= null">
       <app-footer></app-footer>
     </ng-container>
+  </div>
   </div>
 </div>

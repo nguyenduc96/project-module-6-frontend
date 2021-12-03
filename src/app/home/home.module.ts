@@ -7,11 +7,14 @@ import {UserInfoModule} from '../user-info/user-info.module';
 import {RouterModule} from '@angular/router';
 import {AppModule} from '../app.module';
 import {SharedModule} from '../shared/shared.module';
+import {TaskModule} from '../task/task.module';
+import {StatusModule} from '../status/status.module';
+import {TaskComponent} from '../task/task.component';
 
 
 @NgModule({
   declarations: [
-    HomeComponent
+    HomeComponent,
   ],
   imports: [
     CommonModule,
