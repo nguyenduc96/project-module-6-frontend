@@ -1,58 +1,44 @@
-<div class="nav-item nav-profile" style="width: 100px; height: auto">
-  <img [src]="user?.avatar" alt="Day la anh dai dien">
+<div class="row" style="background-image: url(assets/static/login/images/bg.jpg); height: 100%">
+  <div class="col-2"></div>
+  <div class="col-3" style="align-items: baseline; border: 1px solid red" >
+    <img style="width: 250px; height: 250px; border-radius: 100%" [src]="user?.avatar" alt="Day la anh dai dien">
+    <label for="file" style="color: red" title="Đổi ảnh đại diện"><i style="padding-top: 80%"  class="ti-pencil"></i>
+    Đổi ảnh đại diện
+    </label>
+  </div>
+  <input type="file"
+         id="file"
+         #userPhoto
+         (change)="onFileSelected($event)"
+         name="image"
+         autocomplete="off"
+         hidden
+  />
+  <div class="col-6">
+   <table>
+     <tr>
+       <td>
+         <div>
+           Tên đăng nhập
+         </div>
+       </td>
+       <td>
+         <div>
+           : {{user?.username}}
+         </div>
+       </td>
+     </tr>
+     <tr>
+       <td>
+         <div>
+           Email
+         </div>
+       </td>
+     <td>
+       <div>
+         : {{user?.email}}
+       </div>
+     </td>
+   </table>
+  </div>
 </div>
-<button class="btn btn-primary">
-  <label for="file">avatar</label>
-</button>
-<input type="file"
-       id="file"
-       #userPhoto
-       (change)="onFileSelected($event)"
-       name="image"
-       autocomplete="off"
-       hidden
-/>
-<div style="width: 500px; height: 500px">
-  <form  #formChangePass='ngForm' (ngSubmit)="changePass(formChangePass)">
-    <div>
-      <label>Mật khẩu cũ : </label>
-      <input type="password"
-             name="oldPassword"
-             placeholder="Nhập mật khẩu cũ"
-             required
-             minlength="6"
-             maxlength="20"
-             ngModel
-             >
-    </div>
-    <div>
-      <label>Mật khẩu mới : </label>
-      <input type="password"
-             name="newPassword"
-             id="newPassword"
-             placeholder="Nhập mật khẩu mới"
-             required
-             minlength="6"
-             maxlength="20"
-             ngModel
-             (input)="checkRePassword()"
-            >
-    </div>
-    <div>
-      <label>Xác nhận mật khẩu : </label>
-      <input type="password"
-             name="confirmPassword"
-             id="confirmPassword"
-             placeholder="Nhập lại mật khẩu mới"
-             required
-             minlength="6"
-             maxlength="20"
-             ngModel
-             (input)="checkConfirmPassWord()" t
-             >
-    </div>
-    <button>Đổi mật khẩu</button>
-  </form>
-</div>
-
-
