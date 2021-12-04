@@ -19,7 +19,6 @@ export class ErrorInterceptor implements HttpInterceptor {
     }, (err: any) => {
       if (err instanceof HttpErrorResponse) {
         if (err.status === 401) {
-          this.authenticationService.logout();
           this.router.navigate(['/login']);
         } else if (err.status === 403) {
           this.router.navigate(['/']);

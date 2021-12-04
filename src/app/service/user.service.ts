@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 import {Observable} from 'rxjs';
 import {User} from '../model/user';
+import {UserUnique} from '../model/user-unique';
 
 const URL = environment.apiUrl;
 
@@ -22,10 +23,14 @@ export class UserService {
   }
 
   getUser(): Observable<User> {
-    return this._http.get<User>(URL + '/user/get-user/');
+    return this._http.get<User>(URL + '/user/get-user');
   }
 
   changePassword(formData): Observable<User> {
     return this._http.post<User>(URL + '/user/set-password', formData);
+  }
+
+  getAllUserUniques(): Observable<UserUnique[]> {
+    return this._http.get<UserUnique[]>(URL + '/user/check-unique');
   }
 }

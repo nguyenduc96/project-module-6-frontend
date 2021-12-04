@@ -59,7 +59,6 @@ export class UserInfoComponent implements OnInit {
             if (url) {
               this.avatar = url;
               this.avatar = JSON.stringify(this.avatar);
-              console.log(this.avatar);
               this._userService.setAvatar(this.avatar).subscribe(
                 (user) => {
                   this.user = user;

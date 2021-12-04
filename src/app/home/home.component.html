@@ -1,9 +1,6 @@
 <div class="container-scroller">
   <!--  navbar-->
-  <ng-container *ngIf="currentUser!= null" >
-    <app-navbar></app-navbar>
-  </ng-container>
-
+  <app-navbar></app-navbar>
 
   <div class="container-fluid page-body-wrapper">
     <!--  sidebar-->
@@ -12,14 +9,12 @@
     </nav>
 
     <div class="main-panel">
-    <!--    content-->
-    <div class="content-wrapper">
-    <router-outlet></router-outlet>
-    </div>
-    <!--footer-->
-    <ng-container *ngIf="currentUser!= null">
+      <!--    content-->
+      <div class="content-wrapper">
+        <router-outlet></router-outlet>
+      </div>
+      <!--footer-->
       <app-footer></app-footer>
-    </ng-container>
-  </div>
+    </div>
   </div>
 </div>

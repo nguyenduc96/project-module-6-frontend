@@ -1,4 +1,4 @@
-<div class="img js-fullheight" style="background-image: url(assets/static/login/images/bg.jpg);">
+<div class="img js-fullheight" style="background-image: url(assets/static/login/images/bglglo.jpg);">
   <section class="ftco-section">
     <div class="container">
       <div class="row justify-content-center">
@@ -11,61 +11,77 @@
           <div class="row justify-content-center">
             <div class="col-md-6">
               <div class="login-wrap p-0">
-                <form class="signin-form" #formRegister="ngForm" (ngSubmit)="formRegister.valid && register(formRegister)">
+                <form class="signin-form" #formRegister="ngForm"
+                      (ngSubmit)="formRegister.valid && register(formRegister)">
                   <div class="form-group">
                     <label for="username-field"> Tên đăng nhập <span class="text-danger">*</span> </label>
-
-                    <input type="text" id="username-field" class="form-control" style="background-color: rgba(91,43,162,0.4)"
-                           name="username" ngModel placeholder="Tên đăng nhập" required minlength="6" maxlength="18"
+                    <input type="text" id="username-field"
+                           style="background-color: rgba(91,43,162,0.4)"
+                           #username="ngModel"
+                           [ngClass]="[((username.valid && isUsernameUnique) && (username.touched || username.dirty)) ? 'form-control is-valid' :((username.dirty || username.touched || formRegister.submitted)? 'form-control is-invalid':'form-control')]"
+                           name="username" ngModel (input)="checkUsernameUnique()" placeholder="Tên đăng nhập" required
+                           minlength="6" maxlength="18"
                            pattern="^[a-zA-Z0-9_]*$">
-                    <div>
-                      <p class="invalid-tooltip" *ngIf="formRegister.controls.username.errors?.minlength">Tên đăng nhập không
-                        được dưới 6 ký tự</p>
-                      <p class="invalid-tooltip" *ngIf="formRegister.controls.username.errors?.maxlength">Tên đăng nhập không
-                        được trên 18 ký tự</p>
-                      <p class="invalid-tooltip" *ngIf="formRegister.controls.username.errors?.pattern">Tên đăng nhập không
-                        được chứa ký tự đặc biệt</p>
-                    </div>
+                    <ng-container
+                      *ngIf="(username.dirty || username.touched) || isUsernameUnique  || formRegister.submitted">
+                      <div class="invalid-tooltip" *ngIf="!isUsernameUnique">Tên đăng nhập đã tồn tại</div>
+                      <div class="invalid-tooltip" *ngIf="username.errors?.minlength">Tên đăng nhập không được dưới 6 ký
+                        tự
+                      </div>
+                      <div class="invalid-tooltip" *ngIf="username.errors?.maxlength">Tên đăng nhập không được trên 18
+                        ký tự
+                      </div>
+                      <div class="invalid-tooltip" *ngIf="username.errors?.pattern">Tên đăng nhập không được chứa ký tự
+                        đặc biệt
+                      </div>
+                    </ng-container>
                   </div>
                   <div class="form-group">
                     <label for="password-field"> Mật khẩu <span class="text-danger">*</span> </label>
                     <input id="password-field" style="background-color: rgba(91,43,162,0.4)"
                            [type]="isShowPassword? 'text' : 'password'"
+                           #password="ngModel"
+                           [ngClass]="[((password.valid) && (password.touched || password.dirty)) ? 'form-control is-valid' :((password.dirty || password.touched || formRegister.submitted)? 'form-control is-invalid':'form-control')]"
                            (input)="!checkRePassword()? checkConfirmPassWord() : undefined" name="password" ngModel
-                           class="form-control" placeholder="Mật khẩu" required>
-                    <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"
-                          [title]="!isShowPassword? 'Xem mật khẩu' : 'Ẩn mật khẩu'" (click)="showPassword()"></span>
-                    <div>
-                      <p class="invalid-tooltip" *ngIf="formRegister.controls.password.errors?.minlength">Mật khẩu không được
-                        dưới 6 ký tự</p>
-                      <p class="invalid-tooltip" *ngIf="formRegister.controls.password.errors?.maxlength">Mật khẩu không được
-                        trên 18 ký tự</p>
-                    </div>
+                           placeholder="Mật khẩu" required
+                           minlength="6" maxlength="18">
+                    <input type="checkbox" id="show-pass" (click)="showPassword()">
+                    <label for="show-pass">{{!isShowPassword? 'Xem mật khẩu' : 'Ẩn mật khẩu'}}</label>
+                    <ng-container *ngIf="(password.dirty || password.touched)  || formRegister.submitted">
+                      <div class="invalid-tooltip" *ngIf="password.errors?.minlength">Mật khẩu không được dưới 6 ký tự
+                      </div>
+                      <div class="invalid-tooltip" *ngIf="password.errors?.maxlength">Mật khẩu không được trên 18 ký
+                        tự
+                      </div>
+                    </ng-container>
                   </div>
                   <div class="form-group">
                     <label for="re-password-field"> Nhập lại mật khẩu <span class="text-danger">*</span> </label>
                     <input id="re-password-field" style="background-color: rgba(91,43,162,0.4)"
+                           class="form-control"
+                           [ngClass]="isConfirmPassword ? 'form-control is-valid' : 'form-control is-invalid'"
                            (input)="checkConfirmPassWord()" [type]="isShowConfirmPassword? 'text' : 'password'"
-                           name="re-password" class="form-control" placeholder="Nhập lại mật khẩu" required>
-                    <span toggle="#re-password-field" class="fa fa-fw fa-eye field-icon toggle-password"
-                          [title]="!isShowConfirmPassword? 'Xem mật khẩu' : 'Ẩn mật khẩu'"
-                          (click)="showConfirmPassword()"></span>
-                    <div>
-                      <p class="text-danger" id="confirm-password-error"></p>
-                    </div>
-
+                           name="re-password" placeholder="Nhập lại mật khẩu" required>
+                    <input type="checkbox" id="show-re-pass" (click)="showConfirmPassword()">
+                    <label for="show-re-pass">{{!isShowConfirmPassword? 'Xem mật khẩu' : 'Ẩn mật khẩu'}}</label>
+                    <ng-container>
+                      <div class="invalid-tooltip" *ngIf="!isConfirmPassword">Mật khẩu không khớp</div>
+                    </ng-container>
                   </div>
                   <div class="form-group">
                     <label for="email"> Email <span class="text-danger">*</span> </label>
-                    <input type="email" id="email" class="form-control" style="background-color: rgba(91,43,162,0.4)" name="email"
-                           ngModel placeholder="Email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" maxlength="32" minlength="8">
-                    <div>
-                      <p class="invalid-tooltip" *ngIf="formRegister.controls.email.errors?.minlength">Email không được
-                        dưới 8 ký tự</p>
-                      <p class="invalid-tooltip" *ngIf="formRegister.controls.email.errors?.maxlength">Email không được
-                        trên 32 ký tự</p>
-                      <p class="invalid-tooltip" *ngIf="formRegister.controls.email.errors?.pattern">Email không đúng định dạng </p>
-                    </div>
+                    <input type="email" id="email" style="background-color: rgba(91,43,162,0.4)"
+                           name="email"
+                           #email="ngModel"
+                           [ngClass]="[((email.valid && isEmailUnique) && (email.touched || email.dirty)) ? 'form-control is-valid' :((email.dirty || email.touched || formRegister.submitted)? 'form-control is-invalid':'form-control')]"
+                           ngModel placeholder="Email" (input)="checkEmailUnique()" required
+                           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" maxlength="32" minlength="8">
+                    <ng-container *ngIf="(email.dirty || email.touched)  || formRegister.submitted">
+                      <div class="invalid-tooltip" *ngIf="email.errors?.minlength">Email không được dưới 8 ký tự</div>
+                      <div class="invalid-tooltip" *ngIf="email.errors?.maxlength">Email không được trên 32 ký tự</div>
+                      <div class="invalid-tooltip" *ngIf="email.errors?.pattern">Email không đúng định dạng</div>
+                      <div class="invalid-tooltip" *ngIf="!isEmailUnique">Email đã tồn tại</div>
+                    </ng-container>
                   </div>
                   <div class="form-group">
                     <button type="submit" class="form-control btn btn-primary submit px-3">Đăng ký</button>
