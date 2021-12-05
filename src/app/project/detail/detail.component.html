@@ -1,18 +1,23 @@
-<h1>Thông tin dự án : {{project?.title}}</h1>
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-  Thêm người vào dự án
-</button>
-<div *ngIf="project.boards.length == 0">
-  <h3 class="card-title">
-    Hiện tại dự án chưa có bảng nào
-  </h3>
-</div>
-<div>
-  <div *ngFor="let b of project.boards">
-    <p><a routerLink="/tasks/list"></a>{{b.title}}</p>
-  </div>
-</div>
 
+<div style="margin: 10px 0px 0px 20px">
+  <h2 style="color: #f5f1f1;font-size: 35px">{{project?.title}}</h2>
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+    Thêm thành viên
+  </button>
+
+<!--  <div *ngIf="project.boards.length == 0">-->
+<!--    <h3 class="card-title">-->
+<!--      Hiện tại dự án chưa có bảng nào-->
+<!--    </h3>-->
+<!--  </div>-->
+
+  <div>
+    <div *ngFor="let b of project.boards">
+      <p><a routerLink="/tasks/list"></a>{{b.title}}</p>
+    </div>
+  </div>
+
+</div>
 <!-- Modal -->
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -26,13 +31,13 @@
         <div class="modal-body">
 
           <div>
-            <label for="username">Nhập tên thành viên</label>
-            <input type="text" id="username" placeholder="Nhập tên thành viên" ngModel name="username">
+<!--            <label for="username">Nhập tên thành viên</label>-->
+            <input style="margin-bottom: 15px;width: 60%" class="form-control" placeholder="Nhập tên thành viên" type="text" id="username"  ngModel name="username">
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Thêm vào</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Đóng</button>
+            <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Thêm </button>
           </div>
         </div>
       </form>

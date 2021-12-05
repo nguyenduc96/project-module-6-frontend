@@ -105,7 +105,7 @@ Enter tag title..." class="form-control" type="text" formControlName="title" sty
           </div>
           <div class="row float-end">
             <div class="addFormCard" style="padding-bottom: 10px">
-              <button type="submit" class="btn btn-primary" (click)="showTaskAddBox()"
+              <button type="submit" class="btn btn-success" (click)="showTaskAddBox()"
                       style="border-radius: 7px; margin-top: 2px">Add
               </button>
               <button type="button" class="btn btn-danger" (click)="showTaskAddBox()"
@@ -139,7 +139,7 @@ Enter tag title..." class="form-control" type="text" formControlName="title" sty
               <input type="text" placeholder="
 Enter status title..." class="form-control" formControlName="title"
                      style="width: 115%; height: 36px;position: relative;top: -10px">
-              <button type="submit" class="btn btn-primary"
+              <button type="submit" class="btn btn-success"
                       style="margin-left: 1px;height: 30px;padding: 3px 8px 10px 8px" (click)="showAddStatusForm()">Add
               </button>
               <button type="button" class="btn btn-danger" style="height: 30px;padding: 2px 10px 12px 10px"
@@ -187,7 +187,7 @@ Enter status title..." class="form-control" formControlName="title"
           <div>
             <tr style="width: 100%">
               <td><i class="ti-menu" style="font-size: 20px;margin: 0px 12px 10px 0px">&nbsp;Description</i>
-                <button id="add" (click)="showDescriptionEdit()" style="padding: 2px 9px 2px 9px;margin-bottom: 5px;border-radius: 8px;
+                <button class="btn btn-success" id="add" (click)="showDescriptionEdit()" style="padding: 2px 9px 2px 9px;margin-bottom: 5px;border-radius: 8px;
                        background-color: rgba(243,237,237,0.96); border: 1px solid rgb(231,221,221)"
                         onMouseOut="this.style.backgroundColor = 'rgba(243,237,237,0.96)'"
                         onMouseOver="this.style.backgroundColor = 'rgba(183,178,178,0.65)'">Add
@@ -218,7 +218,7 @@ Enter status title..." class="form-control" formControlName="title"
                 <!--                       (click)="showDeadlineEdit()">-->
                 <!--                  {{taskDetail.deadline != null ? taskDetail.deadline : '...'}}-->
                 <!--                </label>-->
-                <button (click)="showDeadlineEdit()" style="padding: 2px 9px 2px 9px;margin-bottom: 5px;border-radius: 8px;
+                <button class="btn btn-success" (click)="showDeadlineEdit()" style="padding: 2px 9px 2px 9px;margin-bottom: 5px;border-radius: 8px;
                        background-color: rgba(243,237,237,0.96); border: 1px solid rgb(231,221,221)"
                         onMouseOut="this.style.backgroundColor = 'rgba(243,237,237,0.96)'"
                         onMouseOver="this.style.backgroundColor = 'rgba(183,178,178,0.65)'">Add
@@ -311,7 +311,7 @@ Enter status title..." class="form-control" formControlName="title"
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+          <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Save changes</button>
         </div>
       </form>
     </div>
@@ -339,7 +339,7 @@ Enter status title..." class="form-control" formControlName="title"
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="deleteLabel()">Delete</button>
-          <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+          <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Save changes</button>
         </div>
       </div>
     </form>

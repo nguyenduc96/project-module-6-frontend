@@ -35,6 +35,7 @@ export class SidebarComponent implements OnInit {
   getProjects() {
     this.projectService.getProjectByProjectOwner().subscribe(
       data => {
+        console.table(data)
         this.myProjects = data;
       },
       error => {

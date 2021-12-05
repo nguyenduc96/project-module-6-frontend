@@ -27,7 +27,9 @@
         <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
           <img src="{{user?.avatar}}" alt="profile"/>
         </a>
-        <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+        <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
+             style="border-radius: 10px"
+             aria-labelledby="profileDropdown">
           <a class="dropdown-item" routerLink="/user/information">
             <i class="ti-settings text-primary"></i>
             Thông tin cá nhân
