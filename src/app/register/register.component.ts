@@ -4,8 +4,11 @@ import {UserService} from '../service/user.service';
 import {User} from '../model/user';
 import {Router} from '@angular/router';
 import Swal from 'sweetalert2';
-import {showToastError, showToastSuccess} from '../note';
+import {showPopupError, showToastSuccess} from '../note';
 import {AuthenticationService} from '../service/authentication.service';
+import {UserUnique} from '../model/user-unique';
+
+declare var $: any;
 
 @Component({
   selector: 'app-register',
@@ -14,15 +17,25 @@ import {AuthenticationService} from '../service/authentication.service';
 })
 export class RegisterComponent implements OnInit {
   isShowPassword: boolean = false;
+
   isShowConfirmPassword: boolean = false;
 
   user: User = {};
 
   avatar: any;
 
+  userUniques: UserUnique[] = [];
+
+  isUsernameUnique: boolean = true;
+
+  isEmailUnique: boolean = true;
+
+  isConfirmPassword: boolean = true;
+
   constructor(private _userService: UserService,
               private _router: Router,
               private _authenticationService: AuthenticationService) {
+    this.getUserUnique();
     if (this._authenticationService.currentUser != null) {
       this._authenticationService.logout();
     }
@@ -42,10 +55,47 @@ export class RegisterComponent implements OnInit {
       (error) => {
         let title = 'Thông báo';
         let content = 'Đăng ký thất bại';
-        showToastError(title, content);
+        showPopupError(title, content);
         console.log(error);
       }
     );
+  }
+
+  getUserUnique() {
+    this._userService.getAllUserUniques().subscribe(
+      (data) => {
+        this.userUniques = data;
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }
+
+  checkUsernameUnique() {
+    this.isUsernameUnique = true;
+    let username = $('#username-field').val();
+    if (username != null && username != '' && username != undefined) {
+      for (let i = 0; i < this.userUniques.length; i++) {
+        if (this.userUniques[i].username === username) {
+          this.isUsernameUnique = false;
+          break;
+        }
+      }
+    }
+  }
+
+  checkEmailUnique() {
+    let email = $('#email').val();
+    this.isEmailUnique = true;
+    if (email != null && email != '' && email != undefined) {
+      for (let i = 0; i < this.userUniques.length; i++) {
+        if (this.userUniques[i].email === email) {
+          this.isEmailUnique = false;
+          break;
+        }
+      }
+    }
   }
 
   showPassword() {
@@ -57,19 +107,13 @@ export class RegisterComponent implements OnInit {
   }
 
   checkRePassword(): boolean {
-    let rePassword = document.getElementById('re-password-field') as HTMLInputElement;
-    return rePassword.value === '' || undefined || null;
+    let rePassword = $('#re-password-field').val();
+    return rePassword === '' || undefined || null;
   }
 
   checkConfirmPassWord() {
-    let password = document.getElementById('password-field') as HTMLInputElement;
-    let rePassword = document.getElementById('re-password-field') as HTMLInputElement;
-    let result = '';
-    if (password.value !== rePassword.value) {
-      result = 'Mật khẩu không khớp';
-    } else {
-      result = '';
-    }
-    document.getElementById('confirm-password-error').innerHTML = result;
+    let password = $('#password-field').val();
+    let rePassword = $('#re-password-field').val();
+    this.isConfirmPassword = password === rePassword;
   }
 }
