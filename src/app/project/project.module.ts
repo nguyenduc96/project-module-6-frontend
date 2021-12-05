@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { ProjectRoutingModule } from './project-routing.module';
 import {ProjectComponent} from './project.component';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { DetailComponent } from './detail/detail.component';
 
 
@@ -12,10 +12,11 @@ import { DetailComponent } from './detail/detail.component';
     ProjectComponent,
     DetailComponent
   ],
-  imports: [
-    CommonModule,
-    ProjectRoutingModule,
-    FormsModule
-  ]
+    imports: [
+        CommonModule,
+        ProjectRoutingModule,
+        FormsModule,
+        ReactiveFormsModule
+    ]
 })
 export class ProjectModule { }

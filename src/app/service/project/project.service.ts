@@ -29,7 +29,7 @@ export class ProjectService {
     return this.http.get<Project>(`${API_URL}/${PROJECTS}/${id}`);
   }
 
-  getProjectByProjectOwner(): Observable<Project[]>{
+  getProjectByProjectOwner(): Observable<Project[]> {
     return this.http.get<Project[]>(`${API_URL}/${PROJECTS}/get-by-project-owner`);
   }
 

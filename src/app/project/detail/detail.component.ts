@@ -2,9 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {ProjectService} from '../../service/project/project.service';
 import {ActivatedRoute} from '@angular/router';
 import {Project} from '../../model/project';
-import {NgForm} from '@angular/forms';
+import {FormControl, FormGroup, NgForm} from '@angular/forms';
 import {User} from '../../model/user';
-import {showPopupError, showToastError, showToastSuccess} from '../../note';
+import {showPopupError, showToastError, showToastSuccess, successAlert} from '../../note';
+import {BoardService} from "../../service/board/board.service";
 
 @Component({
   selector: 'app-detail',
@@ -16,8 +17,15 @@ export class DetailComponent implements OnInit {
 
   user: User = {};
 
+  newBoard: FormGroup = new FormGroup({
+    id: new FormControl(),
+    title: new FormControl(),
+    project: new FormControl(),
+  });
+
   constructor(private projectService: ProjectService,
-              private activatedRouter: ActivatedRoute) {
+              private activatedRouter: ActivatedRoute,
+              private boardService: BoardService) {
     this.getProject();
   }
 
@@ -40,6 +48,38 @@ export class DetailComponent implements OnInit {
       showToastSuccess('Thêm thành công');
     }, error => {
       showPopupError('Thêm thất bại', 'Tên thành viên không đúng hoặc bạn không có quyền thêm thành viên');
+    });
+  }
+
+  saveBoard() {
+    this.newBoard.get('project').setValue({ id: this.project.id});
+    this.boardService.create(this.newBoard.value).subscribe(() => {
+      this.getProject();
+      showToastSuccess('Success!');
+      this.newBoard = new FormGroup({
+        id: new FormControl(),
+        title: new FormControl(),
+        project: new FormControl(),
+      });
+    });
+
+  }
+
+  showBoardDetail(id: number) {
+    this.boardService.getBoardById(id).subscribe(data => {
+      this.newBoard = new FormGroup({
+        id: new FormControl(data.id),
+        title: new FormControl(data.title),
+        project: new FormControl({id: this.project.id}),
+      });
+    });
+  }
+
+
+  deleteBoard() {
+    this.boardService.delete(this.newBoard.get('id').value).subscribe(() => {
+      this.getProject();
+      showToastSuccess('Delete Board!');
     });
   }
 }
