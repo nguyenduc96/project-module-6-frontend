@@ -1,20 +1,25 @@
-<div class="container-scroller">
+<div class="container-scroller"  style="background-image: url('assets/background.jpeg'); max-height: 100%">
   <!--  navbar-->
-  <app-navbar></app-navbar>
+  <ng-container  style="background:none">
+    <app-navbar></app-navbar>
+  </ng-container>
+
 
   <div class="container-fluid page-body-wrapper">
     <!--  sidebar-->
-    <nav class="sidebar sidebar-offcanvas" id="sidebar">
+    <nav class="sidebar sidebar-offcanvas" id="sidebar" style="background: none">
       <app-sidebar></app-sidebar>
     </nav>
 
     <div class="main-panel">
       <!--    content-->
-      <div class="content-wrapper">
+      <div class="content-wrapper" style="background: none">
         <router-outlet></router-outlet>
       </div>
       <!--footer-->
-      <app-footer></app-footer>
+<!--      <ng-container style="background:none">-->
+<!--        <app-footer></app-footer>-->
+<!--      </ng-container>>-->
     </div>
   </div>
 </div>

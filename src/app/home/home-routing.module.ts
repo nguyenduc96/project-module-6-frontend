@@ -11,7 +11,19 @@ const routes: Routes = [
   {
     path: 'home',
    loadChildren: () => import('../layout/layout.module').then(m => m.LayoutModule)
-  }
+  },
+  {
+    path: 'tasks',
+    loadChildren: () => import('../task/task.module').then(m => m.TaskModule)
+  },
+  {
+    path: 'status',
+    loadChildren: () => import('../status/status.module').then(module => module.StatusModule)
+  },
+  // {
+  //   path: 'projects',
+  //   loadChildren: () => import('../project/project.module').then(module => module.ProjectModule)
+  // }
 ];
 
 @NgModule({
