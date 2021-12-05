@@ -5,7 +5,7 @@
         <div class="col-md-6" style="background-color: rgba(138,121,138,0.51)">
           <div class="row justify-content-center">
             <div class="col-md-6 text-center">
-              <h2 class="heading-section" style="color: rgb(236,238,241)">Đăng ký tài khoản</h2>
+              <h2 class="heading-section" style="color: rgb(236,238,241);">Đăng ký tài khoản</h2>
             </div>
           </div>
           <div class="row justify-content-center">
@@ -24,10 +24,11 @@
                            pattern="^[a-zA-Z0-9_]*$">
                     <ng-container
                       *ngIf="(username.dirty || username.touched) || isUsernameUnique  || formRegister.submitted">
-                      <div class="invalid-tooltip" *ngIf="!isUsernameUnique">Tên đăng nhập đã tồn tại</div>
                       <div class="invalid-tooltip" *ngIf="username.errors?.minlength">Tên đăng nhập không được dưới 6 ký
                         tự
                       </div>
+                      <div class="invalid-tooltip" *ngIf="!isUsernameUnique">Tên đăng nhập đã tồn tại</div>
+
                       <div class="invalid-tooltip" *ngIf="username.errors?.maxlength">Tên đăng nhập không được trên 18
                         ký tự
                       </div>
