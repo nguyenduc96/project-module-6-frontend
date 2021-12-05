@@ -13,6 +13,6 @@ export class BoardService {
   constructor(private http: HttpClient) { }
 
   getBoardById(id: number): Observable<Board> {
-    return this.http.get<Board>()
+    return this.http.get<Board>(API_URL);
   }
 }
