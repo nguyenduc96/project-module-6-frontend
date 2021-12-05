@@ -1,0 +1,21 @@
+<h1>BoardList</h1>
+<table class="table">
+  <thead class="table-success">
+  <tr>
+    <td>#</td>
+    <td>Id</td>
+    <td>Title</td>
+    <td>Project</td>
+    <td>Edit</td>
+    <td>Delete</td>
+  </tr>
+  </thead>
+  <tr *ngFor="let boards of board; index as i">
+    <td>{{i + 1}}</td>
+    <td>{{boards.id}}</td>
+    <td><a routerLink="detail/{{boards.id}}">{{boards.title}}</a></td>
+    <td>{{boards.project.title}}</td>
+    <td><a routerLink="/boards/edit/{{boards.id}}">Edit</a></td>
+    <td><a [routerLink]="['/boards/delete', boards.id]">Delete</a></td>
+  </tr>
+</table>
