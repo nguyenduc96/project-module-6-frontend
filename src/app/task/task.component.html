@@ -40,7 +40,33 @@
 <!--</div>-->
 <!--test-->
 
+<!--hien thi label-->
 
+<div class="example-container border border-dark">
+  <div class="row text-center row">
+    <div style="width: 80%;">
+      <h2>Labels</h2>
+    </div>
+    <div style="width: 20%;">
+    </div>
+  </div>
+  <div class="example-list" >
+    <div class="example-box row justify-content-center"
+         *ngFor="let label of labels"
+         [ngStyle]="{'background-color': label.color.name}"
+         (click)="showLabelDetail(label.id)" data-bs-toggle="modal" data-bs-target="#editLabel" >
+      <div>{{label.content}}</div>
+    </div>
+    <div class="float-end">
+      <button class="btn btn-primary float-end "
+              style="margin-right: 30px;" data-bs-toggle="modal" data-bs-target="#addLabel">+</button>
+    </div>
+  </div>
+</div>
+
+
+
+<!--task-->
 <div class="board" cdkDropList cdkDropListOrientation="horizontal"
      (cdkDropListDropped)="dropStatus($event)"
      style="max-height: 90%;overflow-y: hidden;">
@@ -136,7 +162,8 @@ Enter tag title..." class="form-control" type="text" formControlName="title" sty
 
             <div>
               <p style="font-size: 15px; margin-left: 5px">Add New Status</p>
-              <input type="text" class="form-control" formControlName="title"
+              <input type="text" placeholder="
+Enter status title..." class="form-control" formControlName="title"
                      style="width: 115%; height: 36px;position: relative;top: -10px">
               <button type="submit" class="btn btn-primary"
                       style="margin-left: 1px;height: 30px;padding: 3px 8px 10px 8px" (click)="showAddStatusForm()">Add
@@ -278,5 +305,73 @@ Enter tag title..." class="form-control" type="text" formControlName="title" sty
 <!--  <div class="addCard">+ Add another card</div>-->
 <!--</div>-->
 <!--</div>-->
+
+<!--Modal Add Label-->
+
+<div class="modal fade" id="addLabel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel1">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form [formGroup]="newLabel" (ngSubmit)="addNewLabel()">
+        <div class="modal-body">
+          <table>
+            <tr>
+              <td>Content: </td>
+              <td><input formControlName="content" type="text"></td>
+            </tr>
+            <tr>
+              <td>Color :</td>
+              <td>
+                <select formControlName="color">
+                  <option value="" disabled >--Choose a color--</option>
+                  <option  *ngFor="let color of colors" value="{{color.id}}" [ngStyle]="{'color': color.name}">
+                    {{color.name}}
+                  </option>
+                </select>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!--Modal Edit Label-->
+<div class="modal fade" id="editLabel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form [formGroup]="newLabel" (ngSubmit)="editLabel()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="">Edit Label</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input formControlName="content" type="text">
+          <select formControlName="color" >
+            <option value="" disabled selected>--Choose a color--</option>
+            <option  *ngFor="let color of colors" value="{{color.id}}" [ngStyle]="{'color': color.name}">
+              {{color.name}}
+            </option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="deleteLabel()">Delete</button>
+          <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
 
 

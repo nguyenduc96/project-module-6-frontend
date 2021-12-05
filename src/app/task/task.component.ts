@@ -9,6 +9,10 @@ import {Status} from '../model/status';
 import Swal from 'sweetalert2';
 import {Task} from '../model/task';
 import {successAlert} from '../note';
+import {LabelService} from '../service/label.service';
+import {ColorService} from '../service/color.service';
+import {Label} from '../model/label';
+import {Color} from '../model/color';
 
 declare var $: any;
 
@@ -19,6 +23,8 @@ declare var $: any;
 })
 export class TaskComponent implements OnInit {
   board: Board;
+  labels: Label[];
+  colors: Color[];
   newTask: FormGroup =  new FormGroup({
     title: new FormControl(),
     position: new FormControl(),
@@ -27,6 +33,12 @@ export class TaskComponent implements OnInit {
   newStatus: FormGroup = new FormGroup({
     title: new FormControl(),
     position: new FormControl(),
+    board: new FormControl(),
+  });
+  newLabel: FormGroup = new FormGroup({
+    id: new FormControl(),
+    content: new FormControl(),
+    color: new FormControl(),
     board: new FormControl(),
   });
   taskDetail: Task = {};
@@ -39,16 +51,25 @@ export class TaskComponent implements OnInit {
   isShowAddStatusBox: boolean = false;
   constructor(private boardService: BoardService,
               private taskService: TaskService,
-              private statusService: StatusService,) {
+              private statusService: StatusService,
+              private labelService: LabelService,
+              private colorService: ColorService) {
     this.getBoard();
+    this.colorService.getAll().subscribe(data => {this.colors = data; });
   }
 
   private getBoard() {
     this.boardService.getBoardById(1).subscribe(data => {
       this.board = data;
-      console.log(this.board);
+      this.getLabels();
     }, error => {
       console.log('Error');
+    });
+  }
+
+  private getLabels() {
+    this.labelService.getAllLabelByBoardId(this.board.id).subscribe(labels => {
+      this.labels = labels;
     });
   }
 
@@ -135,10 +156,10 @@ export class TaskComponent implements OnInit {
     this.taskService.addNew(this.newTask.value).subscribe(data => {console.log(data); this.getBoard(); });
     this.newTask = new FormGroup({
       title: new FormControl(),
-      position: new FormControl(),
+      position: new FormControl(99999),
       status:  new FormControl(),
     });
-    this.getBoard()
+    this.getBoard();
     successAlert();
   }
 
@@ -182,11 +203,58 @@ export class TaskComponent implements OnInit {
     this.statusService.addNewStatus(this.newStatus.value).subscribe(data => {console.log(data); this.getBoard(); });
     this.newStatus = new FormGroup({
       title: new FormControl(),
-      position: new FormControl(),
+      position: new FormControl(this.board.statuses.length),
       board: new FormControl(),
     });
-    this.getBoard()
-    successAlert()
+    this.getBoard();
+    successAlert();
+  }
+
+  addNewLabel() {
+    this.newLabel.get('board').setValue({id : this.board.id});
+    this.newLabel.get('color').setValue({id : this.newLabel.get('color').value});
+    this.labelService.addNewLabel(this.newLabel.value).subscribe(data => {
+      successAlert();
+      this.getLabels();
+      this.newLabel = new FormGroup({
+        id: new FormControl(),
+        content: new FormControl(),
+        color: new FormControl(),
+        board: new FormControl(),
+      });
+    });
+  }
+
+  showLabelDetail(id: number) {
+    this.labelService.getById(id).subscribe( data => {
+      this.newLabel = new FormGroup({
+        id: new FormControl(data.id),
+        content: new FormControl(data.content),
+        color: new FormControl(data.color.id),
+        board: new FormControl({id: this.board.id}),
+      });
+    });
+  }
+
+  editLabel() {
+    this.newLabel.get('board').setValue({id : this.board.id});
+    this.newLabel.get('color').setValue({id : this.newLabel.get('color').value});
+    this.labelService.addNewLabel(this.newLabel.value).subscribe(data => {
+      this.getLabels();
+      this.newLabel = new FormGroup({
+        id: new FormControl(),
+        content: new FormControl(),
+        color: new FormControl(),
+        board: new FormControl(),
+      });
+    });
+  }
+
+  deleteLabel() {
+    this.labelService.deleteLabel(this.newLabel.get('id').value).subscribe(() => {
+      this.getLabels();
+      successAlert();
+    });
   }
 
   deleteTask() {
@@ -221,7 +289,5 @@ export class TaskComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
-
 
 }
