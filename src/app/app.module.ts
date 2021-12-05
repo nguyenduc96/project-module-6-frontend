@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {HomeModule} from './home/home.module';
 import {DragDropModule} from '@angular/cdk/drag-drop';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
 import {AngularFireStorageModule} from '@angular/fire/storage';
 import {AngularFireModule} from '@angular/fire';
@@ -35,6 +35,7 @@ import {SharedModule} from './shared/shared.module';
     AngularFireStorageModule,
     AngularFireModule.initializeApp(environment.firebaseConfig, 'cloud'),
     SharedModule,
+    FormsModule,
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtResponse, multi: true},

@@ -23,7 +23,7 @@ export class UserService {
   }
 
   getUser(): Observable<User> {
-    return this._http.get<User>(URL + '/user/get-user');
+    return this._http.get<User>(URL + '/user/user-info');
   }
 
   changePassword(formData): Observable<User> {

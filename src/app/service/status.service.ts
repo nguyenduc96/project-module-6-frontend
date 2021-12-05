@@ -14,24 +14,33 @@ export class StatusService {
   constructor(private http: HttpClient) {
   }
 
-  getAll() {
-    return this.http.get<Status[]>(API_URL + '/status');
-  }
+  // getAll() {
+  //   return this.http.get<Status[]>(API_URL + '/status');
+  // }
 
-  saveStatus(status: Status): Observable<Status> {
-    return this.http.post<Status>(API_URL + 'status', status);
-  }
+  // saveStatus(status: Status): Observable<Status> {
+  //   return this.http.post<Status>(API_URL + 'status', status);
+  // }
 
   findById(id: number): Observable<Status> {
     return this.http.get<Status>(`${API_URL}/status/${id}`);
   }
 
-  moveStatus(id: number, status: Status): Observable<Status> {
+  // moveStatus(id: number, status: Status): Observable<Status> {
+  //   return this.http.put<Status>(`${API_URL}/status/${id}`, status);
+  // }
+
+  deleteStatus(id: number): Observable<Status> {
+    return this.http.get<Status>(`${API_URL}/status/${id}`);
+  }
+
+  editStatus(id: number, status: Status): Observable<Status> {
     return this.http.put<Status>(`${API_URL}/status/${id}`, status);
   }
 
-  deleteStatus(id: number, status: Status): Observable<Status> {
-    return this.http.get<Status>(`${API_URL}/status/${id}`);
+  addNewStatus(status: Status): Observable<Status> {
+    return this.http.post(`${API_URL}/status`, status);
   }
+
 
 }

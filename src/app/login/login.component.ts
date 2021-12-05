@@ -2,9 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {AuthenticationService} from '../service/authentication.service';
 import {Router} from '@angular/router';
 import {User} from '../model/user';
-import {FormControl, FormGroup, NgForm, Validators} from '@angular/forms';
+import {NgForm} from '@angular/forms';
 import {showPopupError, showToastSuccess} from '../note';
-import {validate} from 'codelyzer/walkerFactory/walkerFn';
 
 @Component({
   selector: 'app-login',

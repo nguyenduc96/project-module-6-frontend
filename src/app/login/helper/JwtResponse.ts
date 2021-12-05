@@ -16,7 +16,6 @@ export class JwtResponse implements HttpInterceptor {
         }
       });
     }
-
     return next.handle(request);
   }
 }

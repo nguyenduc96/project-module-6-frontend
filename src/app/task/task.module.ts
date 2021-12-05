@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { TaskRoutingModule } from './task-routing.module';
 import {TaskComponent} from './task.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 
 @NgModule({
@@ -15,7 +15,8 @@ import {ReactiveFormsModule} from '@angular/forms';
     CommonModule,
     TaskRoutingModule,
     DragDropModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
   ]
 })
 export class TaskModule { }

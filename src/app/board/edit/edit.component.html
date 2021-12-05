@@ -1,0 +1,29 @@
+<form [formGroup]="editBoardForm" (ngSubmit)="editBoardForm.valid && submit(editBoardForm)">
+  <table>
+  <tr>
+      <td><input type="text" hidden formControlName="id"></td>
+    </tr>
+    <tr>
+      <td>Title</td>
+      <td>
+        <input type="text" formControlName="title">
+        <ng-container *ngIf="
+        title.invalid && title.dirty">
+          <p *ngIf="title.errors?.required">Không được để trống</p>
+        </ng-container>
+      </td>
+    </tr>
+    <tr>
+      <td>Project</td>
+      <td>
+        <select id="project" formControlName="project">
+          <option *ngFor="let project of projects" [value]="project.id">{{project.title}}</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td><button>Submit</button></td>
+    </tr>
+  </table>
+</form>

@@ -26,9 +26,9 @@ export class RegisterComponent implements OnInit {
 
   userUniques: UserUnique[] = [];
 
-  isUsernameUnique: boolean;
+  isUsernameUnique: boolean = true;
 
-  isEmailUnique: boolean;
+  isEmailUnique: boolean = true;
 
   isConfirmPassword: boolean = true;
 
@@ -75,7 +75,7 @@ export class RegisterComponent implements OnInit {
   checkUsernameUnique() {
     this.isUsernameUnique = true;
     let username = $('#username-field').val();
-    if (username != null && username != '') {
+    if (username != null && username != '' && username != undefined) {
       for (let i = 0; i < this.userUniques.length; i++) {
         if (this.userUniques[i].username === username) {
           this.isUsernameUnique = false;
@@ -88,7 +88,7 @@ export class RegisterComponent implements OnInit {
   checkEmailUnique() {
     let email = $('#email').val();
     this.isEmailUnique = true;
-    if (email != null && email != '') {
+    if (email != null && email != '' && email != undefined) {
       for (let i = 0; i < this.userUniques.length; i++) {
         if (this.userUniques[i].email === email) {
           this.isEmailUnique = false;

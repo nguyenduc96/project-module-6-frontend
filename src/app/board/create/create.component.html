@@ -1,0 +1,32 @@
+<form #createBoardForm="ngForm" (ngSubmit)="createBoardForm.valid && submit(createBoardForm)">
+  <p *ngIf="createBoardForm.invalid">Form nhap chua dung</p>
+  <table>
+    <tr>
+      <td>Title</td>
+      <td>
+        <input type="text" required #title="ngModel"
+               name="title"
+               ngModel>
+        <ng-container *ngIf="
+        title.invalid && title.dirty || createBoardForm.submitted">
+          <p *ngIf="title.errors?.required">Không được để trống</p>
+        </ng-container>
+      </td>
+    </tr>
+    <tr>
+      <td>Project</td>
+      <td>
+        <select name="project" id="project" ngModel>
+          <option value="" disabled>Select project</option>
+          <option *ngFor="let project of projects" [value]="project.id">{{project.title}}</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        <button>Submit</button>
+      </td>
+    </tr>
+  </table>
+</form>

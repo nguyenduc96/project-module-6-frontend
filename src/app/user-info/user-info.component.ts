@@ -27,6 +27,7 @@ export class UserInfoComponent implements OnInit {
               private _authenticationService: AuthenticationService,
               private _userService: UserService,
               private _router: Router) {
+    this._authenticationService.currentUser.subscribe(us => this.currentUser = us);
     this.getUser();
   }
 
@@ -78,6 +79,4 @@ export class UserInfoComponent implements OnInit {
         }
       });
   }
-
-
 }

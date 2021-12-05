@@ -16,15 +16,9 @@ const routes: Routes = [
   },
   {
     path: '',
+    canActivate: [AuthGuard],
     component: HomeComponent,
     loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
-  },
-  {
-    path: 'status',
-    loadChildren: () => import('./status/status.module').then(module => module.StatusModule)
-  }, {
-    path: 'tasks',
-    loadChildren: () => import('./task/task.module').then(module => (module.TaskModule))
   }
 ];
 
