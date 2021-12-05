@@ -20,7 +20,15 @@ export class DetailComponent implements OnInit {
 
   id: number;
 
+  newBoard: FormGroup = new FormGroup({
+    id: new FormControl(),
+    title: new FormControl(),
+    project: new FormControl(),
+  });
+
   constructor(private projectService: ProjectService,
+              private activatedRouter: ActivatedRoute,
+              private boardService: BoardService) {
               private activatedRouter: ActivatedRoute,
               private router: Router,
               private listProjectService: ListProjectService,
@@ -70,6 +78,38 @@ export class DetailComponent implements OnInit {
       showToastSuccess('Sửa thành công');
     }, error => {
       showPopupError('Sửa thất bại', 'Bạn không có quyền sửa dự án này');
+    });
+  }
+
+  saveBoard() {
+    this.newBoard.get('project').setValue({ id: this.project.id});
+    this.boardService.create(this.newBoard.value).subscribe(() => {
+      this.getProject();
+      showToastSuccess('Success!');
+      this.newBoard = new FormGroup({
+        id: new FormControl(),
+        title: new FormControl(),
+        project: new FormControl(),
+      });
+    });
+
+  }
+
+  showBoardDetail(id: number) {
+    this.boardService.getBoardById(id).subscribe(data => {
+      this.newBoard = new FormGroup({
+        id: new FormControl(data.id),
+        title: new FormControl(data.title),
+        project: new FormControl({id: this.project.id}),
+      });
+    });
+  }
+
+
+  deleteBoard() {
+    this.boardService.delete(this.newBoard.get('id').value).subscribe(() => {
+      this.getProject();
+      showToastSuccess('Delete Board!');
     });
   }
 }

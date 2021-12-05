@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Board} from '../model/board';
 import {FormControl, FormGroup} from '@angular/forms';
-import {BoardService} from '../service/board.service';
+
 import {TaskService} from '../service/task.service';
 import {StatusService} from '../service/status.service';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
@@ -13,6 +13,8 @@ import {LabelService} from '../service/label.service';
 import {ColorService} from '../service/color.service';
 import {Label} from '../model/label';
 import {Color} from '../model/color';
+import {ActivatedRoute} from '@angular/router';
+import {BoardService} from '../service/board/board.service';
 
 declare var $: any;
 
@@ -53,13 +55,17 @@ export class TaskComponent implements OnInit {
               private taskService: TaskService,
               private statusService: StatusService,
               private labelService: LabelService,
-              private colorService: ColorService) {
-    this.getBoard();
+              private colorService: ColorService,
+              private activatedRoute: ActivatedRoute) {
+    this.activatedRoute.paramMap.subscribe(param => {
+      const id = +param.get('id');
+      this.getBoard(id);
+    });
     this.colorService.getAll().subscribe(data => {this.colors = data; });
   }
 
-  private getBoard() {
-    this.boardService.getBoardById(1).subscribe(data => {
+  private getBoard(id: number) {
+    this.boardService.getBoardById(id).subscribe(data => {
       this.board = data;
       this.getLabels();
     }, error => {

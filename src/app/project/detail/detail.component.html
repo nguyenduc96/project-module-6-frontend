@@ -33,10 +33,21 @@
     Hiện tại dự án chưa có bảng nào
   </h3>
 </div>
-<div>
-  <div *ngFor="let b of project.boards">
-    <p><a routerLink="/tasks/list"></a>{{b.title}}</p>
+<div class="row" *ngIf="project.boards.length > 0">
+  <div class="text-center"
+       *ngFor="let b of project.boards"
+       style="margin: 50px; width: 200px; height: 70px; background-color: rgba(227,122,184,0.39)"
+      >
+    <a style="text-decoration: none;position: absolute; padding-top: 18px" routerLink="/tasks/list/{{b.id}}">{{b.title}}
+    </a>
+   <button style="position: absolute; margin-top: 70px" data-bs-toggle="modal" data-bs-target="#editBoard" (click)="showBoardDetail(b.id)">Edit</button>
   </div>
+  <div class="text-center"
+       style="margin: 50px;width: 200px; height: 70px; background-color: rgba(132,154,179,0.39)"
+       data-bs-toggle="modal" data-bs-target="#addNewBoard">
+    Add new board
+  </div>
+  <div></div>
 </div>
 
 <!-- Modal -->
@@ -113,6 +124,55 @@
             </div>
           </form>
         </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Modal Add New Board -->
+<div class="modal fade" id="addNewBoard" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add new Board</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form [formGroup]="newBoard" (ngSubmit)="saveBoard()">
+        <div class="modal-body">
+          <table>
+            <tr>
+              <td>Title: </td>
+              <td><input type="text" formControlName="title"></td>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Edit & Delete Board-->
+<div class="modal fade" id="editBoard" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="">Edit Board</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form [formGroup]="newBoard" (ngSubmit)="saveBoard()">
+      <div class="modal-body">
+        <input type="text" formControlName="title">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="deleteBoard()">Delete</button>
+        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save Change</button>
+      </div>
+      </form>
     </div>
   </div>
 </div>
