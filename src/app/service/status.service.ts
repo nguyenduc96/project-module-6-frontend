@@ -26,7 +26,7 @@ export class StatusService {
     return this.http.get<Status>(`${API_URL}/status/${id}`);
   }
 
-  updateStatus(id: number, status: Status): Observable<Status> {
+  moveStatus(id: number, status: Status): Observable<Status> {
     return this.http.put<Status>(`${API_URL}/status/${id}`, status);
   }
 

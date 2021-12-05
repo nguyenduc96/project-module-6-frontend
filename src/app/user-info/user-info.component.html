@@ -1,2 +1,44 @@
-<app-navbar></app-navbar>
-<h1>Day la info</h1>
+<div class="row" style="background-image: url(assets/static/login/images/bg.jpg); height: 100%">
+  <div class="col-2"></div>
+  <div class="col-3" style="align-items: baseline; border: 1px solid red" >
+    <img style="width: 250px; height: 250px; border-radius: 100%" [src]="user?.avatar" alt="Day la anh dai dien">
+    <label for="file" style="color: red" title="Đổi ảnh đại diện"><i style="padding-top: 80%"  class="ti-pencil"></i>
+    Đổi ảnh đại diện
+    </label>
+  </div>
+  <input type="file"
+         id="file"
+         #userPhoto
+         (change)="onFileSelected($event)"
+         name="image"
+         autocomplete="off"
+         hidden
+  />
+  <div class="col-6">
+   <table>
+     <tr>
+       <td>
+         <div>
+           Tên đăng nhập
+         </div>
+       </td>
+       <td>
+         <div>
+           : {{user?.username}}
+         </div>
+       </td>
+     </tr>
+     <tr>
+       <td>
+         <div>
+           Email
+         </div>
+       </td>
+     <td>
+       <div>
+         : {{user?.email}}
+       </div>
+     </td>
+   </table>
+  </div>
+</div>
