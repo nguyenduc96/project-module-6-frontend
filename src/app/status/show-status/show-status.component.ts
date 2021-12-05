@@ -15,14 +15,14 @@ export class ShowStatusComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getAll();
+
   }
 
-  private getAll() {
-    this.statusService.getAll().subscribe(status => {
-      this.status = status;
-    });
-  }
+  // private getAll() {
+  //   this.statusService.getAll().subscribe(status => {
+  //     this.status = status;
+  //   });
+  // }
 
   drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.status, event.previousIndex, event.currentIndex);

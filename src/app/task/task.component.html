@@ -1,78 +1,282 @@
-TASK1
+<!--<div cdkDropList cdkDropListOrientation="horizontal"  (cdkDropListDropped)="dropStatus($event)">-->
+<!--  <div class="example-container border border-dark" cdkDrag *ngFor="let status of board.statuses">-->
+<!--    <div class="row text-center">-->
+<!--      <h2>{{status.title}}</h2>-->
+<!--    </div>-->
+<!--    <div-->
+<!--      cdkDropList-->
+<!--      [id]="status.id.toString()"-->
+<!--      [cdkDropListData]="status.tasks"-->
+<!--      [cdkDropListConnectedTo]="listConnectTo()"-->
+<!--      class="example-list"-->
+<!--      (cdkDropListDropped)="dropTask($event)">-->
+<!--      <div class="example-box" *ngFor="let task of status.tasks" cdkDrag>-->
+<!--        <div>{{task.id}}</div><div>{{task.title}}</div>-->
+<!--      </div>-->
+<!--      <div class="example-box row" [hidden]="this.statusId != status.id || !isShowAddBox">-->
+<!--        <div class="row">-->
+<!--          <form [formGroup]="newTask" (ngSubmit)="addNewTask()" >-->
+<!--            <div class="row-3" style="height: 150px; padding: 20px" >-->
+<!--              <input type="text" formControlName="title" style="width: 100%; height: 100%">-->
+<!--            </div>-->
+<!--            <div class="row float-end" >-->
+<!--              <div>-->
+<!--                <button type="submit" class="btn btn-primary" style="width: 50px ;height: 50px" (click)="showAddBox()">Add</button>-->
+<!--                <button type="button" class="btn btn-danger" style="width: 50px ;height: 50px" (click)="showAddBox()">x</button>-->
+<!--              </div>-->
+<!--            </div>-->
 
-<div cdkDropList cdkDropListOrientation="horizontal"  (cdkDropListDropped)="dropStatus($event)">
-  <div class="example-container border border-dark" cdkDrag *ngFor="let status of board.statuses">
-    <div class="row text-center">
-      <h2>{{status.title}}</h2>
+<!--          </form>-->
+<!--        </div>-->
+
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="float-end"><button class="btn btn-primary float-end "-->
+<!--                                   style="margin-right: 30px;"-->
+<!--                                   (click)="setStatusId(status.id)">{{(isShowAddBox && status.id == this.statusId) ? '-' : '+'}}-->
+<!--    </button>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+<!--test-->
+
+
+<div class="board" cdkDropList cdkDropListOrientation="horizontal"
+     (cdkDropListDropped)="dropStatus($event)"
+     style="max-height: 90%;overflow-y: hidden;">
+  <div class="container " style=" position: relative; top: -80px;
+        background-color: #d5caca;border-radius: 12px"
+       cdkDrag *ngFor="let status of board.statuses, let i = index">
+
+    <div class="insideContainer border-dark">
+      <div>
+        <h2 style="text-align: left">
+          <span style="float: left; font-size: 20px" [hidden]="!isShowEditTitle(status.id)">{{status.title}}</span>
+          <input style="width: 100%;" type="text"
+                 [hidden]="isShowEditTitle(status.id)"
+                 id="titleStatus{{status.id}}"
+                 [value]="status.title"
+                 (change)="saveEditStatus(i)"
+                 (blur)="isShowEditTitle(-1)">
+        </h2>
+        <div style="text-align: right">
+          <div class="btn-group dropend">
+            <p class="btn btn-outline" style="border-radius: 10px;padding-bottom: 3px" data-bs-toggle="dropdown"
+               aria-expanded="false">
+              <i class="ti-more"></i>
+            </p>
+            <ul class="dropdown-menu" style="border-radius: 10px">
+              <li><label style="border-radius: 6px" class="dropdown-item" for="titleStatus{{status.id}}"
+                         (click)="showEditTitleStatus(status.id)">Change name</label></li>
+              <li><label style="border-radius: 6px" class="dropdown-item"
+                         (click)="deleteStatus(status.id)">Delete</label></li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
+
     <div
       cdkDropList
       [id]="status.id.toString()"
       [cdkDropListData]="status.tasks"
       [cdkDropListConnectedTo]="listConnectTo()"
-      class="example-list"
+      class="example-list "
+      style="max-height:520px;overflow-y: auto; border:none;background-color: #d5caca "
+      [hidden]="!(status.tasks.length > 0 || isShowTaskAddBox && status.id == this.statusId)"
       (cdkDropListDropped)="dropTask($event)">
-      <div class="example-box" *ngFor="let task of status.tasks" cdkDrag>
-        <div>{{task.id}}</div><div>{{task.title}}</div>
+      <div style="margin-left: 2px; background-color: rgba(255,255,255,0.9) " class="addTextArea example-box"
+           *ngFor="let task of status.tasks" cdkDrag
+           data-bs-toggle="modal" data-bs-target="#taskDetail" (click)="showTaskDetail(task.id)">
+        {{task.title}}
       </div>
-      <div class="example-box row" [hidden]="this.statusId != status.id || !isShowAddBox">
+
+
+    </div>
+    <div class="example-list" style="margin: 0px 0px 3px 1px;border-radius: 5px; width: 212px"
+         [hidden]="this.statusId != status.id || !isShowTaskAddBox">
+      <div>
+
+        <form [formGroup]="newTask" (ngSubmit)="addNewTask(i)">
+<!--          <p style="font-size: 17px;margin: 5px 0px 0px 10px">Add New Card</p>-->
+          <div class="row-3" style="padding: 5px 0px 5px 4px;margin-right: 4px">
+            <input placeholder="
+Enter tag title..." class="form-control" type="text" formControlName="title" style="width: 100%">
+          </div>
+          <div class="row float-end">
+            <div class="addFormCard" style="padding-bottom: 10px">
+              <button type="submit" class="btn btn-primary" (click)="showTaskAddBox()"
+                      style="border-radius: 7px; margin-top: 2px">Add
+              </button>
+              <button type="button" class="btn btn-danger" (click)="showTaskAddBox()"
+                      style="border-radius: 7px; margin-top: 2px">x
+              </button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+
+
+    <div class="addCard" style="margin-right: 10px;border-radius: 10px; margin: 5px 0px 0px 7px; font-size: 16px"
+         (click)="setStatusId(status.id)"
+         [hidden]="isShowTaskAddBox && this.statusId == status.id">+ Add another card
+    </div>
+
+  </div>
+  <div class="container"
+       style=" border-radius: 11px;width: 235px; position: relative; top: -80px; background-color: #d5caca">
+    <div class="example-list" style="width: 215px; border-radius: 10px">
+      <div class="example-box row" [hidden]="!isShowAddStatusBox" style="height: 137px;background-color: #ece6e6">
         <div class="row">
-          <form [formGroup]="newTask" (ngSubmit)="addNewTask()" >
-            <div class="row" style="height: 150px; padding: 20px" >
-              <input type="text" formControlName="title" style="width: 100%; height: 100%">
+          <form [formGroup]="newStatus" (ngSubmit)="addNewStatus()" style="height: 150px">
+
+
+            <div>
+              <p style="font-size: 15px; margin-left: 5px">Add New Status</p>
+              <input type="text" class="form-control" formControlName="title"
+                     style="width: 115%; height: 36px;position: relative;top: -10px">
+              <button type="submit" class="btn btn-primary"
+                      style="margin-left: 1px;height: 30px;padding: 3px 8px 10px 8px" (click)="showAddStatusForm()">Add
+              </button>
+              <button type="button" class="btn btn-danger" style="height: 30px;padding: 2px 10px 12px 10px"
+                      (click)="showAddStatusForm()">x
+              </button>
             </div>
-            <div class="row float-end" >
-              <div>
-                <button type="submit" class="btn btn-primary" style="width: 50px ;height: 50px" (click)="showAddBox()">Add</button>
-                <button type="button" class="btn btn-danger" style="width: 50px ;height: 50px" (click)="showAddBox()">x</button>
-              </div>
-            </div>
+
 
           </form>
         </div>
-
+      </div>
+      <div style="background-color: #f6f1f1" class="example-box" [hidden]="isShowAddStatusBox"
+           (click)="showAddStatusForm()">
+        <div style="font-size: 17px"> + Add new status</div>
       </div>
     </div>
-    <div class="float-end"><button class="btn btn-primary float-end "
-                                   style="margin-right: 30px;"
-                                   (click)="setStatusId(status.id)">{{(isShowAddBox && status.id == this.statusId) ? '-' : '+'}}
-    </button>
-    </div>
   </div>
-  <!--  <div class="example-box" *ngFor="let timePeriod of timePeriods" cdkDrag>{{timePeriod}}</div>-->
+
 </div>
 
-<!-- Modal -->
-<!--<div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">-->
-<!--  <div class="modal-dialog">-->
-<!--    <div class="modal-content">-->
-<!--      <div class="modal-header">-->
-<!--        <h5 class="modal-title" id="exampleModalLabel">Task Information</h5>-->
-<!--        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
-<!--      </div>-->
 
-<!--      <div class="modal-body">-->
-<!--       <table>-->
-<!--         <tr>-->
-<!--           <td>Title: </td>-->
-<!--           <td><input type="text" formControlName="title"></td>-->
-<!--         </tr>-->
-<!--         <tr>-->
-<!--           <td>Description: </td>-->
-<!--           <td><input type="text" formControlName="description"></td>-->
-<!--         </tr>-->
-<!--         <tr>-->
-<!--           <td>Deadline: </td>-->
-<!--           <td><input type="text" formControlName="deadline"></td>-->
-<!--         </tr>-->
-<!--       </table>-->
+<!--modal-->
+
+<div class="modal fade" id="taskDetail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class=" modal-dialog modal-lg">
+    <div class="modal-content" style="border-radius: 10px; background-color: rgba(241,239,239,0.99)">
+      <div class="modal-header">
+        <div class="modal-title" id="exampleModalLabel">
+          <h5 style="margin: 13px 0px 0px 10px;font-size: 30px" [hidden]="isShowTitleInput" (click)="showTitleEdit()">
+            <label for="inputTitle">{{taskDetail.title}}</label></h5>
+          <h5><input style="border: 1px solid rgba(183,178,178,0.65);border-radius: 10px; padding: 8px"
+                     [hidden]="!isShowTitleInput" type="text" id="inputTitle" (change)="editTaskDetail()"
+                     [(ngModel)]="taskDetail.title" (blur)="showTitleEdit()"></h5>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="margin-bottom: 10px;border-radius: 10px; padding-left: 30px;min-height:300px ">
+        <!--          <tr>-->
+        <!--              <span  *ngFor="let label of taskDetail.labels"-->
+        <!--                     style="width: 100px; height: 40px; font-size: 20px; font-weight: lighter; margin-left: 20px; padding: 7px; color: aliceblue"-->
+        <!--                     [ngStyle]="{'background-color': label.color.name}" >{{label.content}}-->
+        <!--              </span>-->
+        <!--          </tr>-->
+        <div>
+          <div>
+            <tr style="width: 100%">
+              <td><i class="ti-menu" style="font-size: 20px;margin: 0px 12px 10px 0px">&nbsp;Description</i>
+                <button id="add" (click)="showDescriptionEdit()" style="padding: 2px 9px 2px 9px;margin-bottom: 5px;border-radius: 8px;
+                       background-color: rgba(243,237,237,0.96); border: 1px solid rgb(231,221,221)"
+                        onMouseOut="this.style.backgroundColor = 'rgba(243,237,237,0.96)'"
+                        onMouseOver="this.style.backgroundColor = 'rgba(183,178,178,0.65)'">Add
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-left: 20px">
+                <label for="inputDescription" [hidden]="isShowDescriptionInput"
+                       (click)="showDescriptionEdit()">
+                  {{taskDetail.description != null ? taskDetail.description : '...'}}
+                </label>
+                <input style="width: 300px;height: 30px"
+                       class="form-control"
+                       [hidden]="!isShowDescriptionInput" type="text"
+                       id="inputDescription" (change)="editTaskDetail()"
+                       [(ngModel)]="taskDetail.description" (blur)="showDescriptionEdit()">
+
+              </td>
+            </tr>
+            <hr>
+          </div>
+          <div >
+            <tr style="width: 100%">
+              <td><i class="ti-pulse" style="font-size: 20px;margin: 0px 12px 10px 0px">&nbsp;Deadline</i>
+
+                <!--                <label for="inputDeadline" [hidden]="isShowDeadlineInput"-->
+                <!--                       (click)="showDeadlineEdit()">-->
+                <!--                  {{taskDetail.deadline != null ? taskDetail.deadline : '...'}}-->
+                <!--                </label>-->
+                <button (click)="showDeadlineEdit()" style="padding: 2px 9px 2px 9px;margin-bottom: 5px;border-radius: 8px;
+                       background-color: rgba(243,237,237,0.96); border: 1px solid rgb(231,221,221)"
+                        onMouseOut="this.style.backgroundColor = 'rgba(243,237,237,0.96)'"
+                        onMouseOver="this.style.backgroundColor = 'rgba(183,178,178,0.65)'">Add
+                </button>
+              </td>
+                <!--                <div [hidden]="!isShowDeadlineInput">-->
+                <!--                  <input type="text" id="inputDeadline" (change)="editTaskDetail()"-->
+                <!--                         [(ngModel)]="taskDetail.deadline"-->
+                <!--                         (blur)="showDeadlineEdit()">-->
+
+            </tr>
+            <tr>
+              <td style="padding-left: 20px">
+                <label for="inputDeadline" [hidden]="isShowDeadlineInput"
+                (click)="showDeadlineEdit()">{{taskDetail.deadline != null ? taskDetail.deadline : 'edit'}}
+                </label>
+                <input style="width: 300px;height: 30px"
+                       class="form-control"
+                       [hidden]="!isShowDeadlineInput" type="text"
+                       id="inputDeadline" (change)="editTaskDetail()"
+                       [(ngModel)]="taskDetail.deadline" (blur)="showDeadlineEdit()">
+
+
+              </td>
+            </tr>
+          </div>
+
+
+        </div>
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="deleteTask()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--template-->
+<!--<div class="board">-->
+<!--<div class="container" >-->
+<!--  <div class="insideContainer">-->
+<!--    <h1 class="cardHeading">To Do<span><i class="fas fa-ellipsis-h"></i></span>ss</h1>-->
+<!--    <div class="main">-->
+<!--      <div class="addTextArea"> Learn HTML-->
+<!--        <i class="fas fa-pencil-alt"></i>-->
 <!--      </div>-->
-<!--      <div class="modal-footer">-->
-<!--        <button type="submit" class="btn btn-primary">Save</button>-->
-<!--        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>-->
+<!--      <div class="addTextArea"> Learn CSS-->
+<!--        <i class="fas fa-pencil-alt"></i>-->
+<!--      </div>-->
+<!--      <div class="addTextArea"> Learn JavaScript-->
+<!--        <i class="fas fa-pencil-alt"></i>-->
 <!--      </div>-->
 <!--    </div>-->
 <!--  </div>-->
+<!--  <div class="addCard">+ Add another card</div>-->
+<!--</div>-->
 <!--</div>-->
 
 

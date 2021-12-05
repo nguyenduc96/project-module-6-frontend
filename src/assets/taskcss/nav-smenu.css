@@ -1,0 +1,112 @@
+/* NavBar */
+
+.navbar{
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    height: 50px;
+    padding: 8px 20px;
+    color: white;
+    background-color: rgba( 64, 144, 172, 0.65 );
+}
+
+.navbar > * {
+    display: flex;
+    flex-direction: row;
+    width: 300px;
+    align-items: center;
+}
+.navbar .menu{
+    justify-content: flex-start;
+}
+
+.navbar ul li{
+    list-style: none;
+}
+
+.navbar .menu > * , .navbar .action-button > *{
+    display: inline-block;
+    background-color: rgba( 64, 144, 172, 1 );
+    padding: 8px;
+    margin: 0px 4px;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.navbar .menu > *:hover{
+    background-color: rgb(64, 144, 172, 0.65);
+    color: rgb(255, 255, 255, 0.65);
+}
+
+.navbar .menu .menu-input:hover{
+    background-color: rgba( 64, 144, 172, 1 );
+} 
+.navbar .action-button > *:hover{
+    background-color: rgb(64, 144, 172, 0.65);
+    color: rgb(255, 255, 255, 0.65);
+}
+
+.navbar .menu .menu-button i.fa-th-list{
+    margin-right: 4px;
+}
+
+.navbar .menu .menu-input{
+    padding: 0;
+}
+
+.navbar .menu .menu-input input{
+    font-size: 16px;
+    width: 120px;
+    padding: 4px 10px;
+    color: black;
+    background-color: rgb( 64, 144, 172);
+    border: none;
+    outline: none;
+    border-radius: 2px;
+    line-height: 1.5;
+}
+
+.navbar .menu .menu-input input:focus{
+    background-color: white;
+}
+
+.navbar .app-title{
+    justify-content: space-around;
+    font-size: 18px;
+}
+
+.navbar .action-button{
+    justify-content: flex-end;
+}
+
+/* ----------------------------------------------------------------------------------------- */
+
+/* Second Menu Show */
+
+.second-menu{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    position: fixed;
+    top: 50px;
+    right: 0;
+    left: 0;
+    height: 40px;
+    padding: 0 20px;
+    background-color: rgba( 128, 128, 128, 0.3);
+    cursor: pointer;
+}
+
+.second-menu .second-menu-show i.fa-ellipsis-v{
+    margin-right: 4px;
+}
+
+.second-menu .second-menu-show:hover{
+    color: rgb(197, 205, 198);
+   
+}
