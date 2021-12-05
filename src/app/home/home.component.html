@@ -1,28 +1,26 @@
-<div class="container-scroller">
+
+
+
+<div class="container-scroller" style="background-image: url('assets/background.jpeg'); max-height: 100%">
   <!--  navbar-->
-  <ng-container *ngIf="currentUser!= null" >
+  <ng-container *ngIf="currentUser!= null" style="background:none">
     <app-navbar></app-navbar>
   </ng-container>
 
 
-  <div class="container-fluid page-body-wrapper">
+  <div class="container-fluid page-body-wrapper" >
     <!--  sidebar-->
-    <nav class="sidebar sidebar-offcanvas" id="sidebar">
+    <nav class="sidebar sidebar-offcanvas" id="sidebar" style="background: none">
       <app-sidebar></app-sidebar>
     </nav>
 
 
 
-    <div class="main-panel">
-    <!--    content-->
-    <div class="content-wrapper">
-<!--    <router-outlet></router-outlet>-->
-    <app-task></app-task>
-    </div>
+    <div class="main-panel" style="width: 100%; background: none" >
+<!--    <div class="content-wrapper" style="background: none;width: 92%; max-height: 95%">-->
+    <router-outlet></router-outlet>
+<!--    </div>-->
     <!--footer-->
-    <ng-container *ngIf="currentUser!= null">
-      <app-footer></app-footer>
-    </ng-container>
   </div>
   </div>
 </div>

@@ -14,7 +14,6 @@ import {TaskComponent} from '../task/task.component';
 
 @NgModule({
   declarations: [
-    HomeComponent,
   ],
   imports: [
     CommonModule,
@@ -22,7 +21,6 @@ import {TaskComponent} from '../task/task.component';
     UserInfoModule,
     RouterModule,
     SharedModule,
-
   ]
 })
 export class HomeModule { }

@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+  import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Task} from '../model/task';
 import {Observable} from 'rxjs';
@@ -20,5 +20,17 @@ export class TaskService {
 
   addNew(task: Task): Observable<Task> {
     return this.http.post<Task>(API_URL, task);
+  }
+
+  findById(id: number): Observable<Task> {
+    return this.http.get<Task>(API_URL + `/${id}`);
+  }
+
+  editTask(id: number, task: Task): Observable<Task> {
+    return this.http.put<Task>(API_URL + `/${id}`, task);
+  }
+
+  deleteTask(id: number): Observable<any> {
+    return this.http.delete<any>(API_URL + `/${id}`);
   }
 }

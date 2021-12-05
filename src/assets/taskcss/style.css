@@ -1,0 +1,124 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    background: url(./bg-3.jpg) no-repeat fixed;   
+    background-size: cover;
+}
+
+/* Main-Board */
+
+.board {
+    display: flex; 
+    flex-basis: 100%;
+    flex-wrap: nowrap;
+    height: 97vh;
+    overflow: auto;
+    margin-top: 20px;
+    padding: 84px 20px;
+}
+
+.board .container {
+    align-self: flex-start;
+    width: 15rem;
+    margin-right: 10px;
+    padding: 10px 10px;
+    border-radius: 4px;
+    background: rgba(222, 230, 231, 0.95);
+}
+
+.container .insideContainer .cardHeading {
+    display: flex;
+    justify-content: space-between;
+    padding: 0px 4px;
+    font-size: 14px;
+    color: rgb(85,85,85);
+}
+
+.container .insideContainer .main {
+    margin: 5px 0;
+}
+
+.cardHeading .fa-ellipsis-h {
+    font-size: 8px;
+    cursor: pointer;
+}
+
+.cardHeading .fa-ellipsis-h:hover{
+    color: rgb(144, 143, 143, 0.9);
+}
+
+.addTextArea{
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    padding: 10px;
+    width: 210px;
+    height: 33px;
+    background-color: white;
+    border-radius: 4px;
+    border: none;
+    outline: none;
+    color: #555;
+    cursor: pointer;
+
+}
+
+.addTextArea:hover{
+   opacity: 0.7;
+}
+
+.addTextArea .fa-pencil-alt{
+    display: none;
+}
+
+.addTextArea:hover .fa-pencil-alt{
+    display: block;
+    color: rgba(85,85,85,0.7);
+}
+
+.addTextArea:hover .fa-pencil-alt:hover{
+    color: rgba(85,85,85,0.5);
+}
+
+
+.main .addFormCard .inputField{
+    width: 210px;
+    height: 70px;
+    padding: 10px;
+    color: black;
+    font-size: 14px;
+    font-weight: 300;
+    border: 1px solid lightgray;
+    border-radius: 4px;
+    outline: none;
+    resize: none;
+    cursor: text;
+    line-height: 15px;
+}
+
+.main .addFormCard .inputField:hover{
+    background-color: white;
+}
+
+.addCard{
+    font-size: 14px;
+    color: rgb(85,85,85);
+    font-size: 14px;
+    width: 13rem;
+    font-weight: 300;
+    cursor: pointer;
+}
+
+.addCard:hover{
+    color: rgba(85,85,85,0.65);
+}
+
+.addCardAction{
+    margin: 10px 0px;
+}

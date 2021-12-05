@@ -8,11 +8,14 @@ import {HttpClientModule} from '@angular/common/http';
 import {HomeModule} from './home/home.module';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {ReactiveFormsModule} from '@angular/forms';
+import {HomeComponent} from './home/home.component';
+import {SharedModule} from './shared/shared.module';
 
 
 @NgModule({
   declarations: [
     AppComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -22,6 +25,7 @@ import {ReactiveFormsModule} from '@angular/forms';
     HomeModule,
     DragDropModule,
     ReactiveFormsModule,
+    SharedModule,
   ],
   providers: [],
   exports: [
