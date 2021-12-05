@@ -36,4 +36,12 @@ export class ProjectService {
   addMember(projectId: number, user: User): Observable<Project> {
     return this.http.put<Project>(`${API_URL}/${PROJECTS}/${projectId}/add-user`, user);
   };
+
+  removeProject(id: number): Observable<any> {
+    return this.http.delete<any>(`${API_URL}/${PROJECTS}/${id}`);
+  }
+
+  updateProject(id:number, project: Project): Observable<Project> {
+    return this.http.put<Project>(`${API_URL}/${PROJECTS}/${id}`, project);
+  }
 }

@@ -46,9 +46,9 @@
     <div class="collapse" id="project-of-me">
       <ul class="nav flex-column sub-menu" style="border-radius: 0px 0px 10px 10px">
         <ng-container *ngFor="let p of myProjects">
-          <li class="nav-item"><a class="nav-link" routerLink="/projects/{{p.id}}"> {{p.title}} </a></li>
+          <li class="nav-item"> <a class="nav-link" routerLink="/projects/{{p.id}}"> {{p.title}}</a></li>
         </ng-container>
-        <li class="nav-item"><a class="nav-link" routerLink="/projects/create"> Thêm dự án </a></li>
+        <li class="nav-item"> <a class="nav-link" routerLink="/projects/create"> Thêm dự án </a></li>
       </ul>
     </div>
   </li>
