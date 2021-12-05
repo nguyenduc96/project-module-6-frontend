@@ -4,6 +4,7 @@ import {Project} from '../model/project';
 import {ProjectService} from '../service/project/project.service';
 import {showToastSuccess} from '../note';
 import {SendProjectService} from '../SendProjectService';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-project',
@@ -15,7 +16,8 @@ export class ProjectComponent implements OnInit {
 
 
   constructor(private projectService: ProjectService,
-              private sendProject: SendProjectService) { }
+              private sendProject: SendProjectService,
+              private router: Router) { }
 
   ngOnInit() {
   }
@@ -25,6 +27,7 @@ export class ProjectComponent implements OnInit {
     this.projectService.create(this.project).subscribe(
       (response) => {
         let title = 'Thêm dự án thành công'
+        this.router.navigateByUrl('/home')
         this.project = response;
         this.sendProject.sendProject(this.project);
         showToastSuccess(title);
