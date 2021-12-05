@@ -1,0 +1,41 @@
+<h1>Thông tin dự án : {{project?.title}}</h1>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+  Thêm người vào dự án
+</button>
+<div *ngIf="project.boards.length == 0">
+  <h3 class="card-title">
+    Hiện tại dự án chưa có bảng nào
+  </h3>
+</div>
+<div>
+  <div *ngFor="let b of project.boards">
+    <p><a routerLink="/tasks/list"></a>{{b.title}}</p>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Thêm người vào dự án</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form #formAddUser='ngForm' (ngSubmit)="addUser(formAddUser)">
+        <div class="modal-body">
+
+          <div>
+            <label for="username">Nhập tên thành viên</label>
+            <input type="text" id="username" placeholder="Nhập tên thành viên" ngModel name="username">
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Thêm vào</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

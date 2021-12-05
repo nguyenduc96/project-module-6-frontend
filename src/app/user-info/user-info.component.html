@@ -1,11 +1,40 @@
-<div class="row" style="background-image: url(assets/static/login/images/bg.jpg); height: 100%">
+<div class="row" style=" height: 100%">
   <div class="col-2"></div>
-  <div class="col-3" style="align-items: baseline; border: 1px solid red" >
-    <img style="width: 250px; height: 250px; border-radius: 100%" [src]="user?.avatar" alt="Day la anh dai dien">
+  <div class="col-6" style="align-items: baseline" >
+    <img style="width: 200px; height: 200px; border-radius: 100%" [src]="user?.avatar" alt="Day la anh dai dien">
     <label for="file" style="color: red" title="Đổi ảnh đại diện"><i style="padding-top: 80%"  class="ti-pencil"></i>
     Đổi ảnh đại diện
     </label>
+    <div style="margin-top: 3%">
+      <table class="table table-success table-striped">
+        <tr>
+          <td scope="col">
+            <div>
+              Tên đăng nhập :
+            </div>
+          </td>
+          <td scope="col">
+            <div>
+              {{user?.username}}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td scope="col">
+            <div>
+              Email :
+            </div>
+          </td>
+          <td scope="col">
+            <div>
+              {{user?.email}}
+            </div>
+          </td>
+      </table>
+    </div>
   </div>
+
+</div>
   <input type="file"
          id="file"
          #userPhoto
@@ -14,31 +43,3 @@
          autocomplete="off"
          hidden
   />
-  <div class="col-6">
-   <table>
-     <tr>
-       <td>
-         <div>
-           Tên đăng nhập
-         </div>
-       </td>
-       <td>
-         <div>
-           : {{user?.username}}
-         </div>
-       </td>
-     </tr>
-     <tr>
-       <td>
-         <div>
-           Email
-         </div>
-       </td>
-     <td>
-       <div>
-         : {{user?.email}}
-       </div>
-     </td>
-   </table>
-  </div>
-</div>

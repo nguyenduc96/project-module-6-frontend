@@ -1,0 +1,23 @@
+
+<div class="row justify-content-center">
+  <div class="col-md-6" style="background-color: rgba(138,121,138,0.51)">
+    <h1>Thêm dự án mới</h1>
+    <form #formCreateProject='ngForm' (ngSubmit)="createProject(formCreateProject)">
+      <div class="form-group">
+        <label for="title">Tên dự án</label>
+        <input style="background-color: rgba(182,146,245,0.4)" type="text" class="form-control" ngModel name="title" id="title" placeholder="Tên dự án">
+      </div>
+      <div>
+        <label for="type">Loại dự án</label>
+        <select style="background-color: rgba(182,146,245,0.4)" class="form-control" id="type" name="type" ngModel>
+          <option style="background-color: rgba(9,8,17,0.4)" class="form-control" value="1" selected>Dự án cá nhân</option>
+          <option style="background-color: rgba(9,8,17,0.4)" class="form-control" value="2">Dự án nhóm</option>
+        </select>
+      </div>
+      <div style="margin-top: 4%">
+        <button type="button" class="btn btn-secondary" routerLink="/home">Hủy</button>
+        <button type="submit" class="btn btn-primary">Thêm mới</button>
+      </div>
+    </form>
+  </div>
+</div>
