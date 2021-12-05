@@ -1,14 +1,18 @@
 <div class="row">
   <h2>Dự án</h2>
+  <div>
   <ng-container *ngFor="let p of projects">
     <div class="col">
       <h5 class="card-title"><a style="text-decoration: none" routerLink="/projects/{{p.id}}">{{p.title}}</a></h5>
     </div>
   </ng-container>
+  </div>
+  <div>
   <h2>Dự án của tôi</h2>
   <ng-container *ngFor="let p of myProjects">
     <div class="col">
       <h5 class="card-title"><a style="text-decoration: none" routerLink="/projects/{{p.id}}">{{p.title}}</a></h5>
     </div>
   </ng-container>
+  </div>
 </div>
