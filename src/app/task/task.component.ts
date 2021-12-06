@@ -159,13 +159,13 @@ export class TaskComponent implements OnInit {
   addNewTask(i: number) {
     this.newTask.get('status').setValue({id: this.statusId});
     this.newTask.get('position').setValue(this.board.statuses[i].tasks.length);
-    this.taskService.addNew(this.newTask.value).subscribe(data => {console.log(data); this.getBoard(); });
+    this.taskService.addNew(this.newTask.value).subscribe(data => {console.log(data); this.getBoard(this.board.id); });
     this.newTask = new FormGroup({
       title: new FormControl(),
       position: new FormControl(99999),
       status:  new FormControl(),
     });
-    this.getBoard();
+    this.getBoard(this.board.id);
     successAlert();
   }
 
@@ -200,19 +200,19 @@ export class TaskComponent implements OnInit {
   }
 
   editTaskDetail() {
-    this.taskService.editTask(this.taskDetail.id, this.taskDetail).subscribe(data => {console.log(data); this.getBoard(); });
+    this.taskService.editTask(this.taskDetail.id, this.taskDetail).subscribe(data => {console.log(data); this.getBoard(this.board.id); });
   }
 
   addNewStatus() {
     this.newStatus.get('board').setValue({id: this.board.id});
     this.newStatus.get('position').setValue(this.board.statuses.length);
-    this.statusService.addNewStatus(this.newStatus.value).subscribe(data => {console.log(data); this.getBoard(); });
+    this.statusService.addNewStatus(this.newStatus.value).subscribe(data => {console.log(data); this.getBoard(this.board.id); });
     this.newStatus = new FormGroup({
       title: new FormControl(),
       position: new FormControl(this.board.statuses.length),
       board: new FormControl(),
     });
-    this.getBoard();
+    this.getBoard(this.board.id);
     successAlert();
   }
 
@@ -264,7 +264,7 @@ export class TaskComponent implements OnInit {
   }
 
   deleteTask() {
-    this.taskService.deleteTask(this.taskDetail.id).subscribe(() => this.getBoard() );
+    this.taskService.deleteTask(this.taskDetail.id).subscribe(() => this.getBoard(this.board.id) );
     this.taskDetail = {};
   }
 
@@ -286,11 +286,11 @@ export class TaskComponent implements OnInit {
         id: this.board.id,
       }
     };
-    this.statusService.editStatus(status.id, status).subscribe(data => {console.log(data); this.getBoard(); this.statusEditId = -1; });
+    this.statusService.editStatus(status.id, status).subscribe(data => {console.log(data); this.getBoard(this.board.id); this.statusEditId = -1; });
   }
 
   deleteStatus(id: number) {
-    this.statusService.deleteStatus(id).subscribe(() => this.getBoard() );
+    this.statusService.deleteStatus(id).subscribe(() => this.getBoard(this.board.id) );
   }
 
   ngOnInit(): void {

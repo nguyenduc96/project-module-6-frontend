@@ -43,33 +43,39 @@
 
 <div class="board" cdkDropList cdkDropListOrientation="horizontal"
      (cdkDropListDropped)="dropStatus($event)"
-     style="max-height: 90%;overflow-y: hidden;">
+     style="max-height: 90%;overflow-y: hidden">
+
+
   <div class="container " style=" position: relative; top: -80px;
-        background-color: #d5caca;border-radius: 12px"
+        background-color: #e3dcdc;border-radius: 12px"
        cdkDrag *ngFor="let status of board.statuses, let i = index">
 
     <div class="insideContainer border-dark">
       <div>
         <h2 style="text-align: left">
           <span style="float: left; font-size: 20px" [hidden]="!isShowEditTitle(status.id)">{{status.title}}</span>
-          <input style="width: 100%;" type="text"
+          <input style="width: 100%" type="text"
                  [hidden]="isShowEditTitle(status.id)"
                  id="titleStatus{{status.id}}"
                  [value]="status.title"
                  (change)="saveEditStatus(i)"
                  (blur)="isShowEditTitle(-1)">
         </h2>
-        <div style="text-align: right">
-          <div class="btn-group dropend">
+
+
+
+<!--        &#45;&#45;&#45;&#45;-->
+        <div style="text-align: right" class="dropdown">
+          <div class="dropdown">
             <p class="btn btn-outline" style="border-radius: 10px;padding-bottom: 3px" data-bs-toggle="dropdown"
                aria-expanded="false">
               <i class="ti-more"></i>
             </p>
-            <ul class="dropdown-menu" style="border-radius: 10px">
+            <ul class="dropdown-menu" id="dropdown" style="border-radius: 10px">
               <li><label style="border-radius: 6px" class="dropdown-item" for="titleStatus{{status.id}}"
-                         (click)="showEditTitleStatus(status.id)">Change name</label></li>
+                         (click)="showEditTitleStatus(status.id)">Đổi tên</label></li>
               <li><label style="border-radius: 6px" class="dropdown-item"
-                         (click)="deleteStatus(status.id)">Delete</label></li>
+                         (click)="deleteStatus(status.id)">Xóa</label></li>
             </ul>
           </div>
         </div>
@@ -82,8 +88,8 @@
       [cdkDropListData]="status.tasks"
       [cdkDropListConnectedTo]="listConnectTo()"
       class="example-list "
-      style="max-height:520px;overflow-y: auto; border:none;background-color: #d5caca "
-      [hidden]="!(status.tasks.length > 0 || isShowTaskAddBox && status.id == this.statusId)"
+      style="max-height:520px;overflow-y: auto; border:none;background-color: #e3dcdc "
+
       (cdkDropListDropped)="dropTask($event)">
       <div style="margin-left: 2px; background-color: rgba(255,255,255,0.9) " class="addTextArea example-box"
            *ngFor="let task of status.tasks" cdkDrag
@@ -101,12 +107,12 @@
 <!--          <p style="font-size: 17px;margin: 5px 0px 0px 10px">Add New Card</p>-->
           <div class="row-3" style="padding: 5px 0px 5px 4px;margin-right: 4px">
             <input placeholder="
-Enter tag title..." class="form-control" type="text" formControlName="title" style="width: 100%">
+Enter tag title..." type="text" formControlName="title" style="width: 100%;color: black">
           </div>
           <div class="row float-end">
             <div class="addFormCard" style="padding-bottom: 10px">
               <button type="submit" class="btn btn-success" (click)="showTaskAddBox()"
-                      style="border-radius: 7px; margin-top: 2px">Add
+                      style="border-radius: 7px; margin-top: 2px">Thêm
               </button>
               <button type="button" class="btn btn-danger" (click)="showTaskAddBox()"
                       style="border-radius: 7px; margin-top: 2px">x
@@ -126,6 +132,8 @@ Enter tag title..." class="form-control" type="text" formControlName="title" sty
     </div>
 
   </div>
+
+
   <div class="container"
        style=" border-radius: 11px;width: 235px; position: relative; top: -80px; background-color: #d5caca">
     <div class="example-list" style="width: 215px; border-radius: 10px">

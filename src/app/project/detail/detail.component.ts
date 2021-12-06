@@ -2,11 +2,12 @@ import {Component, OnInit} from '@angular/core';
 import {ProjectService} from '../../service/project/project.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Project} from '../../model/project';
-import {NgForm} from '@angular/forms';
+import {FormControl, FormGroup, NgForm} from '@angular/forms';
 import {User} from '../../model/user';
 import {showPopupError, showToastError, showToastSuccess} from '../../note';
 import {ListProjectService} from '../../ListProjectSerice';
 import {SendProjectService} from '../../SendProjectService';
+import {BoardService} from '../../service/board/board.service';
 
 @Component({
   selector: 'app-detail',
@@ -28,8 +29,7 @@ export class DetailComponent implements OnInit {
 
   constructor(private projectService: ProjectService,
               private activatedRouter: ActivatedRoute,
-              private boardService: BoardService) {
-              private activatedRouter: ActivatedRoute,
+              private boardService: BoardService ,
               private router: Router,
               private listProjectService: ListProjectService,
               private sendProject: SendProjectService) {
@@ -85,7 +85,7 @@ export class DetailComponent implements OnInit {
     this.newBoard.get('project').setValue({ id: this.project.id});
     this.boardService.create(this.newBoard.value).subscribe(() => {
       this.getProject();
-      showToastSuccess('Success!');
+      showToastSuccess('Thành công!');
       this.newBoard = new FormGroup({
         id: new FormControl(),
         title: new FormControl(),
@@ -109,7 +109,8 @@ export class DetailComponent implements OnInit {
   deleteBoard() {
     this.boardService.delete(this.newBoard.get('id').value).subscribe(() => {
       this.getProject();
-      showToastSuccess('Delete Board!');
+      showToastSuccess('Xóa thành công!');
     });
   }
+
 }
