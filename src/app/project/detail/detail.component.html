@@ -1,9 +1,10 @@
 
 <div style="margin: 10px 0px 0px 20px">
   <h2 style="color: #f5f1f1;font-size: 35px">{{project?.title}}</h2>
-  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-    Thêm thành viên
-  </button>
+<!--  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">-->
+<!--    Thêm thành viên-->
+<!--  </button>-->
+
 
 <!--  <div *ngIf="project.boards.length == 0">-->
 <!--    <h3 class="card-title">-->
@@ -11,11 +12,11 @@
 <!--    </h3>-->
 <!--  </div>-->
 
-  <div>
-    <div *ngFor="let b of project.boards">
-      <p><a routerLink="/tasks/list"></a>{{b.title}}</p>
-    </div>
-  </div>
+<!--  <div>-->
+<!--    <div *ngFor="let b of project.boards">-->
+<!--      <p><a routerLink="/tasks/list"></a>{{b.title}}</p>-->
+<!--    </div>-->
+<!--  </div>-->
 
 <div class="dropdown show">
   <div><strong>Thông tin dự án : {{project?.title}} </strong><a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -25,30 +26,36 @@
       <a class="dropdown-item" style="cursor: pointer" data-bs-toggle="modal" data-bs-target="#staticDelete">Xóa dự án</a>
       <a class="dropdown-item" style="cursor: pointer" data-bs-toggle="modal" data-bs-target="#staticEdit">Sửa dự án</a>
     </div>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+            style="margin: 50px; background-color: rgba(132,154,179,0.39)"
+            data-bs-target="#addNewBoard">
+      Thêm bảng
+    </button>
   </div>
+
 </div>
 
-<div *ngIf="project.boards.length == 0">
-  <h3 class="card-title">
-    Hiện tại dự án chưa có bảng nào
-  </h3>
-</div>
-<div class="row" *ngIf="project.boards.length > 0">
-  <div class="text-center"
-       *ngFor="let b of project.boards"
-       style="margin: 50px; width: 200px; height: 70px; background-color: rgba(227,122,184,0.39)"
-      >
-    <a style="text-decoration: none;position: absolute; padding-top: 18px" routerLink="/tasks/list/{{b.id}}">{{b.title}}
-    </a>
-   <button style="position: absolute; margin-top: 70px" data-bs-toggle="modal" data-bs-target="#editBoard" (click)="showBoardDetail(b.id)">Edit</button>
+
+  <div *ngIf="project.boards.length == 0">
+    <h3 class="card-title">
+      Hiện tại dự án chưa có bảng nào
+    </h3>
   </div>
-  <div class="text-center"
-       style="margin: 50px;width: 200px; height: 70px; background-color: rgba(132,154,179,0.39)"
-       data-bs-toggle="modal" data-bs-target="#addNewBoard">
-    Add new board
+  <div class="row" *ngIf="project.boards.length > 0">
+    <div class="text-center"
+         *ngFor="let b of project.boards"
+         style="margin: 35px 0px 0px 40px; width: 200px; height:100px; background-color: rgba(148,144,147,0.58);padding: 30px 0px 0px 0px;
+border-radius: 10px"
+    >
+      <a routerLink="/tasks/list/{{b.id}}" style="text-decoration: none;color: white; font-size: 20px;margin-right: 10%">{{b.title}}
+      </a>
+      <a class="ti-pencil" data-bs-toggle="modal"
+         data-bs-target="#editBoard" (click)="showBoardDetail(b.id)">Edit</a>
+    </div>
   </div>
-  <div></div>
-</div>
+
+
+
 
 <!-- Modal -->
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
@@ -177,3 +184,4 @@
   </div>
 </div>
 
+</div>

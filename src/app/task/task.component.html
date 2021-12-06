@@ -50,22 +50,20 @@
 
     <div class="insideContainer border-dark">
       <div>
-        <h2 style="text-align: left">
-          <span style="float: left; font-size: 20px" [hidden]="!isShowEditTitle(status.id)">{{status.title}}</span>
+        <h2 style="text-align: left"><span  [hidden]="statusEditId == status.id">{{status.title}}</span>
           <input style="width: 100%;" type="text"
-                 [hidden]="isShowEditTitle(status.id)"
+                 [hidden]="statusEditId != status.id"
                  id="titleStatus{{status.id}}"
                  [value]="status.title"
                  (change)="saveEditStatus(i)"
-                 (blur)="isShowEditTitle(-1)">
-        </h2>
-        <div style="text-align: right">
-          <div class="btn-group dropend">
-            <p class="btn btn-outline" style="border-radius: 10px;padding-bottom: 3px" data-bs-toggle="dropdown"
+                 (blur)="showEditTitleStatus(-1)"></h2>
+        <div style="text-align: right" class="dropdown">
+          <div class="btn-group" data-toggle="dropdown">
+            <p class="btn" style="border-radius: 10px;padding-bottom: 3px" data-bs-toggle="dropdown"
                aria-expanded="false">
               <i class="ti-more"></i>
             </p>
-            <ul class="dropdown-menu" style="border-radius: 10px">
+            <ul class="dropdown-menu" style="border-radius: 10px;position: relative">
               <li><label style="border-radius: 6px" class="dropdown-item" for="titleStatus{{status.id}}"
                          (click)="showEditTitleStatus(status.id)">Change name</label></li>
               <li><label style="border-radius: 6px" class="dropdown-item"
