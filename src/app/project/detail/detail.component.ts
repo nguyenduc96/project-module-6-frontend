@@ -2,11 +2,12 @@ import {Component, OnInit} from '@angular/core';
 import {ProjectService} from '../../service/project/project.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Project} from '../../model/project';
-import {NgForm} from '@angular/forms';
+import {FormControl, FormGroup, NgForm} from '@angular/forms';
 import {User} from '../../model/user';
 import {showPopupError, showToastError, showToastSuccess} from '../../note';
 import {ListProjectService} from '../../ListProjectSerice';
 import {SendProjectService} from '../../SendProjectService';
+import {BoardService} from '../../service/board/board.service';
 
 @Component({
   selector: 'app-detail',
@@ -27,8 +28,7 @@ export class DetailComponent implements OnInit {
   });
 
   constructor(private projectService: ProjectService,
-              private activatedRouter: ActivatedRoute,
-              private boardService: BoardService) {
+              private boardService: BoardService,
               private activatedRouter: ActivatedRoute,
               private router: Router,
               private listProjectService: ListProjectService,
