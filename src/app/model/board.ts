@@ -1,6 +1,7 @@
+import {Status} from './status';
+
 export interface Board {
   id?: number;
   title?: string;
-  type?: number;
-  project?: any;
+  statuses?: Status[];
 }

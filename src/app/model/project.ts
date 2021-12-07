@@ -4,4 +4,5 @@ export interface Project {
   type?: number;
   projectOwner?: any;
   users?: any[];
+  boards?: any[];
 }

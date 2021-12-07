@@ -14,9 +14,7 @@ export class BoardService {
   getAll(): Observable<Board[]> {
     return this.http.get<Board[]>(`${API_URL}/${BOARD}`);
   }
-  getBoardById(id: number): Observable<Board> {
-    return this.http.get<Board>(`${API_URL}/${BOARD}`);
-  }
+
   create(board: Board): Observable<Board[]> {
     return this.http.post<Board[]>(`${API_URL}/${BOARD}`, board);
   }
@@ -26,5 +24,9 @@ export class BoardService {
 
   delete(id: number): Observable<Board> {
     return this.http.delete(`${API_URL}/${BOARD}/${id}`);
+  }
+
+  getBoardById(id: number): Observable<Board> {
+    return this.http.get<Board>(`${API_URL}/${BOARD}/${id}`);
   }
 }

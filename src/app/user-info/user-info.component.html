@@ -1,0 +1,47 @@
+<div class="row" style="margin: 25px 0px 0px 60px">
+  <div style="padding: 20px 0px 0px 20px;border-radius: 10px;
+  width: 400px; height: 450px;
+  border: 1px solid rgba(224,217,217,0.45);background-color: rgba(199,191,191,0.62)">
+    <h1>Thông tin tài khoản</h1>
+    <img style="margin-left: 75px;width: 210px; height: 210px; border-radius: 100%" [src]="user?.avatar" alt="Day la anh dai dien">
+    <!--    <label for="file" style="color: #eee4e4" title="Đổi ảnh đại diện"><i style="padding-top: 80%" class="ti-pencil"></i>-->
+    <!--    Đổi ảnh đại diện-->
+    <!--    </label>-->
+    <div style="margin-top: 15px">
+<!--      <table style="width: 60%;height: 100px">-->
+        <div   style="border-radius: 7px;border: 1px solid rgba(227,213,213,0.5)">
+          <td>
+            <div>
+              Tên đăng nhập :
+            </div>
+          </td>
+          <td>
+            <div>
+              {{user?.username}}
+            </div>
+          </td>
+        </div>
+        <div style="border-radius: 7px;border: 1px solid rgba(227,213,213,0.5);margin-top: 10px">
+          <td>
+            <div>
+              Email :
+            </div>
+          </td>
+          <td>
+            <div>
+              {{user?.email}}
+            </div>
+          </td>
+<!--      </table>-->
+    </div>
+  </div>
+
+</div>
+<input type="file"
+       id="file"
+       #userPhoto
+       (change)="onFileSelected($event)"
+       name="image"
+       autocomplete="off"
+       hidden
+/>

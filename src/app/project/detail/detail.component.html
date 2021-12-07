@@ -1,0 +1,187 @@
+
+<div style="margin: 10px 0px 0px 20px">
+  <h2 style="color: #f5f1f1;font-size: 35px">{{project?.title}}</h2>
+<!--  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">-->
+<!--    Thêm thành viên-->
+<!--  </button>-->
+
+
+<!--  <div *ngIf="project.boards.length == 0">-->
+<!--    <h3 class="card-title">-->
+<!--      Hiện tại dự án chưa có bảng nào-->
+<!--    </h3>-->
+<!--  </div>-->
+
+<!--  <div>-->
+<!--    <div *ngFor="let b of project.boards">-->
+<!--      <p><a routerLink="/tasks/list"></a>{{b.title}}</p>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<div class="dropdown show">
+  <div><strong>Thông tin dự án : {{project?.title}} </strong><a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+  </a>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+      <a class="dropdown-item" style="cursor: pointer" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Thêm người vào dự án</a>
+      <a class="dropdown-item" style="cursor: pointer" data-bs-toggle="modal" data-bs-target="#staticDelete">Xóa dự án</a>
+      <a class="dropdown-item" style="cursor: pointer" data-bs-toggle="modal" data-bs-target="#staticEdit">Sửa dự án</a>
+    </div>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+            style="margin: 50px; background-color: rgba(132,154,179,0.39)"
+            data-bs-target="#addNewBoard">
+      Thêm bảng
+    </button>
+  </div>
+
+</div>
+
+
+  <div *ngIf="project.boards.length == 0">
+    <h3 class="card-title">
+      Hiện tại dự án chưa có bảng nào
+    </h3>
+  </div>
+  <div class="row" *ngIf="project.boards.length > 0">
+    <div class="text-center"
+         *ngFor="let b of project.boards"
+         style="margin: 35px 0px 0px 40px; width: 200px; height:100px; background-color: rgba(148,144,147,0.58);padding: 30px 0px 0px 0px;
+border-radius: 10px"
+    >
+      <a routerLink="/tasks/list/{{b.id}}" style="text-decoration: none;color: white; font-size: 20px;margin-right: 10%">{{b.title}}
+      </a>
+      <a class="ti-pencil" data-bs-toggle="modal"
+         data-bs-target="#editBoard" (click)="showBoardDetail(b.id)">Edit</a>
+    </div>
+  </div>
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Thêm người vào dự án</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form #formAddUser='ngForm' (ngSubmit)="addUser(formAddUser)">
+        <div class="modal-body">
+
+          <div>
+<!--            <label for="username">Nhập tên thành viên</label>-->
+            <input style="margin-bottom: 15px;width: 60%" class="form-control" placeholder="Nhập tên thành viên" type="text" id="username"  ngModel name="username">
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Đóng</button>
+            <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Thêm </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="staticDelete" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticDeleteLabel">Xóa dự án</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+        <div class="modal-body">
+          Bạn chắc chắn muốn xóa dự án chứ?
+          Nếu xóa dự án này, toàn bộ các bảng và các task trong dự án sẽ bị xóa.
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            <button type="button" (click)="deleteProject()" class="btn btn-danger" data-bs-dismiss="modal">Xóa</button>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="staticEdit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticEditLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticEditLabel">Xóa dự án</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+        <div class="modal-body">
+          <form #formEdit='ngForm' (ngSubmit)="editProject(formEdit)">
+            <div class="form-group">
+              <label for="title">Tên dự án</label>
+              <input style="background-color: rgba(182,146,245,0.4)"[value]="project.title" type="text" class="form-control" ngModel name="title" id="title" placeholder="Tên dự án">
+            </div>
+            <div>
+              <label for="type">Loại dự án</label>
+              <select style="background-color: rgba(182,146,245,0.4)" class="form-control" id="type" name="type" ngModel>
+                <option style="background-color: rgba(9,8,17,0.4)" class="form-control" value="1" [selected]="true">Dự án cá nhân</option>
+                <option style="background-color: rgba(9,8,17,0.4)" class="form-control" value="2">Dự án nhóm</option>
+              </select>
+            </div>
+            <div style="margin-top: 4%">
+              <button type="button" class="btn btn-secondary"  data-bs-dismiss="modal">Hủy</button>
+              <button type="submit" class="btn btn-primary"  data-bs-dismiss="modal">Sửa</button>
+            </div>
+          </form>
+        </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Modal Add New Board -->
+<div class="modal fade" id="addNewBoard" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add new Board</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form [formGroup]="newBoard" (ngSubmit)="saveBoard()">
+        <div class="modal-body">
+          <table>
+            <tr>
+              <td>Title: </td>
+              <td><input type="text" formControlName="title"></td>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Edit & Delete Board-->
+<div class="modal fade" id="editBoard" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="">Edit Board</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form [formGroup]="newBoard" (ngSubmit)="saveBoard()">
+      <div class="modal-body">
+        <input type="text" formControlName="title">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="deleteBoard()">Delete</button>
+        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save Change</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+</div>

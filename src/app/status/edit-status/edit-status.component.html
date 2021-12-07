@@ -1,0 +1,21 @@
+<a routerLink="/status/list">Home</a>
+<form [formGroup]="statusForm" (ngSubmit)="updateStatus()">
+  <table>
+    <tr>
+      <td>Name</td>
+      <td><input type="text" formControlName="title"></td>
+    </tr>
+    <tr>
+      <td>Position</td>
+      <td><input type="text" formControlName="position"></td>
+    </tr>
+    <!--    <tr>-->
+    <!--      <td>Board</td>-->
+    <!--      <td><input type="text" formControlName="board"></td>-->
+    <!--    </tr>-->
+    <tr>
+      <td></td>
+      <td><button>Update</button></td>
+    </tr>
+  </table>
+</form>

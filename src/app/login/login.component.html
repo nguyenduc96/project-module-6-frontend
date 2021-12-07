@@ -1,0 +1,60 @@
+<div class="img js-fullheight" style="background-image: url(assets/static/login/images/bglglo.jpg); height: 100%">
+  <section class="ftco-section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6" style="background-color: rgba(138,121,138,0.51)">
+          <div class="row justify-content-center">
+            <div class="col-md-6 text-center">
+              <h2 class="heading-section" style="color: rgb(236,238,241)">Đăng nhập</h2>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-md-6">
+              <div class="login-wrap p-0">
+                <form class="signin-form" #formLogin='ngForm' (ngSubmit)="formLogin.valid && login(formLogin)">
+                  <div class="form-group">
+                    <label for="username"> Tên đăng nhập <span class="text-danger">*</span> </label>
+                    <input type="text" id="username" class="form-control"
+                           style="background-color: rgba(91,43,162,0.4)" name="username"
+                           ngModel placeholder="Tên đăng nhập" #username="ngModel" required minlength="6" maxlength="18"
+                           [ngClass]="[(username.valid && (username.touched || username.dirty)) ? 'form-control is-valid' :((username.dirty || username.touched || formLogin.submitted)? 'form-control is-invalid':'form-control')]"
+                           pattern="^[a-zA-Z0-9_]*$">
+                    <ng-container *ngIf="(username.dirty || username.touched)  || formLogin.submitted">
+                      <div class="tooltip" *ngIf="username.errors?.required">
+                        Tên đăng nhập không được để trống</div>
+                      <div class="invalid-tooltip" *ngIf="username.errors?.minlength">Tên đăng nhập không
+                        được dưới 6 ký tự</div>
+                      <div class="invalid-tooltip" *ngIf="username.errors?.maxlength">Tên đăng nhập không
+                        được trên 18 ký tự</div>
+                      <div class="invalid-tooltip" *ngIf="username.errors?.pattern">Tên đăng nhập không
+                        được chứa ký tự đặc biệt</div>
+                    </ng-container>
+                  </div>
+                  <div class="form-group">
+                    <label for="password-field"> Mật khẩu <span class="text-danger">*</span> </label>
+                    <input id="password-field" style="background-color: rgba(91,43,162,0.4)"
+                           #password="ngModel"
+                           [ngClass]="[(password.valid && (password.touched || password.dirty)) ? 'form-control is-valid' : ((password.dirty || password.touched || formLogin.submitted)? 'form-control is-invalid':'form-control')]"
+                           [type]="isShowPassword? 'text' : 'password'" name="password" ngModel class="form-control"
+                           placeholder="Mật khẩu" required>
+                    <input type="checkbox" id="show-pass" (click)="changeShowPass()">
+                    <label for="show-pass">{{!isShowPassword? 'Xem mật khẩu' : 'Ẩn mật khẩu'}}</label>
+                    <ng-container *ngIf="(password.dirty || password.touched) && password.invalid">
+                      <p class="invalid-tooltip" *ngIf="password.errors?.required">Mật khẩu không được
+                        bỏ trống</p>
+                    </ng-container>
+                  </div>
+                  <div class="form-group">
+                    <button type="submit" class="form-control btn btn-primary submit px-3">Đăng nhập</button>
+                  </div>
+                </form>
+                <p class="w-100 text-center">&mdash;Bạn chưa có tài khoản?
+                  <a routerLink="/register" style="color: #FFFFFF"><strong>Đăng ký</strong></a> &mdash;</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
