@@ -27,10 +27,10 @@ export class TaskComponent implements OnInit {
   board: Board;
   labels: Label[];
   colors: Color[];
-  newTask: FormGroup =  new FormGroup({
+  newTask: FormGroup = new FormGroup({
     title: new FormControl(),
     position: new FormControl(),
-    status:  new FormControl(),
+    status: new FormControl(),
   });
   newStatus: FormGroup = new FormGroup({
     title: new FormControl(),
@@ -51,21 +51,33 @@ export class TaskComponent implements OnInit {
   isShowDescriptionInput: boolean = false;
   isShowDeadlineInput: boolean = false;
   isShowAddStatusBox: boolean = false;
+
+  isSearchTask: boolean = false;
+
+  boardId: number;
+
   constructor(private boardService: BoardService,
               private taskService: TaskService,
               private statusService: StatusService,
               private labelService: LabelService,
               private colorService: ColorService,
               private activatedRoute: ActivatedRoute) {
-    this.activatedRoute.paramMap.subscribe(param => {
+      this.activatedRoute.paramMap.subscribe(param => {
       const id = +param.get('id');
+      this.boardId = id;
       this.getBoard(id);
     });
-    this.colorService.getAll().subscribe(data => {this.colors = data; });
+    this.colorService.getAll().subscribe(data => {
+      this.colors = data;
+    });
   }
 
-  private getBoard(id: number) {
-    this.boardService.getBoardById(id).subscribe(data => {
+  getBoard(id: number) {
+    let title = $('#title-search-task').val();
+    if (title === undefined) {
+      title = '';
+    }
+    this.boardService.getBoardById(id, title).subscribe(data => {
       this.board = data;
       this.getLabels();
     }, error => {
@@ -159,18 +171,21 @@ export class TaskComponent implements OnInit {
   addNewTask(i: number) {
     this.newTask.get('status').setValue({id: this.statusId});
     this.newTask.get('position').setValue(this.board.statuses[i].tasks.length);
-    this.taskService.addNew(this.newTask.value).subscribe(data => {console.log(data); this.getBoard(this.board.id); });
+    this.taskService.addNew(this.newTask.value).subscribe(data => {
+      console.log(data);
+      this.getBoard(this.board.id);
+    });
     this.newTask = new FormGroup({
       title: new FormControl(),
       position: new FormControl(99999),
-      status:  new FormControl(),
+      status: new FormControl(),
     });
     this.getBoard(this.board.id);
     successAlert();
   }
 
   setStatusId(id: number) {
-    this.statusId  = id;
+    this.statusId = id;
     this.showTaskAddBox();
   }
 
@@ -179,9 +194,12 @@ export class TaskComponent implements OnInit {
   }
 
 
-
   showTaskDetail(id: number) {
-    this.taskService.findById(id).subscribe(data => {this.taskDetail = data; }, error => { console.log('khong lay duoc detail'); });
+    this.taskService.findById(id).subscribe(data => {
+      this.taskDetail = data;
+    }, error => {
+      console.log('khong lay duoc detail');
+    });
   }
 
   showTitleEdit() {
@@ -191,6 +209,7 @@ export class TaskComponent implements OnInit {
   showDescriptionEdit() {
     this.isShowDescriptionInput = !this.isShowDescriptionInput;
   }
+
   showDeadlineEdit() {
     this.isShowDeadlineInput = !this.isShowDeadlineInput;
   }
@@ -200,13 +219,19 @@ export class TaskComponent implements OnInit {
   }
 
   editTaskDetail(id: number) {
-    this.taskService.editTask(this.taskDetail.id, this.taskDetail).subscribe(data => {console.log(data); this.getBoard(this.board.id); });
+    this.taskService.editTask(this.taskDetail.id, this.taskDetail).subscribe(data => {
+      console.log(data);
+      this.getBoard(this.board.id);
+    });
   }
 
   addNewStatus() {
     this.newStatus.get('board').setValue({id: this.board.id});
     this.newStatus.get('position').setValue(this.board.statuses.length);
-    this.statusService.addNewStatus(this.newStatus.value).subscribe(data => {console.log(data); this.getBoard(this.board.id); });
+    this.statusService.addNewStatus(this.newStatus.value).subscribe(data => {
+      console.log(data);
+      this.getBoard(this.board.id);
+    });
     this.newStatus = new FormGroup({
       title: new FormControl(),
       position: new FormControl(this.board.statuses.length),
@@ -217,8 +242,8 @@ export class TaskComponent implements OnInit {
   }
 
   addNewLabel() {
-    this.newLabel.get('board').setValue({id : this.board.id});
-    this.newLabel.get('color').setValue({id : this.newLabel.get('color').value});
+    this.newLabel.get('board').setValue({id: this.board.id});
+    this.newLabel.get('color').setValue({id: this.newLabel.get('color').value});
     this.labelService.addNewLabel(this.newLabel.value).subscribe(data => {
       successAlert();
       this.getLabels();
@@ -232,7 +257,7 @@ export class TaskComponent implements OnInit {
   }
 
   showLabelDetail(id: number) {
-    this.labelService.getById(id).subscribe( data => {
+    this.labelService.getById(id).subscribe(data => {
       this.newLabel = new FormGroup({
         id: new FormControl(data.id),
         content: new FormControl(data.content),
@@ -243,8 +268,8 @@ export class TaskComponent implements OnInit {
   }
 
   editLabel() {
-    this.newLabel.get('board').setValue({id : this.board.id});
-    this.newLabel.get('color').setValue({id : this.newLabel.get('color').value});
+    this.newLabel.get('board').setValue({id: this.board.id});
+    this.newLabel.get('color').setValue({id: this.newLabel.get('color').value});
     this.labelService.addNewLabel(this.newLabel.value).subscribe(data => {
       this.getLabels();
       this.newLabel = new FormGroup({
@@ -263,8 +288,8 @@ export class TaskComponent implements OnInit {
     });
   }
 
-  deleteTask(id:number) {
-    this.taskService.deleteTask(this.taskDetail.id).subscribe(() => this.getBoard(this.board.id) );
+  deleteTask(id: number) {
+    this.taskService.deleteTask(this.taskDetail.id).subscribe(() => this.getBoard(this.board.id));
     this.taskDetail = {};
   }
 
@@ -286,11 +311,15 @@ export class TaskComponent implements OnInit {
         id: this.board.id,
       }
     };
-    this.statusService.editStatus(status.id, status).subscribe(data => {console.log(data); this.getBoard(this.board.id); this.statusEditId = -1; });
+    this.statusService.editStatus(status.id, status).subscribe(data => {
+      console.log(data);
+      this.getBoard(this.board.id);
+      this.statusEditId = -1;
+    });
   }
 
   deleteStatus(id: number) {
-    this.statusService.deleteStatus(id).subscribe(() => this.getBoard(this.board.id) );
+    this.statusService.deleteStatus(id).subscribe(() => this.getBoard(this.board.id));
   }
 
   ngOnInit(): void {

@@ -125,7 +125,8 @@ export class DetailComponent implements OnInit {
   }
 
   showBoardDetail(id: number) {
-    this.boardService.getBoardById(id).subscribe(data => {
+    let title = '';
+    this.boardService.getBoardById(id, title).subscribe(data => {
       this.newBoard = new FormGroup({
         id: new FormControl(data.id),
         title: new FormControl(data.title),

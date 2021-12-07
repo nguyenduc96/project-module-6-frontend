@@ -14,6 +14,10 @@ export class TaskService {
   constructor(private http: HttpClient) {
   }
 
+  getAll(statusId: number, title: string): Observable<Task[]> {
+    return this.http.get<Task[]>(API_URL + `/${statusId}?title=${title}`);
+  }
+
   sortTask(id: number, task: Task): Observable<Task> {
     return this.http.put<Task>(API_URL + `/${id}`, task);
   }

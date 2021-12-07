@@ -39,7 +39,9 @@
 <!--  </div>-->
 <!--</div>-->
 <!--test-->
-
+<form>
+  Search <input (input)="getBoard(boardId)" type="text" id="title-search-task" name="title" placeholder="Tìm kiếm thẻ">
+</form>
 
 <div class="board" cdkDropList cdkDropListOrientation="horizontal"
      (cdkDropListDropped)="dropStatus($event)"
@@ -74,23 +76,25 @@
       </div>
     </div>
 
-    <div
-      cdkDropList
-      [id]="status.id.toString()"
-      [cdkDropListData]="status.tasks"
-      [cdkDropListConnectedTo]="listConnectTo()"
-      class="example-list "
-      style="max-height:520px;overflow-y: auto; border:none;background-color: #d5caca "
-      [hidden]="!(status.tasks.length > 0 || isShowTaskAddBox && status.id == this.statusId)"
-      (cdkDropListDropped)="dropTask($event)">
-      <div style="margin-left: 2px; background-color: rgba(255,255,255,0.9) " class="addTextArea example-box"
-           *ngFor="let task of status.tasks" cdkDrag
-           data-bs-toggle="modal" data-bs-target="#taskDetail" (click)="showTaskDetail(task.id)">
-        {{task.title}}
+      <div
+        cdkDropList
+        [id]="status.id.toString()"
+        [cdkDropListData]="status.tasks"
+        [cdkDropListConnectedTo]="listConnectTo()"
+        class="example-list "
+        style="max-height:520px;overflow-y: auto; border:none;background-color: #d5caca "
+        [hidden]="!(status.tasks?.length > 0 || isShowTaskAddBox && status.id == this.statusId)"
+        (cdkDropListDropped)="dropTask($event)">
+        <ng-container *ngIf="!isSearchTask">
+          <div style="margin-left: 2px; background-color: rgba(255,255,255,0.9) " class="addTextArea example-box"
+               *ngFor="let task of status.tasks" cdkDrag
+               data-bs-toggle="modal" data-bs-target="#taskDetail" (click)="showTaskDetail(task.id)">
+            {{task.title}}
+          </div>
+        </ng-container>
       </div>
 
 
-    </div>
     <div class="example-list" style="margin: 0px 0px 3px 1px;border-radius: 5px; width: 212px"
          [hidden]="this.statusId != status.id || !isShowTaskAddBox">
       <div>

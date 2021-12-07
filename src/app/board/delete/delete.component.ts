@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Board} from '../../model/board';
 import {BoardService} from '../../service/board/board.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -11,12 +11,14 @@ import {ActivatedRoute, Router} from '@angular/router';
 export class DeleteComponent implements OnInit {
   board: Board = {};
   id: number;
+
   constructor(private boardService: BoardService,
               private activatedRoute: ActivatedRoute,
               private router: Router) {
     this.activatedRoute.paramMap.subscribe(paramMap => {
       this.id = +paramMap.get('id');
-      this.boardService.getBoardById(this.id).subscribe(board => {
+      let title = '';
+      this.boardService.getBoardById(this.id, title).subscribe(board => {
         this.board = board;
       });
     });
@@ -25,11 +27,13 @@ export class DeleteComponent implements OnInit {
 
   ngOnInit() {
   }
+
   delete() {
     this.boardService.delete(this.id).subscribe(() => {
       this.router.navigateByUrl('/boards');
     });
   }
+
   list() {
     this.router.navigateByUrl('/boards');
   }
