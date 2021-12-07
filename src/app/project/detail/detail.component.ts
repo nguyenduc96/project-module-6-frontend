@@ -8,6 +8,10 @@ import {showPopupError, showToastError, showToastSuccess} from '../../note';
 import {ListProjectService} from '../../ListProjectSerice';
 import {SendProjectService} from '../../SendProjectService';
 import {BoardService} from '../../service/board/board.service';
+import {UserService} from '../../service/user.service';
+import {log} from 'util';
+
+declare var $: any;
 
 @Component({
   selector: 'app-detail',
@@ -21,23 +25,39 @@ export class DetailComponent implements OnInit {
 
   id: number;
 
+  emails = [];
+
+  searchText;
+
   newBoard: FormGroup = new FormGroup({
     id: new FormControl(),
     title: new FormControl(),
     project: new FormControl(),
   });
 
+  email: string;
+
+  isInputEmail: boolean = false;
+
   constructor(private projectService: ProjectService,
               private boardService: BoardService,
               private activatedRouter: ActivatedRoute,
               private router: Router,
               private listProjectService: ListProjectService,
-              private sendProject: SendProjectService) {
+              private sendProject: SendProjectService,
+              private userService: UserService) {
     this.getProject();
   }
 
   ngOnInit() {
+    this.getAllEmail();
+  }
 
+  getAllEmail() {
+    this.userService.getAllEmail().subscribe(data => {
+      console.table(data);
+      this.emails = data;
+    });
   }
 
   getProject() {
@@ -50,17 +70,26 @@ export class DetailComponent implements OnInit {
   }
 
   addUser(formAddUser: NgForm) {
-    this.user = formAddUser.value;
+    let email = $('#email').val();
+    this.user = {
+      email: email
+    };
     this.projectService.addMember(this.project.id, this.user).subscribe(() => {
       showToastSuccess('Thêm thành công');
     }, error => {
-      showPopupError('Thêm thất bại', 'Tên thành viên không đúng hoặc bạn không có quyền thêm thành viên');
+      if (error.status === 409) {
+        showPopupError('Thêm thất bại', 'Thành viên đã có trong dự án');
+      } else if (error.status === 304) {
+        showPopupError('Thêm thất bại', 'Bạn không có quyền thêm thành viên');
+      } else {
+        showPopupError('Thêm thất bại', 'Email thành viên không đúng');
+      }
     });
   }
 
   deleteProject() {
     this.projectService.removeProject(this.project.id).subscribe((data) => {
-      console.table(data)
+      console.table(data);
       this.listProjectService.addProjects(data);
       this.router.navigateByUrl('/home');
       showToastSuccess('Xóa thành công');
@@ -82,7 +111,7 @@ export class DetailComponent implements OnInit {
   }
 
   saveBoard() {
-    this.newBoard.get('project').setValue({ id: this.project.id});
+    this.newBoard.get('project').setValue({id: this.project.id});
     this.boardService.create(this.newBoard.value).subscribe(() => {
       this.getProject();
       showToastSuccess('Success!');
@@ -111,5 +140,17 @@ export class DetailComponent implements OnInit {
       this.getProject();
       showToastSuccess('Delete Board!');
     });
+  }
+
+  inputEmail(email: any) {
+    $('#email').val(email);
+  }
+
+
+
+  searchEmail() {
+    let email = $('#email').val();
+    this.isInputEmail = !(email === '' || email === null || email === undefined);
+    console.log(this.email)
   }
 }
