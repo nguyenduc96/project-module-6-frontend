@@ -1,44 +1,6 @@
-<!--<div cdkDropList cdkDropListOrientation="horizontal"  (cdkDropListDropped)="dropStatus($event)">-->
-<!--  <div class="example-container border border-dark" cdkDrag *ngFor="let status of board.statuses">-->
-<!--    <div class="row text-center">-->
-<!--      <h2>{{status.title}}</h2>-->
-<!--    </div>-->
-<!--    <div-->
-<!--      cdkDropList-->
-<!--      [id]="status.id.toString()"-->
-<!--      [cdkDropListData]="status.tasks"-->
-<!--      [cdkDropListConnectedTo]="listConnectTo()"-->
-<!--      class="example-list"-->
-<!--      (cdkDropListDropped)="dropTask($event)">-->
-<!--      <div class="example-box" *ngFor="let task of status.tasks" cdkDrag>-->
-<!--        <div>{{task.id}}</div><div>{{task.title}}</div>-->
-<!--      </div>-->
-<!--      <div class="example-box row" [hidden]="this.statusId != status.id || !isShowAddBox">-->
-<!--        <div class="row">-->
-<!--          <form [formGroup]="newTask" (ngSubmit)="addNewTask()" >-->
-<!--            <div class="row-3" style="height: 150px; padding: 20px" >-->
-<!--              <input type="text" formControlName="title" style="width: 100%; height: 100%">-->
-<!--            </div>-->
-<!--            <div class="row float-end" >-->
-<!--              <div>-->
-<!--                <button type="submit" class="btn btn-primary" style="width: 50px ;height: 50px" (click)="showAddBox()">Add</button>-->
-<!--                <button type="button" class="btn btn-danger" style="width: 50px ;height: 50px" (click)="showAddBox()">x</button>-->
-<!--              </div>-->
-<!--            </div>-->
-
-<!--          </form>-->
-<!--        </div>-->
-
-<!--      </div>-->
-<!--    </div>-->
-<!--    <div class="float-end"><button class="btn btn-primary float-end "-->
-<!--                                   style="margin-right: 30px;"-->
-<!--                                   (click)="setStatusId(status.id)">{{(isShowAddBox && status.id == this.statusId) ? '-' : '+'}}-->
-<!--    </button>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
-<!--test-->
+<div>
+  <p *ngFor="let noti of notification" style="color: white">{{noti.action}} -- {{noti.sender.username}}</p>
+</div>
 
 
 <div class="board" cdkDropList cdkDropListOrientation="horizontal"
@@ -59,13 +21,13 @@
                  (change)="saveEditStatus(i)"
                  (blur)="isShowEditTitle(-1)">
         </h2>
-        <div style="text-align: right">
-          <div class="btn-group dropend">
+        <div style="text-align: right" class="dropdown">
+          <div class="btn-group" data-toggle="dropdown" >
             <p class="btn btn-outline" style="border-radius: 10px;padding-bottom: 3px" data-bs-toggle="dropdown"
                aria-expanded="false">
               <i class="ti-more"></i>
             </p>
-            <ul class="dropdown-menu" style="border-radius: 10px">
+            <ul class="dropdown-menu dropdown-menu-right " style="border-radius: 10px">
               <li><label style="border-radius: 6px" class="dropdown-item" for="titleStatus{{status.id}}"
                          (click)="showEditTitleStatus(status.id)">Change name</label></li>
               <li><label style="border-radius: 6px" class="dropdown-item"
@@ -83,7 +45,6 @@
       [cdkDropListConnectedTo]="listConnectTo()"
       class="example-list "
       style="max-height:520px;overflow-y: auto; border:none;background-color: #d5caca "
-      [hidden]="!(status.tasks.length > 0 || isShowTaskAddBox && status.id == this.statusId)"
       (cdkDropListDropped)="dropTask($event)">
       <div style="margin-left: 2px; background-color: rgba(255,255,255,0.9) " class="addTextArea example-box"
            *ngFor="let task of status.tasks" cdkDrag

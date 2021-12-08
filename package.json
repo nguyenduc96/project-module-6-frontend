@@ -28,10 +28,14 @@
     "firebase": "^7.24.0",
     "hammerjs": "^2.0.8",
     "jquery": "^3.6.0",
+    "net": "^1.0.2",
     "rxjs": "~6.4.0",
+    "sockjs": "^0.3.24",
+    "stomp-client": "^0.9.0",
     "sweetalert2": "^11.2.1",
     "tslib": "^1.10.0",
-    "zone.js": "~0.9.1"
+    "zone.js": "~0.9.1",
+    "stompjs": "^2.3.3"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.803.29",

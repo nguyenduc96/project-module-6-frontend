@@ -15,6 +15,8 @@ import {Label} from '../model/label';
 import {Color} from '../model/color';
 import {ActivatedRoute} from '@angular/router';
 import {BoardService} from '../service/board/board.service';
+import {SocketService} from "../service/socket.service";
+import {Notification} from "../model/notification";
 
 declare var $: any;
 
@@ -27,6 +29,7 @@ export class TaskComponent implements OnInit {
   board: Board;
   labels: Label[];
   colors: Color[];
+  notification: Notification[];
   newTask: FormGroup =  new FormGroup({
     title: new FormControl(),
     position: new FormControl(),
@@ -56,7 +59,14 @@ export class TaskComponent implements OnInit {
               private statusService: StatusService,
               private labelService: LabelService,
               private colorService: ColorService,
-              private activatedRoute: ActivatedRoute) {
+              private activatedRoute: ActivatedRoute,
+              private socketService: SocketService) {
+
+
+  }
+
+  ngOnInit(): void {
+
     this.activatedRoute.paramMap.subscribe(param => {
       const id = +param.get('id');
       this.getBoard(id);
@@ -65,12 +75,17 @@ export class TaskComponent implements OnInit {
   }
 
   private getBoard(id: number) {
+    this.socketService.getCurrentNotification(id);
     this.boardService.getBoardById(id).subscribe(data => {
       this.board = data;
-      this.getLabels();
-    }, error => {
-      console.log('Error');
-    });
+    })
+    this.socketService.connectToNotificationBoard(id);
+    this.socketService.notification.subscribe(data => {
+      this.notification = data;
+      console.log('ben task da nhan ')
+    })
+    // this.socketService.board.subscribe(data =>  this.board = data );
+    // this.socketService.connectToBoardSocket(id);
   }
 
   private getLabels() {
@@ -79,11 +94,12 @@ export class TaskComponent implements OnInit {
     });
   }
 
+  // Chức năng kéo thả
   dropTask(event: CdkDragDrop<Task[], any>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-      console.log(event.container.data);
-      this.moveInArray(event);
+       this.moveInArray(event);
+
     } else {
       transferArrayItem(
         event.previousContainer.data,
@@ -93,12 +109,11 @@ export class TaskComponent implements OnInit {
       );
       this.moveToOtherArray(event);
     }
+
   }
 
   dropStatus(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.board.statuses, event.previousIndex, event.currentIndex);
-    console.log(this.board.id);
-    console.log(this.board.statuses);
     for (let i = 0; i < this.board.statuses.length; i++) {
       const statusMove = {
         id: this.board.statuses[i].id,
@@ -110,63 +125,97 @@ export class TaskComponent implements OnInit {
       };
       this.moveStatus(statusMove.id, statusMove);
     }
+    if(event.previousIndex != event.currentIndex) {
+      this.addNoti("Da di chuyen 1 status")
+    }
+    // this.socketService.sendBoard(this.board.id);
   }
 
   private moveToOtherArray(event: CdkDragDrop<Task[], any>) {
     for (let i = 0; i < event.container.data.length; i++) {
       const task = event.container.data[i];
       task.position = i;
-      console.log(+event.container.id);
       task.status.id = +event.container.id;
-      this.taskService.sortTask(event.container.data[i].id, task).subscribe(data => {
-        console.log(data);
-      });
+      this.taskService.sortTask(event.container.data[i].id, task).subscribe();
     }
     for (let i = 0; i < event.previousContainer.data.length; i++) {
       const task = event.previousContainer.data[i];
       task.position = i;
-      console.log(task);
-      this.taskService.sortTask(event.previousContainer.data[i].id, task).subscribe(data => {
-        console.log(data);
-      });
+      this.taskService.sortTask(event.previousContainer.data[i].id, task).subscribe();
     }
+    this.addNoti("Đã di chuyển 1 task")
   }
+
+  // private sendTo() {
+  //   this.socketService.sendBoard(this.board.id)
+  // }
 
   private moveInArray(event: CdkDragDrop<Task[], any>) {
     for (let i = 0; i < event.container.data.length; i++) {
-      const task = event.container.data[i];
-      task.position = i;
-      this.moveTask(event, i, task);
+     event.container.data[i].position = i;
+      this.moveTask(event, i,  event.container.data[i]);
     }
+    // this.socketService.sendTask(this.board.id, this.board);
   }
 
   private moveTask(event: CdkDragDrop<Task[], any>, i: number, task: Task) {
-    this.taskService.sortTask(event.container.data[i].id, task).subscribe(data => {
-      console.log(data);
-    });
+    this.taskService.sortTask(event.container.data[i].id, task).subscribe();
   }
 
   private moveStatus(id: number, status: Status) {
     this.statusService.editStatus(id, status).subscribe(data => {
-      console.log(data.position);
     });
+
   }
 
+  // Lấy danh sách các list connect nhau
   listConnectTo(): string[] {
     return this.board.statuses.map(status => status.id.toString());
   }
 
+  // Task function
   addNewTask(i: number) {
     this.newTask.get('status').setValue({id: this.statusId});
     this.newTask.get('position').setValue(this.board.statuses[i].tasks.length);
-    this.taskService.addNew(this.newTask.value).subscribe(data => {console.log(data); this.getBoard(); });
+    this.taskService.addNew(this.newTask.value).subscribe(data => {console.log(data); this.getBoard(this.board.id); });
     this.newTask = new FormGroup({
       title: new FormControl(),
       position: new FormControl(99999),
       status:  new FormControl(),
     });
-    this.getBoard();
+    this.getBoard(this.board.id);
     successAlert();
+  }
+
+  showTaskAddBox() {
+    this.isShowTaskAddBox = !this.isShowTaskAddBox;
+  }
+
+  showTaskDetail(id: number) {
+    this.taskService.findById(id).subscribe(data => {this.taskDetail = data; }, error => { console.log('khong lay duoc detail'); });
+  }
+
+  editTaskDetail() {
+    this.taskService.editTask(this.taskDetail.id, this.taskDetail).subscribe(data => {console.log(data); this.getBoard(this.board.id);; });
+  }
+
+  showDescriptionEdit() {
+    this.isShowDescriptionInput = !this.isShowDescriptionInput;
+  }
+
+  showDeadlineEdit() {
+    this.isShowDeadlineInput = !this.isShowDeadlineInput;
+  }
+
+  deleteTask() {
+    this.taskService.deleteTask(this.taskDetail.id).subscribe(() => this.getBoard(this.board.id))
+    this.taskDetail = {};
+  }
+
+
+  // Status function
+  showTitleEdit() {
+    this.isShowTitleInput = !this.isShowTitleInput;
   }
 
   setStatusId(id: number) {
@@ -174,47 +223,49 @@ export class TaskComponent implements OnInit {
     this.showTaskAddBox();
   }
 
-  showTaskAddBox() {
-    this.isShowTaskAddBox = !this.isShowTaskAddBox;
-  }
-
-
-
-  showTaskDetail(id: number) {
-    this.taskService.findById(id).subscribe(data => {this.taskDetail = data; }, error => { console.log('khong lay duoc detail'); });
-  }
-
-  showTitleEdit() {
-    this.isShowTitleInput = !this.isShowTitleInput;
-  }
-
-  showDescriptionEdit() {
-    this.isShowDescriptionInput = !this.isShowDescriptionInput;
-  }
-  showDeadlineEdit() {
-    this.isShowDeadlineInput = !this.isShowDeadlineInput;
-  }
-
   showAddStatusForm() {
     this.isShowAddStatusBox = !this.isShowAddStatusBox;
-  }
-
-  editTaskDetail() {
-    this.taskService.editTask(this.taskDetail.id, this.taskDetail).subscribe(data => {console.log(data); this.getBoard(); });
   }
 
   addNewStatus() {
     this.newStatus.get('board').setValue({id: this.board.id});
     this.newStatus.get('position').setValue(this.board.statuses.length);
-    this.statusService.addNewStatus(this.newStatus.value).subscribe(data => {console.log(data); this.getBoard(); });
+    this.statusService.addNewStatus(this.newStatus.value).subscribe(data => {console.log(data);this.getBoard(this.board.id); });
     this.newStatus = new FormGroup({
       title: new FormControl(),
       position: new FormControl(this.board.statuses.length),
       board: new FormControl(),
     });
-    this.getBoard();
+    this.getBoard(this.board.id);
     successAlert();
   }
+
+  showEditTitleStatus(id: number) {
+    this.statusEditId = id;
+  }
+
+  isShowEditTitle(id: number) {
+    return this.statusEditId !== id;
+  }
+
+  saveEditStatus(i: number) {
+    const newTitle = $(`#titleStatus${this.statusEditId}`).val();
+    const status = {
+      id: this.board.statuses[i].id,
+      title: newTitle,
+      position: this.board.statuses[i].position,
+      board: {
+        id: this.board.id,
+      }
+    };
+    this.statusService.editStatus(status.id, status).subscribe(data => {console.log(data); this.getBoard(this.board.id); this.statusEditId = -1; });
+  }
+
+  deleteStatus(id: number) {
+    this.statusService.deleteStatus(id).subscribe(() => this.getBoard(this.board.id) );
+  }
+
+  // Label function
 
   addNewLabel() {
     this.newLabel.get('board').setValue({id : this.board.id});
@@ -263,37 +314,13 @@ export class TaskComponent implements OnInit {
     });
   }
 
-  deleteTask() {
-    this.taskService.deleteTask(this.taskDetail.id).subscribe(() => this.getBoard() );
-    this.taskDetail = {};
-  }
-
-  showEditTitleStatus(id: number) {
-    this.statusEditId = id;
-  }
-
-  isShowEditTitle(id: number) {
-    return this.statusEditId !== id;
-  }
-
-  saveEditStatus(i: number) {
-    const newTitle = $(`#titleStatus${this.statusEditId}`).val();
-    const status = {
-      id: this.board.statuses[i].id,
-      title: newTitle,
-      position: this.board.statuses[i].position,
-      board: {
-        id: this.board.id,
-      }
+  addNoti(value: string) {
+    let user = JSON.parse(localStorage.getItem('user'))
+    let noti = {
+      board: {id: this.board.id},
+      sender: {id: user.id},
+      action: value,
     };
-    this.statusService.editStatus(status.id, status).subscribe(data => {console.log(data); this.getBoard(); this.statusEditId = -1; });
+    this.socketService.sendNotification(this.board.id, noti );
   }
-
-  deleteStatus(id: number) {
-    this.statusService.deleteStatus(id).subscribe(() => this.getBoard() );
-  }
-
-  ngOnInit(): void {
-  }
-
 }
