@@ -1,5 +1,7 @@
 export interface Notification {
-  board?: any;
   sender?: any;
   action?: string;
+  date?: string;
+  receiver?: any;
+  status?: boolean;
 }

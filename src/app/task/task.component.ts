@@ -75,14 +75,15 @@ export class TaskComponent implements OnInit {
   }
 
   private getBoard(id: number) {
-    this.socketService.getCurrentNotification(id);
-    this.boardService.getBoardById(id).subscribe(data => {
+    // this.socketService.getCurrentNotification(id);
+    this.socketService.getCurrentBoard(id);
+    this.socketService.connectToBoardSocket(id);
+    // this.socketService.connectToNotificationBoard(id);
+    // this.socketService.notification.subscribe(data => {
+    //   this.notification = data;
+    // })
+    this.socketService.board.subscribe(data => {
       this.board = data;
-    })
-    this.socketService.connectToNotificationBoard(id);
-    this.socketService.notification.subscribe(data => {
-      this.notification = data;
-      console.log('ben task da nhan ')
     })
     // this.socketService.board.subscribe(data =>  this.board = data );
     // this.socketService.connectToBoardSocket(id);
@@ -99,7 +100,9 @@ export class TaskComponent implements OnInit {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
        this.moveInArray(event);
-
+       if(event.previousIndex != event.currentIndex) {
+         this.socketService.sendTask(this.board.id, this.board);
+       }
     } else {
       transferArrayItem(
         event.previousContainer.data,
@@ -109,41 +112,33 @@ export class TaskComponent implements OnInit {
       );
       this.moveToOtherArray(event);
     }
-
   }
 
   dropStatus(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.board.statuses, event.previousIndex, event.currentIndex);
-    for (let i = 0; i < this.board.statuses.length; i++) {
-      const statusMove = {
-        id: this.board.statuses[i].id,
-        title: this.board.statuses[i].title,
-        position: i,
-        board: {
-          id: this.board.id,
-        }
-      };
-      this.moveStatus(statusMove.id, statusMove);
-    }
     if(event.previousIndex != event.currentIndex) {
-      this.addNoti("Da di chuyen 1 status")
+      for (let i = 0; i < this.board.statuses.length; i++) {
+        this.board.statuses[i].position =  i;
+        console.log(this.board.statuses[i].title + ' ' + this.board.statuses[i].position);
+      }
+      // this.addNoti("Da di chuyen 1 status")
+        this.socketService.sendTask(this.board.id, this.board)
     }
-    // this.socketService.sendBoard(this.board.id);
   }
 
   private moveToOtherArray(event: CdkDragDrop<Task[], any>) {
     for (let i = 0; i < event.container.data.length; i++) {
-      const task = event.container.data[i];
-      task.position = i;
-      task.status.id = +event.container.id;
-      this.taskService.sortTask(event.container.data[i].id, task).subscribe();
+      event.container.data[i].position = i;
+      event.container.data[i].status.id = +event.container.id;
     }
     for (let i = 0; i < event.previousContainer.data.length; i++) {
-      const task = event.previousContainer.data[i];
-      task.position = i;
-      this.taskService.sortTask(event.previousContainer.data[i].id, task).subscribe();
+      event.previousContainer.data[i].position = i;
     }
-    this.addNoti("Đã di chuyển 1 task")
+    for (let i = 0; i < this.board.statuses.length; i++) {
+      console.log(this.board.statuses[i].title + ' ' + this.board.statuses[i].position);
+    }
+    // this.addNoti("Đã di chuyển 1 task")
+    this.socketService.sendTask(this.board.id, this.board);
   }
 
   // private sendTo() {
@@ -153,20 +148,20 @@ export class TaskComponent implements OnInit {
   private moveInArray(event: CdkDragDrop<Task[], any>) {
     for (let i = 0; i < event.container.data.length; i++) {
      event.container.data[i].position = i;
-      this.moveTask(event, i,  event.container.data[i]);
+      // this.moveTask(event, i,  event.container.data[i]);
     }
-    // this.socketService.sendTask(this.board.id, this.board);
-  }
-
-  private moveTask(event: CdkDragDrop<Task[], any>, i: number, task: Task) {
-    this.taskService.sortTask(event.container.data[i].id, task).subscribe();
-  }
-
-  private moveStatus(id: number, status: Status) {
-    this.statusService.editStatus(id, status).subscribe(data => {
-    });
 
   }
+
+  // private moveTask(event: CdkDragDrop<Task[], any>, i: number, task: Task) {
+  //   this.taskService.sortTask(event.container.data[i].id, task).subscribe();
+  // }
+  //
+  // private moveStatus(id: number, status: Status) {
+  //   this.statusService.editStatus(id, status).subscribe(data => {
+  //   });
+  //
+  // }
 
   // Lấy danh sách các list connect nhau
   listConnectTo(): string[] {
@@ -317,7 +312,6 @@ export class TaskComponent implements OnInit {
   addNoti(value: string) {
     let user = JSON.parse(localStorage.getItem('user'))
     let noti = {
-      board: {id: this.board.id},
       sender: {id: user.id},
       action: value,
     };

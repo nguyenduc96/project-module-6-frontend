@@ -42,8 +42,8 @@ export class SocketService {
   //   this.stompClient.send(`/app/board/${id}` , {}, )
   // }
 
-  sendTask(id: number, board: Board ) {
-    this.stompClient.send(`/task/board/${id}`,{}, JSON.stringify(board))
+  sendTask(id: number, board: any ) {
+    this.stompClient.send( `/app/task/board/${id}`, {} , JSON.stringify(board))
   }
 
   connectToNotificationBoard(id: number) {
