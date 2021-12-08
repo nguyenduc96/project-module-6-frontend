@@ -33,7 +33,7 @@ export class TaskComponent implements OnInit {
   newTask: FormGroup =  new FormGroup({
     title: new FormControl(),
     position: new FormControl(),
-    status:  new FormControl(),
+    status: new FormControl(),
   });
   newStatus: FormGroup = new FormGroup({
     title: new FormControl(),
@@ -54,6 +54,11 @@ export class TaskComponent implements OnInit {
   isShowDescriptionInput: boolean = false;
   isShowDeadlineInput: boolean = false;
   isShowAddStatusBox: boolean = false;
+
+  isSearchTask: boolean = false;
+
+  boardId: number;
+
   constructor(private boardService: BoardService,
               private taskService: TaskService,
               private statusService: StatusService,
@@ -69,9 +74,12 @@ export class TaskComponent implements OnInit {
 
     this.activatedRoute.paramMap.subscribe(param => {
       const id = +param.get('id');
+      this.boardId = id;
       this.getBoard(id);
     });
-    this.colorService.getAll().subscribe(data => {this.colors = data; });
+    this.colorService.getAll().subscribe(data => {
+      this.colors = data;
+    });
   }
 
   private getBoard(id: number) {
@@ -174,7 +182,7 @@ export class TaskComponent implements OnInit {
     this.newTask = new FormGroup({
       title: new FormControl(),
       position: new FormControl(99999),
-      status:  new FormControl(),
+      status: new FormControl(),
     });
     this.getBoard(this.board.id);
     this.addNoti("Đã thêm 1 thẻ mới ở bảng " +  this.board.title);
@@ -262,8 +270,8 @@ export class TaskComponent implements OnInit {
   // Label function
 
   addNewLabel() {
-    this.newLabel.get('board').setValue({id : this.board.id});
-    this.newLabel.get('color').setValue({id : this.newLabel.get('color').value});
+    this.newLabel.get('board').setValue({id: this.board.id});
+    this.newLabel.get('color').setValue({id: this.newLabel.get('color').value});
     this.labelService.addNewLabel(this.newLabel.value).subscribe(data => {
       successAlert();
       this.getLabels();
@@ -277,7 +285,7 @@ export class TaskComponent implements OnInit {
   }
 
   showLabelDetail(id: number) {
-    this.labelService.getById(id).subscribe( data => {
+    this.labelService.getById(id).subscribe(data => {
       this.newLabel = new FormGroup({
         id: new FormControl(data.id),
         content: new FormControl(data.content),
@@ -288,8 +296,8 @@ export class TaskComponent implements OnInit {
   }
 
   editLabel() {
-    this.newLabel.get('board').setValue({id : this.board.id});
-    this.newLabel.get('color').setValue({id : this.newLabel.get('color').value});
+    this.newLabel.get('board').setValue({id: this.board.id});
+    this.newLabel.get('color').setValue({id: this.newLabel.get('color').value});
     this.labelService.addNewLabel(this.newLabel.value).subscribe(data => {
       this.getLabels();
       this.newLabel = new FormGroup({

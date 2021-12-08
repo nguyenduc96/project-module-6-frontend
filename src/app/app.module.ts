@@ -16,12 +16,14 @@ import {JwtResponse} from './login/helper/JwtResponse';
 import {ErrorInterceptor} from './login/helper/ErrorInterceptor';
 import {HomeComponent} from './home/home.component';
 import {SharedModule} from './shared/shared.module';
+import { TestPipe } from './test.pipe';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
+
   ],
   imports: [
     BrowserModule,
