@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 import {Observable} from 'rxjs';
 import {Permission} from '../model/permission';
+import {BoardPermission} from '../model/board-permission';
 
 const URL = environment.apiUrl;
 
@@ -15,6 +16,10 @@ export class PermissionService {
   constructor(private http: HttpClient) { }
 
   getPermissions(): Observable<Permission[]> {
-    return this.http.get<Permission[]>(`${URL}/permissions/get-all`);
+    return this.http.get<Permission[]>(`${URL}/permission/get-all`);
+  }
+
+  addBoardPermission(boardPermission: BoardPermission): Observable<BoardPermission> {
+    return this.http.post<BoardPermission>(`${URL}/permission/add-board-permission`, boardPermission);
   }
 }

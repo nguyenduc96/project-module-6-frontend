@@ -1,17 +1,17 @@
-
 <form>
   Search <input (input)="getBoard(boardId)" type="text" id="title-search-task" name="title" placeholder="Tìm kiếm thẻ">
 </form>
 <div class="dropdown show">
-  <div><strong>Thông tin dự án : {{board?.title}} </strong><a class="btn btn-secondary dropdown-toggle" href="#"
-                                                                role="button" id="dropdownMenuLink"
-                                                                data-toggle="dropdown" aria-haspopup="true"
-                                                                aria-expanded="false">
+  <div><strong>Thông tin Bảng : {{board?.title}} </strong><a class="btn btn-secondary dropdown-toggle" href="#"
+                                                             role="button" id="dropdownMenuLink"
+                                                             data-toggle="dropdown" aria-haspopup="true"
+                                                             aria-expanded="false">
   </a>
     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
       <a class="dropdown-item" style="cursor: pointer" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Thêm
         thành viên vào bảng</a>
-      <a class="dropdown-item" style="cursor: pointer" data-bs-toggle="modal" data-bs-target="#staticDelete">Danh sách thành viên</a>
+      <a class="dropdown-item" style="cursor: pointer" data-bs-toggle="modal" data-bs-target="#staticDelete">Danh sách
+        thành viên</a>
     </div>
   </div>
 </div>
@@ -21,7 +21,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="staticBackdropLabel">Thêm người vào dự án</h5>
+        <h5 class="modal-title" id="staticBackdropLabel">Thêm người vào bảng</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form #formAddUser='ngForm' (ngSubmit)="addUserToBoard(formAddUser)">
@@ -38,7 +38,8 @@
                   <div *ngFor="let e of emailsConvert | convertFilter:email">
                     <ng-container>
                       <div style="cursor: pointer;">
-                        <button type="button" style="border: none; background-color: #FFFFFF;" [disabled]="checkEmail(e)" (click)="inputEmail(e)" >{{e}}</button>
+                        <button type="button" style="border: none; background-color: #FFFFFF;"
+                                [disabled]="checkEmail(e)" (click)="inputEmail(e)">{{e}}</button>
                         <sup style="color: red" *ngIf="checkEmail(e)"> Đã trong bảng</sup>
                       </div>
                     </ng-container>
@@ -50,10 +51,10 @@
               Chọn quyền:
             </label>
             <select name="permission" id="permission">
-              <option value="1">Thêm là người quan sát</option>
-              <option value="2">Thêm là thành viên</option>
+              <ng-container *ngFor="let permission of permissions">
+                <option value="{{permission.id}}">{{permission.name}}</option>
+              </ng-container>
             </select>
-
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Đóng</button>
@@ -64,8 +65,6 @@
     </div>
   </div>
 </div>
-
-
 
 
 <div class="board" cdkDropList cdkDropListOrientation="horizontal"
@@ -195,6 +194,22 @@ Enter status title..." class="form-control" formControlName="title"
         <div class="modal-title" id="exampleModalLabel">
           <h5 style="margin: 13px 0px 0px 10px;font-size: 30px" [hidden]="isShowTitleInput" (click)="showTitleEdit()">
             <label for="inputTitle">{{taskDetail.title}}</label></h5>
+          <div class="dropdown show">
+            <div><a class="btn btn-secondary dropdown-toggle" href="#"
+                    role="button" id="dropdownMenuAddMember"
+                    data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+            </a>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuAddMember">
+                <ng-container *ngFor="let email of emailInBoard">
+                  <button class="dropdown-item" style="border: none; background-color: #FFFFFF;cursor: pointer" (click)="addUserToTask(email)"
+                      [disabled]="checkEmailInTask(email)">{{email}}</button>
+                  <sup style="color: red" *ngIf="checkEmailInTask(email)">Đã có tham gia thẻ này</sup>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+
           <h5><input style="border: 1px solid rgba(183,178,178,0.65);border-radius: 10px; padding: 8px"
                      [hidden]="!isShowTitleInput" type="text" id="inputTitle" (change)="editTaskDetail(taskId)"
                      [(ngModel)]="taskDetail.title" (blur)="showTitleEdit()"></h5>
@@ -278,10 +293,10 @@ Enter status title..." class="form-control" formControlName="title"
             </form>
           </div>
           <div *ngFor="let cmt of comments" style="margin-top: 10px">
-                        <div class="col-1">
-                          <img src="{{cmt.user.avatar}}" style="border-radius: 50%;width: 70px;height: 70px;margin-top: 10px">
-                        </div>
-                        <div class="col-1"></div>
+            <div class="col-1">
+              <img src="{{cmt.user.avatar}}" style="border-radius: 50%;width: 70px;height: 70px;margin-top: 10px">
+            </div>
+            <div class="col-1"></div>
             <div>
               <div><strong>&nbsp; {{cmt.user.username}}</strong></div>
               <div style="background-color: rgba(255,255,255,0.42);padding: 8px;border-radius:8px;min-height: 40px">
@@ -388,6 +403,8 @@ Enter status title..." class="form-control" formControlName="title"
     </form>
   </div>
 </div>
+
+
 
 
 

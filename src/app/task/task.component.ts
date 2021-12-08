@@ -8,7 +8,7 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag
 import {Status} from '../model/status';
 import Swal from 'sweetalert2';
 import {Task} from '../model/task';
-import {successAlert} from '../note';
+import {showPopupError, showToastSuccess, successAlert} from '../note';
 import {LabelService} from '../service/label.service';
 import {ColorService} from '../service/color.service';
 import {Label} from '../model/label';
@@ -22,6 +22,9 @@ import {ProjectService} from '../service/project/project.service';
 import {User} from '../model/user';
 import {PermissionService} from '../service/permission.service';
 import {Permission} from '../model/permission';
+import {BoardPermission} from '../model/board-permission';
+import {AssignService} from '../service/assign.service';
+import {Assign} from '../model/assign';
 
 declare var $: any;
 
@@ -72,7 +75,6 @@ export class TaskComponent implements OnInit {
 
   boardId: number;
 
-
   projectId: number;
 
   isInputEmail: boolean = false;
@@ -87,6 +89,16 @@ export class TaskComponent implements OnInit {
 
   permissions: Permission[] = [];
 
+  boardPermission: BoardPermission = {};
+
+  permission: Permission = {};
+
+  emailInBoardArray: string[] = [];
+
+  emailInAssign = new Set();
+
+  assign: Assign = {};
+
   constructor(private boardService: BoardService,
               private taskService: TaskService,
               private statusService: StatusService,
@@ -96,7 +108,8 @@ export class TaskComponent implements OnInit {
               private commentService: CommentService,
               private userService: UserService,
               private activatedRoute: ActivatedRoute,
-              private permissionService: PermissionService) {
+              private permissionService: PermissionService,
+              private assignService: AssignService) {
     this.activatedRoute.paramMap.subscribe(param => {
       const id = +param.get('id');
       this.boardId = id;
@@ -105,16 +118,76 @@ export class TaskComponent implements OnInit {
     this.colorService.getAll().subscribe(data => {
       this.colors = data;
     });
+    this.getAllPermissions();
+    this.getUserInBoard();
   }
 
   getAllPermissions() {
     this.permissionService.getPermissions().subscribe(data => {
+      console.log(data);
       this.permissions = data;
+    });
+  }
+
+  getAllUserInAssign(id) {
+    this.emailInAssign = new Set();
+    this.assignService.getAllUsersInAssignByTaskId(id).subscribe(data => {
+      data.forEach( user => {console.log(this.emailInAssign);
+        this.emailInAssign.add(user.email);
+      })
+    })
+  }
+
+  addUserToTask(email: string) {
+    this.assign = {
+      user: {
+        email: email
+      },
+      task: {
+        id: this.taskDetail.id
+      }
+    }
+    this.assignService.addMemberToAssign(this.assign).subscribe(data => {
+      console.log(data);
+      showToastSuccess('Thêm thành công');
+    }, error => {
+      if (error.status === 404) {
+        showPopupError('Thông báo','Không tìm thấy người dùng');
+      } else if (error.status === 409) {
+        showPopupError('Thông báo','Người dùng đã có trong danh sách');
+      } else {
+        showPopupError('Thông báo','Có lỗi xảy ra');
+      }
     })
   }
 
   addUserToBoard(formAddUser: NgForm) {
-
+    let permissionId = $('#permission').val();
+    let email = $('#email').val();
+    this.boardPermission = {
+      board: {
+        id: this.boardId
+      },
+      user: {
+        email: email
+      },
+      permission: {
+        id: permissionId
+      }
+    };
+    this.permissionService.addBoardPermission(this.boardPermission).subscribe(data => {
+      console.log(data);
+      $('#email').val('');
+      showToastSuccess('Thêm thành công');
+    }, (err) => {
+      if (err.status === 404) {
+        showPopupError('Thông báo','Email không tồn tại');
+        $('#email').val('');
+      } else if (err.status === 409) {
+        showPopupError('Thông báo','Email đã tồn tại');
+        $('#email').val('');
+      }
+    });
   }
 
   searchEmail() {
@@ -126,10 +199,16 @@ export class TaskComponent implements OnInit {
     return this.emailInBoard.has(email);
   }
 
+
+  checkEmailInTask(email: string) {
+    return this.emailInAssign.has(email);
+  }
+
   getUserInBoard() {
     this.boardService.getAllUserInBoard(this.boardId).subscribe(data => {
       data.forEach(user => {
         this.emailInBoard.add(user.email);
+        this.emailInBoardArray.push(user.email);
       });
     });
   }
@@ -295,6 +374,7 @@ export class TaskComponent implements OnInit {
   showTaskDetail(id: number) {
     this.taskService.findById(id).subscribe(data => {
       this.taskDetail = data;
+      this.getAllUserInAssign(id);
       this.showCommentByTaskId(id);
     }, error => {
       console.log('khong lay duoc detail');
@@ -427,4 +507,9 @@ export class TaskComponent implements OnInit {
   inputEmail(email: string) {
     $('#email').val(email);
   }
+
+  inputEmailAddTask(email: string) {
+    $('email-add-task').val(email);
+  }
+
 }
