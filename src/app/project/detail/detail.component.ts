@@ -1,11 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {ProjectService} from '../../service/project/project.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Project} from '../../model/project';
 import {FormControl, FormGroup, NgForm} from '@angular/forms';
 import {User} from '../../model/user';
-import {showPopupError, showToastError, showToastSuccess, successAlert} from '../../note';
-import {BoardService} from "../../service/board/board.service";
+import {showPopupError, showToastError, showToastSuccess} from '../../note';
+import {ListProjectService} from '../../ListProjectSerice';
+import {SendProjectService} from '../../SendProjectService';
+import {BoardService} from '../../service/board/board.service';
 
 @Component({
   selector: 'app-detail',
@@ -17,6 +19,8 @@ export class DetailComponent implements OnInit {
 
   user: User = {};
 
+  id: number;
+
   newBoard: FormGroup = new FormGroup({
     id: new FormControl(),
     title: new FormControl(),
@@ -24,8 +28,11 @@ export class DetailComponent implements OnInit {
   });
 
   constructor(private projectService: ProjectService,
+              private boardService: BoardService,
               private activatedRouter: ActivatedRoute,
-              private boardService: BoardService) {
+              private router: Router,
+              private listProjectService: ListProjectService,
+              private sendProject: SendProjectService) {
     this.getProject();
   }
 
@@ -35,8 +42,8 @@ export class DetailComponent implements OnInit {
 
   getProject() {
     this.activatedRouter.paramMap.subscribe(params => {
-      let id = +params.get('id');
-      this.projectService.getProject(id).subscribe(project => {
+      this.id = +params.get('id');
+      this.projectService.getProject(this.id).subscribe(project => {
         this.project = project;
       });
     });
@@ -48,6 +55,29 @@ export class DetailComponent implements OnInit {
       showToastSuccess('Thêm thành công');
     }, error => {
       showPopupError('Thêm thất bại', 'Tên thành viên không đúng hoặc bạn không có quyền thêm thành viên');
+    });
+  }
+
+  deleteProject() {
+    this.projectService.removeProject(this.project.id).subscribe((data) => {
+      console.table(data)
+      this.listProjectService.addProjects(data);
+      this.router.navigateByUrl('/home');
+      showToastSuccess('Xóa thành công');
+    }, error => {
+      showPopupError('Xóa thất bại', 'Bạn không có quyền xóa dự án này');
+    });
+  }
+
+  editProject(formEdit: NgForm) {
+    this.project = formEdit.value;
+    this.projectService.updateProject(this.id, this.project).subscribe((data) => {
+      this.sendProject.sendProject(data);
+      formEdit.reset();
+      this.router.navigateByUrl('/home');
+      showToastSuccess('Sửa thành công');
+    }, error => {
+      showPopupError('Sửa thất bại', 'Bạn không có quyền sửa dự án này');
     });
   }
 

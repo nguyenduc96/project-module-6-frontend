@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ProjectService} from '../../service/project/project.service';
 import {Project} from '../../model/project';
 import {SendProjectService} from '../../SendProjectService';
+import {ListProjectService} from '../../ListProjectSerice';
 
 @Component({
   selector: 'app-sidebar',
@@ -17,13 +18,25 @@ export class SidebarComponent implements OnInit {
 
 
   constructor(private projectService: ProjectService,
-              private sendProjectService: SendProjectService) {
+              private sendProjectService: SendProjectService,
+              private listProjectService: ListProjectService) {
     this.getAllProjects();
     this.getProjects();
     this.sendProjectService.currentProject.subscribe(
       project => {
-        this.project = project;
+        for (let i = 0; i < this.myProjects.length; i++) {
+         if (this.myProjects[i].id === project.id) {
+           this.myProjects[i] = project;
+           return;
+         }
+        }
         this.myProjects.push(project);
+      }
+    );
+
+    this.listProjectService.currentProject.subscribe(
+      projects => {
+        this.myProjects = projects;
       }
     );
   }
@@ -35,6 +48,7 @@ export class SidebarComponent implements OnInit {
   getProjects() {
     this.projectService.getProjectByProjectOwner().subscribe(
       data => {
+        console.table(data)
         this.myProjects = data;
       },
       error => {

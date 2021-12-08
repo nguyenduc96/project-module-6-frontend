@@ -1,5 +1,5 @@
 
-<nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+<nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row" style="background-color: rgba(38,16,16,0.6); !important;">
 
   <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
     <a class="navbar-brand brand-logo mr-5" routerLink="/home"><img src="assets/images/logo.svg" class="mr-2" alt="logo"/></a>
@@ -27,7 +27,9 @@
         <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
           <img src="{{user?.avatar}}" alt="profile"/>
         </a>
-        <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+        <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
+             style="border-radius: 10px"
+             aria-labelledby="profileDropdown">
           <a class="dropdown-item" routerLink="/user/information">
             <i class="ti-settings text-primary"></i>
             Thông tin cá nhân
@@ -36,18 +38,18 @@
             <i class="ti-pencil text-primary"></i>
             Đổi mật khẩu
           </a>
-          <a class="dropdown-item" style="cursor: pointer">
-            <label for="file"><i class="ti-file text-primary"></i>
-              Đổi ảnh đại diện</label>
-            <input type="file"
-                   id="file"
-                   #userPhoto
-                   (change)="onFileSelected($event)"
-                   name="image"
-                   autocomplete="off"
-                   hidden
-            />
-          </a>
+<!--          <a class="dropdown-item" style="cursor: pointer">-->
+<!--            <label for="file"><i class="ti-file text-primary"></i>-->
+<!--              Đổi ảnh đại diện</label>-->
+<!--            <input type="file"-->
+<!--                   id="file"-->
+<!--                   #userPhoto-->
+<!--                   (change)="onFileSelected($event)"-->
+<!--                   name="image"-->
+<!--                   autocomplete="off"-->
+<!--                   hidden-->
+<!--            />-->
+<!--          </a>-->
           <a class="dropdown-item" (click)="logout()">
             <i class="ti-power-off text-primary"></i>
             Đăng xuất

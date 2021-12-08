@@ -1,6 +1,44 @@
-<!--<div>-->
-<!--  <p *ngFor="let noti of notification" style="color: white">{{noti.action}} &#45;&#45; {{noti.sender.username}}</p>-->
+<!--<div cdkDropList cdkDropListOrientation="horizontal"  (cdkDropListDropped)="dropStatus($event)">-->
+<!--  <div class="example-container border border-dark" cdkDrag *ngFor="let status of board.statuses">-->
+<!--    <div class="row text-center">-->
+<!--      <h2>{{status.title}}</h2>-->
+<!--    </div>-->
+<!--    <div-->
+<!--      cdkDropList-->
+<!--      [id]="status.id.toString()"-->
+<!--      [cdkDropListData]="status.tasks"-->
+<!--      [cdkDropListConnectedTo]="listConnectTo()"-->
+<!--      class="example-list"-->
+<!--      (cdkDropListDropped)="dropTask($event)">-->
+<!--      <div class="example-box" *ngFor="let task of status.tasks" cdkDrag>-->
+<!--        <div>{{task.id}}</div><div>{{task.title}}</div>-->
+<!--      </div>-->
+<!--      <div class="example-box row" [hidden]="this.statusId != status.id || !isShowAddBox">-->
+<!--        <div class="row">-->
+<!--          <form [formGroup]="newTask" (ngSubmit)="addNewTask()" >-->
+<!--            <div class="row-3" style="height: 150px; padding: 20px" >-->
+<!--              <input type="text" formControlName="title" style="width: 100%; height: 100%">-->
+<!--            </div>-->
+<!--            <div class="row float-end" >-->
+<!--              <div>-->
+<!--                <button type="submit" class="btn btn-primary" style="width: 50px ;height: 50px" (click)="showAddBox()">Add</button>-->
+<!--                <button type="button" class="btn btn-danger" style="width: 50px ;height: 50px" (click)="showAddBox()">x</button>-->
+<!--              </div>-->
+<!--            </div>-->
+
+<!--          </form>-->
+<!--        </div>-->
+
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="float-end"><button class="btn btn-primary float-end "-->
+<!--                                   style="margin-right: 30px;"-->
+<!--                                   (click)="setStatusId(status.id)">{{(isShowAddBox && status.id == this.statusId) ? '-' : '+'}}-->
+<!--    </button>-->
+<!--    </div>-->
+<!--  </div>-->
 <!--</div>-->
+<!--test-->
 
 
 <div class="board" cdkDropList cdkDropListOrientation="horizontal"
@@ -12,22 +50,20 @@
 
     <div class="insideContainer border-dark">
       <div>
-        <h2 style="text-align: left">
-          <span style="float: left; font-size: 20px" [hidden]="!isShowEditTitle(status.id)">{{status.title}}</span>
+        <h2 style="text-align: left"><span  [hidden]="statusEditId == status.id">{{status.title}}</span>
           <input style="width: 100%;" type="text"
-                 [hidden]="isShowEditTitle(status.id)"
+                 [hidden]="statusEditId != status.id"
                  id="titleStatus{{status.id}}"
                  [value]="status.title"
                  (change)="saveEditStatus(i)"
-                 (blur)="isShowEditTitle(-1)">
-        </h2>
+                 (blur)="showEditTitleStatus(-1)"></h2>
         <div style="text-align: right" class="dropdown">
-          <div class="btn-group" data-toggle="dropdown" >
-            <p class="btn btn-outline" style="border-radius: 10px;padding-bottom: 3px" data-bs-toggle="dropdown"
+          <div class="btn-group" data-toggle="dropdown">
+            <p class="btn" style="border-radius: 10px;padding-bottom: 3px" data-bs-toggle="dropdown"
                aria-expanded="false">
               <i class="ti-more"></i>
             </p>
-            <ul class="dropdown-menu dropdown-menu-right " style="border-radius: 10px">
+            <ul class="dropdown-menu" style="border-radius: 10px;position: relative">
               <li><label style="border-radius: 6px" class="dropdown-item" for="titleStatus{{status.id}}"
                          (click)="showEditTitleStatus(status.id)">Change name</label></li>
               <li><label style="border-radius: 6px" class="dropdown-item"
@@ -45,6 +81,7 @@
       [cdkDropListConnectedTo]="listConnectTo()"
       class="example-list "
       style="max-height:520px;overflow-y: auto; border:none;background-color: #d5caca "
+      [hidden]="!(status.tasks.length > 0 || isShowTaskAddBox && status.id == this.statusId)"
       (cdkDropListDropped)="dropTask($event)">
       <div style="margin-left: 2px; background-color: rgba(255,255,255,0.9) " class="addTextArea example-box"
            *ngFor="let task of status.tasks" cdkDrag
@@ -66,7 +103,7 @@ Enter tag title..." class="form-control" type="text" formControlName="title" sty
           </div>
           <div class="row float-end">
             <div class="addFormCard" style="padding-bottom: 10px">
-              <button type="submit" class="btn btn-primary" (click)="showTaskAddBox()"
+              <button type="submit" class="btn btn-success" (click)="showTaskAddBox()"
                       style="border-radius: 7px; margin-top: 2px">Add
               </button>
               <button type="button" class="btn btn-danger" (click)="showTaskAddBox()"
@@ -100,7 +137,7 @@ Enter tag title..." class="form-control" type="text" formControlName="title" sty
               <input type="text" placeholder="
 Enter status title..." class="form-control" formControlName="title"
                      style="width: 115%; height: 36px;position: relative;top: -10px">
-              <button type="submit" class="btn btn-primary"
+              <button type="submit" class="btn btn-success"
                       style="margin-left: 1px;height: 30px;padding: 3px 8px 10px 8px" (click)="showAddStatusForm()">Add
               </button>
               <button type="button" class="btn btn-danger" style="height: 30px;padding: 2px 10px 12px 10px"
@@ -148,7 +185,7 @@ Enter status title..." class="form-control" formControlName="title"
           <div>
             <tr style="width: 100%">
               <td><i class="ti-menu" style="font-size: 20px;margin: 0px 12px 10px 0px">&nbsp;Description</i>
-                <button id="add" (click)="showDescriptionEdit()" style="padding: 2px 9px 2px 9px;margin-bottom: 5px;border-radius: 8px;
+                <button class="btn btn-success" id="add" (click)="showDescriptionEdit()" style="padding: 2px 9px 2px 9px;margin-bottom: 5px;border-radius: 8px;
                        background-color: rgba(243,237,237,0.96); border: 1px solid rgb(231,221,221)"
                         onMouseOut="this.style.backgroundColor = 'rgba(243,237,237,0.96)'"
                         onMouseOver="this.style.backgroundColor = 'rgba(183,178,178,0.65)'">Add
@@ -179,7 +216,7 @@ Enter status title..." class="form-control" formControlName="title"
                 <!--                       (click)="showDeadlineEdit()">-->
                 <!--                  {{taskDetail.deadline != null ? taskDetail.deadline : '...'}}-->
                 <!--                </label>-->
-                <button (click)="showDeadlineEdit()" style="padding: 2px 9px 2px 9px;margin-bottom: 5px;border-radius: 8px;
+                <button class="btn btn-success" (click)="showDeadlineEdit()" style="padding: 2px 9px 2px 9px;margin-bottom: 5px;border-radius: 8px;
                        background-color: rgba(243,237,237,0.96); border: 1px solid rgb(231,221,221)"
                         onMouseOut="this.style.backgroundColor = 'rgba(243,237,237,0.96)'"
                         onMouseOver="this.style.backgroundColor = 'rgba(183,178,178,0.65)'">Add
@@ -272,7 +309,7 @@ Enter status title..." class="form-control" formControlName="title"
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+          <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Save changes</button>
         </div>
       </form>
     </div>
@@ -300,7 +337,7 @@ Enter status title..." class="form-control" formControlName="title"
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="deleteLabel()">Delete</button>
-          <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+          <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Save changes</button>
         </div>
       </div>
     </form>
