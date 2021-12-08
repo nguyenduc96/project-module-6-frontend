@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Board} from '../model/board';
-import {FormControl, FormGroup} from '@angular/forms';
+import {FormControl, FormGroup, NgForm} from '@angular/forms';
 
 import {TaskService} from '../service/task.service';
 import {StatusService} from '../service/status.service';
@@ -15,6 +15,9 @@ import {Label} from '../model/label';
 import {Color} from '../model/color';
 import {ActivatedRoute} from '@angular/router';
 import {BoardService} from '../service/board/board.service';
+import {CommentService} from '../service/comment.service';
+import {UserService} from '../service/user.service';
+import {Comment} from '../model/comment';
 
 declare var $: any;
 
@@ -27,7 +30,14 @@ export class TaskComponent implements OnInit {
   board: Board;
   labels: Label[];
   colors: Color[];
-  newTask: FormGroup = new FormGroup({
+  comments: any[];
+
+  comment: Comment = {};
+
+  newComment: FormGroup = new FormGroup({
+    content: new FormControl(),
+  });
+  newTask: FormGroup =  new FormGroup({
     title: new FormControl(),
     position: new FormControl(),
     status: new FormControl(),
@@ -43,6 +53,8 @@ export class TaskComponent implements OnInit {
     color: new FormControl(),
     board: new FormControl(),
   });
+
+  taskId: number;
   taskDetail: Task = {};
   statusId: number;
   statusEditId: number;
@@ -61,6 +73,8 @@ export class TaskComponent implements OnInit {
               private statusService: StatusService,
               private labelService: LabelService,
               private colorService: ColorService,
+              private commentService: CommentService,
+              private userService: UserService,
               private activatedRoute: ActivatedRoute) {
       this.activatedRoute.paramMap.subscribe(param => {
       const id = +param.get('id');
@@ -168,6 +182,24 @@ export class TaskComponent implements OnInit {
     return this.board.statuses.map(status => status.id.toString());
   }
 
+  //add comment
+
+  addNewComment(formComment: NgForm){
+    // this.newComment.get('task').setValue({id: this.taskId});
+    // this.commentService.addComment(this.newComment.value).subscribe( data => {this.showTaskDetail(this.taskDetail.id)})
+    // this.newComment = new FormGroup({
+    //   content: new FormControl(),
+    // });
+    this.comment = formComment.value;
+    this.comment.task = {
+      id: this.taskDetail.id
+    }
+    this.commentService.addComment(this.comment).subscribe(data => {
+      this.showTaskDetail(this.taskDetail.id)
+      successAlert();
+    })
+  }
+
   addNewTask(i: number) {
     this.newTask.get('status').setValue({id: this.statusId});
     this.newTask.get('position').setValue(this.board.statuses[i].tasks.length);
@@ -185,7 +217,7 @@ export class TaskComponent implements OnInit {
   }
 
   setStatusId(id: number) {
-    this.statusId = id;
+    this.statusId  = id;
     this.showTaskAddBox();
   }
 
@@ -193,10 +225,15 @@ export class TaskComponent implements OnInit {
     this.isShowTaskAddBox = !this.isShowTaskAddBox;
   }
 
+  showCommentByTaskId( id: number){
+    this.commentService.findById(id).subscribe(data => { this.comments = data});
+  }
+
 
   showTaskDetail(id: number) {
     this.taskService.findById(id).subscribe(data => {
       this.taskDetail = data;
+      this.showCommentByTaskId(id);
     }, error => {
       console.log('khong lay duoc detail');
     });

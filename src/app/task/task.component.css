@@ -56,3 +56,29 @@
 #add {
 
 }
+
+.container_swap{
+
+  width: 400px;
+
+}
+
+.div_left{
+
+  width: 200px;
+
+  float: left;
+
+  text-align: center;
+
+}
+
+.div_right{
+
+  width: 200px;
+
+  float: left;
+
+  text-align: center;
+
+}
