@@ -203,40 +203,28 @@ Enter status title..." class="form-control" formControlName="title"
             <hr>
           </div>
           <div>
-            <tr style="width: 100%">
-              <td><i class="ti-pulse" style="font-size: 20px;margin: 0px 12px 10px 0px">&nbsp;Deadline</i>
+            <div>
+              <td><i class="ti-clip" style="font-size: 20px;margin: 0px 12px 10px 0px">&nbsp;Tập tin đính kèm </i></td>
+              <td><button class="btn-success" style="padding: 5px 6px 0px 6px;margin-left: 10px;border: 1px solid rgba(255,255,255,0); border-radius: 7px"><label for="task-file">Đính kèm</label></button></td>
+              <input hidden type="file" id="task-file" (change)="addTaskFile($event)">
+          </div>
+            <div *ngFor="let tf of taskFiles"  >
+              <div>
+              <div style="margin-top: 10px">
+              <img src="{{tf.name}}" style="width: 170px;border-radius:10px;height: 100%">
+            </div>
 
-                <!--                <label for="inputDeadline" [hidden]="isShowDeadlineInput"-->
-                <!--                       (click)="showDeadlineEdit()">-->
-                <!--                  {{taskDetail.deadline != null ? taskDetail.deadline : '...'}}-->
-                <!--                </label>-->
-                <button class="btn btn-success" (click)="showDeadlineEdit()" style="padding: 2px 9px 2px 9px;
-                margin-bottom: 5px;border-radius: 8px">Add
-                </button>
-              </td>
-              <!--                <div [hidden]="!isShowDeadlineInput">-->
-              <!--                  <input type="text" id="inputDeadline" (change)="editTaskDetail()"-->
-              <!--                         [(ngModel)]="taskDetail.deadline"-->
-              <!--                         (blur)="showDeadlineEdit()">-->
-
-            </tr>
-            <tr>
-              <td style="padding-left: 20px">
-                <label for="inputDeadline" [hidden]="isShowDeadlineInput"
-                       (click)="showDeadlineEdit()">{{taskDetail.deadline != null ? taskDetail.deadline : 'edit'}}
-                </label>
-                <input style="width: 300px;height: 30px"
-                       class="form-control"
-                       [hidden]="!isShowDeadlineInput" type="text"
-                       id="inputDeadline" (change)="editTaskDetail(taskId)"
-                       [(ngModel)]="taskDetail.deadline" (blur)="showDeadlineEdit()">
-              </td>
-            </tr>
+            </div>
+          </div>
           </div>
           <hr>
+
+<!--          //comment-->
+
+
           <div>
-            <form #formComment='ngForm' (ngSubmit)="addNewComment(formComment)">
-              <input style="width: 85%;height: 33px;padding-left: 5px;
+            <form style="margin-left: 10px" #formComment='ngForm' (ngSubmit)="addNewComment(formComment)">
+              <input style="width: 90%;height: 33px;padding-left: 5px;
                 border-radius: 6px;margin-right: 5px;border: 1px solid #a49898" name="content"
                      ngModel placeholder="Nhập bình luận">
               <button type="submit" class="btn btn-success"
@@ -248,20 +236,13 @@ Enter status title..." class="form-control" formControlName="title"
 
             <div class="row" *ngFor="let cmt of comments" style="margin-top: 10px">
               <div class="col-1" >
-                <img src="{{cmt.user.avatar}}" style="border-radius: 50%;width: 70px;height: 70px;margin-top: 10px" >
+                <img src="{{cmt.user.avatar}}" style="border-radius: 50%;width: 70px;height: 70px;margin: 13px 0px 0px 25px" >
               </div>
               <div class="col-1"></div>
-              <div class="col-10" >
-
-                  <div ><strong>&nbsp; {{cmt.user.username}}</strong></div>
-
-
-
-                <div style="background-color: rgba(255,255,255,0.42);padding: 8px;border-radius:8px;min-height: 40px" ><p>{{cmt.content}}</p></div>
-
+              <div class="col-10"  >
+                  <div ><strong>&nbsp; {{cmt.user.username}} </strong> &nbsp;<i style="font-size: 13px" class="ti-time"> </i> <label style="font-size: 12px;color: #5b5656"> &nbsp; {{cmt.date}}</label></div>
+                <div style="background-color: rgba(255,255,255,0.55);width: 100%;margin-right: 15px;padding: 12px;border-radius:5px;min-height: 40px" ><p>{{cmt.content}}</p></div>
               </div>
-
-
             </div>
 
           <!--
@@ -282,8 +263,7 @@ Enter status title..." class="form-control" formControlName="title"
           </div>
 
 
-          <!--template-->
-          <!--<div class="board">-->
+           <div class="board">-->
           <!--<div class="container" >-->
           <!--  <div class="insideContainer">-->
           <!--    <h1 class="cardHeading">To Do<span><i class="fas fa-ellipsis-h"></i></span>ss</h1>-->
@@ -370,6 +350,7 @@ Enter status title..." class="form-control" formControlName="title"
               </form>
             </div>
           </div>
+
 
 
 

@@ -8,7 +8,7 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag
 import {Status} from '../model/status';
 import Swal from 'sweetalert2';
 import {Task} from '../model/task';
-import {successAlert} from '../note';
+import {showToastError, showToastNotice, showToastSuccess, successAlert} from '../note';
 import {LabelService} from '../service/label.service';
 import {ColorService} from '../service/color.service';
 import {Label} from '../model/label';
@@ -18,6 +18,12 @@ import {BoardService} from '../service/board/board.service';
 import {CommentService} from '../service/comment.service';
 import {UserService} from '../service/user.service';
 import {Comment} from '../model/comment';
+import {TaskFileService} from '../service/task-file.service';
+import {finalize} from 'rxjs/operators';
+import {Observable} from 'rxjs';
+import {AngularFireStorage} from '@angular/fire/storage';
+import {TaskFile} from '../model/taskFile';
+import {log} from 'util';
 
 declare var $: any;
 
@@ -31,6 +37,11 @@ export class TaskComponent implements OnInit {
   labels: Label[];
   colors: Color[];
   comments: any[];
+  taskFiles: any[];
+  selectedFile: File = null;
+  downloadURL: Observable<string>;
+
+  taskFile: TaskFile = {};
 
   comment: Comment = {};
 
@@ -63,11 +74,13 @@ export class TaskComponent implements OnInit {
   isShowDescriptionInput: boolean = false;
   isShowDeadlineInput: boolean = false;
   isShowAddStatusBox: boolean = false;
-  constructor(private boardService: BoardService,
+  constructor(private storage: AngularFireStorage,
+              private boardService: BoardService,
               private taskService: TaskService,
               private statusService: StatusService,
               private labelService: LabelService,
               private colorService: ColorService,
+              private taskFileService: TaskFileService,
               private commentService: CommentService,
               private userService: UserService,
               private activatedRoute: ActivatedRoute) {
@@ -171,14 +184,48 @@ export class TaskComponent implements OnInit {
     return this.board.statuses.map(status => status.id.toString());
   }
 
+  //add TaskFile
+    addTaskFile(event) {
+    let text = 'Đang cập nhật ảnh đại diện'
+    showToastNotice(text);
+    var n = Date.now();
+    const file = event.target.files[0];
+    const filePath = `RoomsImages/${n}`;
+    const fileRef = this.storage.ref(filePath);
+    const task = this.storage.upload(`RoomsImages/${n}`, file);
+    task.snapshotChanges()
+      .pipe(
+        finalize(() => {
+          this.downloadURL = fileRef.getDownloadURL();
+          this.downloadURL.subscribe(url => {
+            if (url) {
+              this.taskFile.task = {
+                id: this.taskDetail.id
+              }
+              this.taskFile.name = url;
+              this.taskFileService.addTaskFile(this.taskFile). subscribe( data => {
+                console.log(data)
+              })
+            }
+          }, () => {
+            let title = "Cập nhật ảnh đại diện thất bại";
+            showToastError(title)
+          });
+        })
+      )
+      .subscribe(url => {
+        if (url) {
+          console.log(url);
+        }
+      });
+  }
+
+
+
+
   //add comment
 
   addNewComment(formComment: NgForm){
-    // this.newComment.get('task').setValue({id: this.taskId});
-    // this.commentService.addComment(this.newComment.value).subscribe( data => {this.showTaskDetail(this.taskDetail.id)})
-    // this.newComment = new FormGroup({
-    //   content: new FormControl(),
-    // });
     this.comment = formComment.value;
     this.comment.task = {
       id: this.taskDetail.id
@@ -215,11 +262,17 @@ export class TaskComponent implements OnInit {
     this.commentService.findById(id).subscribe(data => { this.comments = data});
   }
 
+  showTaskFileByTaskId(id : number){
+    this.taskFileService.getAllByTaskId(id).subscribe( data => {
+      this.taskFiles = data;
+    })
+  }
 
-  // show comment By Task
+
+  // show comment/taskFile By Task
 
   showTaskDetail(id: number) {
-    this.taskService.findById(id).subscribe(data => {this.taskDetail = data; this.showCommentByTaskId(id) }, error => { console.log('khong lay duoc detail'); });
+    this.taskService.findById(id).subscribe(data => {this.taskDetail = data; this.showCommentByTaskId(id); this.showTaskFileByTaskId(id) }, error => { console.log('khong lay duoc detail'); });
   }
 
 
