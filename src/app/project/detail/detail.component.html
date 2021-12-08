@@ -31,11 +31,12 @@
             data-bs-target="#addNewBoard">
       Thêm bảng
     </button>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+            style="margin: 50px; background-color: rgba(132,154,179,0.39)"
+            data-bs-target="#addNewBoard">
+      TV
+    </button>
   </div>
-
-</div>
-
-
   <div *ngIf="project.boards.length == 0">
     <h3 class="card-title">
       Hiện tại dự án chưa có bảng nào
@@ -53,10 +54,6 @@ border-radius: 10px"
          data-bs-target="#editBoard" (click)="showBoardDetail(b.id)">Edit</a>
     </div>
   </div>
-
-
-
-
 <!-- Modal -->
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="staticBackdropLabel" aria-hidden="true">

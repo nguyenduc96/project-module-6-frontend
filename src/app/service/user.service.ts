@@ -33,4 +33,6 @@ export class UserService {
   getAllUserUniques(): Observable<UserUnique[]> {
     return this._http.get<UserUnique[]>(URL + '/user/check-unique');
   }
+
+
 }

@@ -15,6 +15,8 @@ import {Label} from '../model/label';
 import {Color} from '../model/color';
 import {ActivatedRoute} from '@angular/router';
 import {BoardService} from '../service/board/board.service';
+import {ProjectService} from '../service/project/project.service';
+import {User} from '../model/user';
 
 declare var $: any;
 
@@ -51,12 +53,18 @@ export class TaskComponent implements OnInit {
   isShowDescriptionInput: boolean = false;
   isShowDeadlineInput: boolean = false;
   isShowAddStatusBox: boolean = false;
+
+  projectId: number;
+
+  userInProject: User[] = [];
+
   constructor(private boardService: BoardService,
               private taskService: TaskService,
               private statusService: StatusService,
               private labelService: LabelService,
               private colorService: ColorService,
-              private activatedRoute: ActivatedRoute) {
+              private activatedRoute: ActivatedRoute,
+              private projectService: ProjectService) {
     this.activatedRoute.paramMap.subscribe(param => {
       const id = +param.get('id');
       this.getBoard(id);
@@ -67,10 +75,18 @@ export class TaskComponent implements OnInit {
   private getBoard(id: number) {
     this.boardService.getBoardById(id).subscribe(data => {
       this.board = data;
+      this.projectId = this.board.project;
+      this.getUserByProject();
       this.getLabels();
     }, error => {
       console.log('Error');
     });
+  }
+
+  getUserByProject() {
+      this.projectService.getUserByProjectId(this.projectId).subscribe(data => {
+        this.userInProject = data;
+      })
   }
 
   private getLabels() {
@@ -230,6 +246,7 @@ export class TaskComponent implements OnInit {
       });
     });
   }
+
 
   showLabelDetail(id: number) {
     this.labelService.getById(id).subscribe( data => {
