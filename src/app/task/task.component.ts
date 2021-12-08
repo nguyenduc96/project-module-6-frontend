@@ -75,18 +75,16 @@ export class TaskComponent implements OnInit {
   }
 
   private getBoard(id: number) {
-    // this.socketService.getCurrentNotification(id);
+    this.socketService.getCurrentNotification(id);
     this.socketService.getCurrentBoard(id);
     this.socketService.connectToBoardSocket(id);
-    // this.socketService.connectToNotificationBoard(id);
-    // this.socketService.notification.subscribe(data => {
-    //   this.notification = data;
-    // })
+    this.socketService.connectToNotificationBoard(id);
+    this.socketService.notification.subscribe(data => {
+      this.notification = data;
+    })
     this.socketService.board.subscribe(data => {
       this.board = data;
     })
-    // this.socketService.board.subscribe(data =>  this.board = data );
-    // this.socketService.connectToBoardSocket(id);
   }
 
   private getLabels() {
@@ -101,6 +99,7 @@ export class TaskComponent implements OnInit {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
        this.moveInArray(event);
        if(event.previousIndex != event.currentIndex) {
+         this.addNoti("Đã di chuyển 1 thẻ ở bảng " +  this.board.title)
          this.socketService.sendTask(this.board.id, this.board);
        }
     } else {
@@ -121,7 +120,7 @@ export class TaskComponent implements OnInit {
         this.board.statuses[i].position =  i;
         console.log(this.board.statuses[i].title + ' ' + this.board.statuses[i].position);
       }
-      // this.addNoti("Da di chuyen 1 status")
+      this.addNoti("Đã di chuyển 1 cột ở bảng " +  this.board.title)
         this.socketService.sendTask(this.board.id, this.board)
     }
   }
@@ -137,7 +136,7 @@ export class TaskComponent implements OnInit {
     for (let i = 0; i < this.board.statuses.length; i++) {
       console.log(this.board.statuses[i].title + ' ' + this.board.statuses[i].position);
     }
-    // this.addNoti("Đã di chuyển 1 task")
+    this.addNoti("Đã di chuyển 1 thẻ ở bảng " +  this.board.title)
     this.socketService.sendTask(this.board.id, this.board);
   }
 
@@ -148,7 +147,6 @@ export class TaskComponent implements OnInit {
   private moveInArray(event: CdkDragDrop<Task[], any>) {
     for (let i = 0; i < event.container.data.length; i++) {
      event.container.data[i].position = i;
-      // this.moveTask(event, i,  event.container.data[i]);
     }
 
   }
@@ -179,6 +177,7 @@ export class TaskComponent implements OnInit {
       status:  new FormControl(),
     });
     this.getBoard(this.board.id);
+    this.addNoti("Đã thêm 1 thẻ mới ở bảng " +  this.board.title);
     successAlert();
   }
 
@@ -309,6 +308,7 @@ export class TaskComponent implements OnInit {
     });
   }
 
+  // Notification function
   addNoti(value: string) {
     let user = JSON.parse(localStorage.getItem('user'))
     let noti = {
@@ -317,4 +317,6 @@ export class TaskComponent implements OnInit {
     };
     this.socketService.sendNotification(this.board.id, noti );
   }
+
+
 }

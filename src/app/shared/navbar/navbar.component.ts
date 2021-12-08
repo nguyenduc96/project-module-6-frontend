@@ -20,7 +20,6 @@ export class NavbarComponent implements OnInit {
   downloadURL: Observable<string>;
   currentUser: any;
   user: User;
-
   constructor(private storage: AngularFireStorage,
               private _authenticationService: AuthenticationService,
               private _userService: UserService,
