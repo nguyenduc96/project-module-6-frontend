@@ -37,4 +37,6 @@ export class UserService {
   getAllEmail(): Observable<string[]> {
     return this._http.get<string[]>(URL + '/user/get-all-email');
   }
+
+
 }

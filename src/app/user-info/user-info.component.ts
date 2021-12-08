@@ -79,4 +79,12 @@ export class UserInfoComponent implements OnInit {
         }
       });
   }
+
+  // private getUserByProjectId(id: number) {
+  //     this.board = data;
+  //     this.getLabels();
+  //   }, error => {
+  //     console.log('Error');
+  //   });
+  // }
 }

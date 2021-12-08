@@ -14,7 +14,9 @@ import {TestPipe} from '../test.pipe';
     DetailComponent,
     TestPipe,
   ],
-  exports: [],
+    exports: [
+        TestPipe
+    ],
   imports: [
     CommonModule,
     ProjectRoutingModule,

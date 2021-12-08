@@ -44,4 +44,8 @@ export class ProjectService {
   updateProject(id:number, project: Project): Observable<Project> {
     return this.http.put<Project>(`${API_URL}/${PROJECTS}/${id}`, project);
   }
+
+  getUserByProjectId(id : number): Observable<User[]> {
+    return this.http.get<User[]>(API_URL + `/project/${id}/get_user`);
+  }
 }

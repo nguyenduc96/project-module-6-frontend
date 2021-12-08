@@ -18,6 +18,10 @@ import {BoardService} from '../service/board/board.service';
 import {CommentService} from '../service/comment.service';
 import {UserService} from '../service/user.service';
 import {Comment} from '../model/comment';
+import {ProjectService} from '../service/project/project.service';
+import {User} from '../model/user';
+import {PermissionService} from '../service/permission.service';
+import {Permission} from '../model/permission';
 
 declare var $: any;
 
@@ -37,7 +41,7 @@ export class TaskComponent implements OnInit {
   newComment: FormGroup = new FormGroup({
     content: new FormControl(),
   });
-  newTask: FormGroup =  new FormGroup({
+  newTask: FormGroup = new FormGroup({
     title: new FormControl(),
     position: new FormControl(),
     status: new FormControl(),
@@ -68,21 +72,65 @@ export class TaskComponent implements OnInit {
 
   boardId: number;
 
+
+  projectId: number;
+
+  isInputEmail: boolean = false;
+
+  email: string;
+
+  emails = new Set();
+
+  emailsConvert: any[] = [];
+
+  emailInBoard = new Set();
+
+  permissions: Permission[] = [];
+
   constructor(private boardService: BoardService,
               private taskService: TaskService,
               private statusService: StatusService,
               private labelService: LabelService,
               private colorService: ColorService,
+              private projectService: ProjectService,
               private commentService: CommentService,
               private userService: UserService,
-              private activatedRoute: ActivatedRoute) {
-      this.activatedRoute.paramMap.subscribe(param => {
+              private activatedRoute: ActivatedRoute,
+              private permissionService: PermissionService) {
+    this.activatedRoute.paramMap.subscribe(param => {
       const id = +param.get('id');
       this.boardId = id;
       this.getBoard(id);
     });
     this.colorService.getAll().subscribe(data => {
       this.colors = data;
+    });
+  }
+
+  getAllPermissions() {
+    this.permissionService.getPermissions().subscribe(data => {
+      this.permissions = data;
+    })
+  }
+
+  addUserToBoard(formAddUser: NgForm) {
+
+  }
+
+  searchEmail() {
+    let email = $('#email').val();
+    this.isInputEmail = !(email === '' || email === null || email === undefined);
+  }
+
+  checkEmail(email: string) {
+    return this.emailInBoard.has(email);
+  }
+
+  getUserInBoard() {
+    this.boardService.getAllUserInBoard(this.boardId).subscribe(data => {
+      data.forEach(user => {
+        this.emailInBoard.add(user.email);
+      });
     });
   }
 
@@ -93,9 +141,20 @@ export class TaskComponent implements OnInit {
     }
     this.boardService.getBoardById(id, title).subscribe(data => {
       this.board = data;
+      this.projectId = this.board.project;
+      this.getUserByProject(this.projectId);
       this.getLabels();
     }, error => {
       console.log('Error');
+    });
+  }
+
+  getUserByProject(id) {
+    this.projectService.getUserByProjectId(id).subscribe(data => {
+      for (let user of data) {
+        this.emails.add(user.email);
+      }
+      this.emailsConvert.push(...this.emails);
     });
   }
 
@@ -184,7 +243,8 @@ export class TaskComponent implements OnInit {
 
   //add comment
 
-  addNewComment(formComment: NgForm){
+
+  addNewComment(formComment: NgForm) {
     // this.newComment.get('task').setValue({id: this.taskId});
     // this.commentService.addComment(this.newComment.value).subscribe( data => {this.showTaskDetail(this.taskDetail.id)})
     // this.newComment = new FormGroup({
@@ -193,11 +253,11 @@ export class TaskComponent implements OnInit {
     this.comment = formComment.value;
     this.comment.task = {
       id: this.taskDetail.id
-    }
+    };
     this.commentService.addComment(this.comment).subscribe(data => {
-      this.showTaskDetail(this.taskDetail.id)
+      this.showTaskDetail(this.taskDetail.id);
       successAlert();
-    })
+    });
   }
 
   addNewTask(i: number) {
@@ -217,7 +277,7 @@ export class TaskComponent implements OnInit {
   }
 
   setStatusId(id: number) {
-    this.statusId  = id;
+    this.statusId = id;
     this.showTaskAddBox();
   }
 
@@ -225,8 +285,10 @@ export class TaskComponent implements OnInit {
     this.isShowTaskAddBox = !this.isShowTaskAddBox;
   }
 
-  showCommentByTaskId( id: number){
-    this.commentService.findById(id).subscribe(data => { this.comments = data});
+  showCommentByTaskId(id: number) {
+    this.commentService.findById(id).subscribe(data => {
+      this.comments = data;
+    });
   }
 
 
@@ -362,4 +424,7 @@ export class TaskComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  inputEmail(email: string) {
+    $('#email').val(email);
+  }
 }
