@@ -18,7 +18,7 @@
 
     <div class="insideContainer border-dark">
       <div>
-        <h2 style="text-align: left"><span  [hidden]="statusEditId == status.id">{{status.title}}</span>
+        <h2 style="text-align: left"><span [hidden]="statusEditId == status.id">{{status.title}}</span>
           <input style="width: 100%;" type="text"
                  [hidden]="statusEditId != status.id"
                  id="titleStatus{{status.id}}"
@@ -66,7 +66,7 @@
       <div>
 
         <form [formGroup]="newTask" (ngSubmit)="addNewTask(i)">
-<!--          <p style="font-size: 17px;margin: 5px 0px 0px 10px">Add New Card</p>-->
+          <!--          <p style="font-size: 17px;margin: 5px 0px 0px 10px">Add New Card</p>-->
           <div class="row-3" style="padding: 5px 0px 5px 4px;margin-right: 4px">
             <input placeholder="
 Enter tag title..." class="form-control" type="text" formControlName="title" style="width: 100%">
@@ -100,8 +100,6 @@ Enter tag title..." class="form-control" type="text" formControlName="title" sty
       <div class="example-box row" [hidden]="!isShowAddStatusBox" style="height: 137px;background-color: #ece6e6">
         <div class="row">
           <form [formGroup]="newStatus" (ngSubmit)="addNewStatus()" style="height: 150px">
-
-
             <div>
               <p style="font-size: 15px; margin-left: 5px">Add New Status</p>
               <input type="text" placeholder="
@@ -114,8 +112,6 @@ Enter status title..." class="form-control" formControlName="title"
                       (click)="showAddStatusForm()">x
               </button>
             </div>
-
-
           </form>
         </div>
       </div>
@@ -133,18 +129,18 @@ Enter status title..." class="form-control" formControlName="title"
 
 <div class="modal fade" id="taskDetail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class=" modal-dialog modal-lg">
-    <div class="modal-content" style="border-radius: 10px; background-color: rgba(241,239,239,0.99)">
+    <div class="modal-content" style="border-radius: 10px; background-color: rgba(215,209,209,0.99)">
       <div class="modal-header">
         <div class="modal-title" id="exampleModalLabel">
           <h5 style="margin: 13px 0px 0px 10px;font-size: 30px" [hidden]="isShowTitleInput" (click)="showTitleEdit()">
             <label for="inputTitle">{{taskDetail.title}}</label></h5>
           <h5><input style="border: 1px solid rgba(183,178,178,0.65);border-radius: 10px; padding: 8px"
-                     [hidden]="!isShowTitleInput" type="text" id="inputTitle" (change)="editTaskDetail()"
+                     [hidden]="!isShowTitleInput" type="text" id="inputTitle" (change)="editTaskDetail(taskId)"
                      [(ngModel)]="taskDetail.title" (blur)="showTitleEdit()"></h5>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body" style="margin-bottom: 10px;border-radius: 10px; padding-left: 30px;min-height:300px ">
+      <div class="modal-body" style="margin-bottom: 10px;border-radius: 10px;height: auto ">
         <!--          <tr>-->
         <!--              <span  *ngFor="let label of taskDetail.labels"-->
         <!--                     style="width: 100px; height: 40px; font-size: 20px; font-weight: lighter; margin-left: 20px; padding: 7px; color: aliceblue"-->
@@ -155,10 +151,8 @@ Enter status title..." class="form-control" formControlName="title"
           <div>
             <tr style="width: 100%">
               <td><i class="ti-menu" style="font-size: 20px;margin: 0px 12px 10px 0px">&nbsp;Description</i>
-                <button class="btn btn-success" id="add" (click)="showDescriptionEdit()" style="padding: 2px 9px 2px 9px;margin-bottom: 5px;border-radius: 8px;
-                       background-color: rgba(243,237,237,0.96); border: 1px solid rgb(231,221,221)"
-                        onMouseOut="this.style.backgroundColor = 'rgba(243,237,237,0.96)'"
-                        onMouseOver="this.style.backgroundColor = 'rgba(183,178,178,0.65)'">Add
+                <button class="btn btn-success" id="add" (click)="showDescriptionEdit()" style="padding: 2px 9px 2px 9px;
+                margin-bottom: 5px;border-radius: 8px">Add
                 </button>
               </td>
             </tr>
@@ -171,148 +165,162 @@ Enter status title..." class="form-control" formControlName="title"
                 <input style="width: 300px;height: 30px"
                        class="form-control"
                        [hidden]="!isShowDescriptionInput" type="text"
-                       id="inputDescription" (change)="editTaskDetail()"
+                       id="inputDescription" (change)="editTaskDetail(taskId)"
                        [(ngModel)]="taskDetail.description" (blur)="showDescriptionEdit()">
 
               </td>
             </tr>
             <hr>
           </div>
-          <div >
-            <tr style="width: 100%">
-              <td><i class="ti-pulse" style="font-size: 20px;margin: 0px 12px 10px 0px">&nbsp;Deadline</i>
+          <div>
+            <div>
+              <td><i class="ti-clip" style="font-size: 20px;margin: 0px 12px 10px 0px">&nbsp;Tập tin đính kèm </i></td>
+              <td><button class="btn-success" style="padding: 5px 6px 0px 6px;margin-left: 10px;border: 1px solid rgba(255,255,255,0); border-radius: 7px"><label for="task-file">Đính kèm</label></button></td>
+              <input hidden type="file" id="task-file" (change)="addTaskFile($event)">
+          </div>
+            <div *ngFor="let tf of taskFiles"  >
+              <div>
+              <div style="margin-top: 10px">
+              <img src="{{tf.name}}" style="width: 170px;border-radius:10px;height: 100%">
+            </div>
 
-                <!--                <label for="inputDeadline" [hidden]="isShowDeadlineInput"-->
-                <!--                       (click)="showDeadlineEdit()">-->
-                <!--                  {{taskDetail.deadline != null ? taskDetail.deadline : '...'}}-->
-                <!--                </label>-->
-                <button class="btn btn-success" (click)="showDeadlineEdit()" style="padding: 2px 9px 2px 9px;margin-bottom: 5px;border-radius: 8px;
-                       background-color: rgba(243,237,237,0.96); border: 1px solid rgb(231,221,221)"
-                        onMouseOut="this.style.backgroundColor = 'rgba(243,237,237,0.96)'"
-                        onMouseOver="this.style.backgroundColor = 'rgba(183,178,178,0.65)'">Add
-                </button>
-              </td>
-                <!--                <div [hidden]="!isShowDeadlineInput">-->
-                <!--                  <input type="text" id="inputDeadline" (change)="editTaskDetail()"-->
-                <!--                         [(ngModel)]="taskDetail.deadline"-->
-                <!--                         (blur)="showDeadlineEdit()">-->
+            </div>
+          </div>
+          </div>
+          <hr>
 
-            </tr>
-            <tr>
-              <td style="padding-left: 20px">
-                <label for="inputDeadline" [hidden]="isShowDeadlineInput"
-                (click)="showDeadlineEdit()">{{taskDetail.deadline != null ? taskDetail.deadline : 'edit'}}
-                </label>
-                <input style="width: 300px;height: 30px"
-                       class="form-control"
-                       [hidden]="!isShowDeadlineInput" type="text"
-                       id="inputDeadline" (change)="editTaskDetail()"
-                       [(ngModel)]="taskDetail.deadline" (blur)="showDeadlineEdit()">
+<!--          //comment-->
 
 
-              </td>
-            </tr>
+          <div>
+            <form style="margin-left: 10px" #formComment='ngForm' (ngSubmit)="addNewComment(formComment)">
+              <input style="width: 90%;height: 33px;padding-left: 5px;
+                border-radius: 6px;margin-right: 5px;border: 1px solid #a49898" name="content"
+                     ngModel placeholder="Nhập bình luận">
+              <button type="submit" class="btn btn-success"
+              >Gửi
+              </button>
+            </form>
+
+          </div>
+
+            <div class="row" *ngFor="let cmt of comments" style="margin-top: 10px">
+              <div class="col-1" >
+                <img src="{{cmt.user.avatar}}" style="border-radius: 50%;width: 70px;height: 70px;margin: 13px 0px 0px 25px" >
+              </div>
+              <div class="col-1"></div>
+              <div class="col-10"  >
+                  <div ><strong>&nbsp; {{cmt.user.username}} </strong> &nbsp;<i style="font-size: 13px" class="ti-time"> </i> <label style="font-size: 12px;color: #5b5656"> &nbsp; {{cmt.date}}</label></div>
+                <div style="background-color: rgba(255,255,255,0.55);width: 100%;margin-right: 15px;padding: 12px;border-radius:5px;min-height: 40px" ><p>{{cmt.content}}</p></div>
+              </div>
+            </div>
+
+          <!--
+
+                    </div>
+
+
+
+                  </div>
+
+
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="deleteTask(taskId)">Delete</button>
+                </div>
+              </div>
+            </div>
           </div>
 
 
-        </div>
+           <div class="board">-->
+          <!--<div class="container" >-->
+          <!--  <div class="insideContainer">-->
+          <!--    <h1 class="cardHeading">To Do<span><i class="fas fa-ellipsis-h"></i></span>ss</h1>-->
+          <!--    <div class="main">-->
+          <!--      <div class="addTextArea"> Learn HTML-->
+          <!--        <i class="fas fa-pencil-alt"></i>-->
+          <!--      </div>-->
+          <!--      <div class="addTextArea"> Learn CSS-->
+          <!--        <i class="fas fa-pencil-alt"></i>-->
+          <!--      </div>-->
+          <!--      <div class="addTextArea"> Learn JavaScript-->
+          <!--        <i class="fas fa-pencil-alt"></i>-->
+          <!--      </div>-->
+          <!--    </div>-->
+          <!--  </div>-->
+          <!--  <div class="addCard">+ Add another card</div>-->
+          <!--</div>-->
+          <!--</div>-->
+
+          <!--Modal Add Label-->
+
+          <div class="modal fade" id="addLabel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel1">Modal title</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form [formGroup]="newLabel" (ngSubmit)="addNewLabel()">
+                  <div class="modal-body">
+                    <table>
+                      <tr>
+                        <td>Content:</td>
+                        <td><input formControlName="content" type="text"></td>
+                      </tr>
+                      <tr>
+                        <td>Color :</td>
+                        <td>
+                          <select formControlName="color">
+                            <option value="" disabled>--Choose a color--</option>
+                            <option *ngFor="let color of colors" value="{{color.id}}" [ngStyle]="{'color': color.name}">
+                              {{color.name}}
+                            </option>
+                          </select>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Save changes</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
 
 
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="deleteTask()">Delete</button>
-      </div>
-    </div>
-  </div>
-</div>
+          <!--Modal Edit Label-->
+          <div class="modal fade" id="editLabel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <form [formGroup]="newLabel" (ngSubmit)="editLabel()">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="">Edit Label</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <input formControlName="content" type="text">
+                    <select formControlName="color">
+                      <option value="" disabled selected>--Choose a color--</option>
+                      <option *ngFor="let color of colors" value="{{color.id}}" [ngStyle]="{'color': color.name}">
+                        {{color.name}}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="deleteLabel()">
+                      Delete
+                    </button>
+                    <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Save changes</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
 
-
-<!--template-->
-<!--<div class="board">-->
-<!--<div class="container" >-->
-<!--  <div class="insideContainer">-->
-<!--    <h1 class="cardHeading">To Do<span><i class="fas fa-ellipsis-h"></i></span>ss</h1>-->
-<!--    <div class="main">-->
-<!--      <div class="addTextArea"> Learn HTML-->
-<!--        <i class="fas fa-pencil-alt"></i>-->
-<!--      </div>-->
-<!--      <div class="addTextArea"> Learn CSS-->
-<!--        <i class="fas fa-pencil-alt"></i>-->
-<!--      </div>-->
-<!--      <div class="addTextArea"> Learn JavaScript-->
-<!--        <i class="fas fa-pencil-alt"></i>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--  <div class="addCard">+ Add another card</div>-->
-<!--</div>-->
-<!--</div>-->
-
-<!--Modal Add Label-->
-
-<div class="modal fade" id="addLabel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel1">Modal title</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <form [formGroup]="newLabel" (ngSubmit)="addNewLabel()">
-        <div class="modal-body">
-          <table>
-            <tr>
-              <td>Content: </td>
-              <td><input formControlName="content" type="text"></td>
-            </tr>
-            <tr>
-              <td>Color :</td>
-              <td>
-                <select formControlName="color">
-                  <option value="" disabled >--Choose a color--</option>
-                  <option  *ngFor="let color of colors" value="{{color.id}}" [ngStyle]="{'color': color.name}">
-                    {{color.name}}
-                  </option>
-                </select>
-              </td>
-            </tr>
-          </table>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Save changes</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-
-<!--Modal Edit Label-->
-<div class="modal fade" id="editLabel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form [formGroup]="newLabel" (ngSubmit)="editLabel()">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="">Edit Label</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <input formControlName="content" type="text">
-          <select formControlName="color" >
-            <option value="" disabled selected>--Choose a color--</option>
-            <option  *ngFor="let color of colors" value="{{color.id}}" [ngStyle]="{'color': color.name}">
-              {{color.name}}
-            </option>
-          </select>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="deleteLabel()">Delete</button>
-          <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Save changes</button>
-        </div>
-      </div>
-    </form>
-  </div>
-</div>
 
 
 
