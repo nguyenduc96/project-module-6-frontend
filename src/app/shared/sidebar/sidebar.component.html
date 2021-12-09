@@ -1,19 +1,19 @@
 <ul class="nav">
   <li class="nav-item" >
     <a class="nav-link" data-toggle="collapse" href="#account" aria-expanded="false" aria-controls="account">
-      <i class="ti-user menu-icon"></i>
-      <span class="menu-title" style="font-size: 20px">Tài khoản</span>&nbsp;<i class="menu-arrow"></i>
+      <i style="color: rgba(28,27,27,0.77) " class="ti-user menu-icon"></i>
+      <span class="menu-title" style="font-size: 20px;color: rgba(28,27,27,0.77)">Tài khoản</span>&nbsp;<i class="menu-arrow"></i>
     </a>
     <div class="collapse" id="account" >
       <ul class="nav flex-column sub-menu" style="border-radius: 0px 0px 10px 10px;margin-bottom: 3px;padding: 0px 10px 0px 0px">
         <li style="width: 100%">
           <a class="nav-link" routerLink="/user/change-password">
-            <i class="ti-pencil " style="font-size: 17px"> Đổi mật khẩu</i>
+            <i class="ti-pencil " style="font-size: 17px;color: rgba(28,27,27,0.77)"> Đổi mật khẩu</i>
              &nbsp;
           </a>
         </li>
         <li><a class="nav-link" routerLink="/user/information">
-          <i class="ti-settings " style="font-size: 17px"> Thông tin cá nhân</i>
+          <i class="ti-settings " style="font-size: 17px;color: rgba(28,27,27,0.77)"> Thông tin cá nhân</i>
            &nbsp;
         </a></li>
 
@@ -22,14 +22,14 @@
   </li>
   <li class="nav-item" style="margin-top: 6px">
     <a class="nav-link" data-toggle="collapse" href="#project" aria-expanded="false" aria-controls="project">
-      <i class="ti-book menu-icon"></i>
-      <span class="menu-title" style="font-size: 20px">Dự án</span>&nbsp;
+      <i class="ti-book menu-icon" style=" color: rgba(28,27,27,0.77)"></i>
+      <span class="menu-title" style="font-size: 20px; color: rgba(28,27,27,0.77)">Dự án</span>&nbsp;
       <i class="menu-arrow"></i>
     </a>
     <div class="collapse" id="project">
       <ul class="nav flex-column sub-menu" style="border-radius: 0px 0px 10px 10px;margin-bottom: 5px">
         <ng-container *ngFor="let project of projects">
-          <li class="nav-item"><a class="nav-link" routerLink="/projects/{{project.id}}"> {{project.title}} </a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/projects/{{project.id}}"><i class="ti-harddrives"></i> &nbsp; {{project.title}} </a></li>
         </ng-container>
         <!--        <li class="nav-item"> <a class="nav-link" routerLink="/projects/create"> Thêm dự án </a></li>-->
       </ul>
@@ -39,15 +39,14 @@
     <a class="nav-link" data-toggle="collapse" href="#project-of-me" aria-expanded="false"
        aria-controls="project-of-me">
       <i class="ti-book menu-icon"></i>
-      <span class="menu-title" style="font-size: 20px">Dự án của tôi</span>&nbsp;
+      <span class="menu-title" style="font-size: 20px; color: rgba(28,27,27,0.77)">Dự án của tôi</span>&nbsp;
       <i class="menu-arrow"></i>
     </a>
     <div class="collapse" id="project-of-me">
       <ul class="nav flex-column sub-menu" style="border-radius: 0px 0px 10px 10px;padding: 0px 1px 0px 15px">
         <ng-container *ngFor="let p of myProjects">
-          <li class="nav-item"> <a class="nav-link" routerLink="/projects/{{p.id}}"> {{p.title}}</a></li>
+          <li class="nav-item"> <a class="nav-link" routerLink="/projects/{{p.id}}"><i class="ti-harddrives" style=" color: rgba(28,27,27,0.77)"></i> &nbsp; {{p.title}}</a></li>
         </ng-container>
-        <li class="nav-item"> <a class="nav-link" routerLink="/projects/create"> Thêm dự án </a></li>
       </ul>
     </div>
   </li>

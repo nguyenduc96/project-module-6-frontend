@@ -43,9 +43,9 @@
 
 <div class="board" cdkDropList cdkDropListOrientation="horizontal"
      (cdkDropListDropped)="dropStatus($event)"
-     style="max-height: 90%;overflow-y: hidden;">
+     style="max-height: 90%;overflow-y: hidden;overflow-x: auto;width: 88%">
   <div class="container " style=" position: relative; top: -80px;
-        background-color: #d5caca;border-radius: 12px"
+        background-color: #d5caca;border-radius: 12px;width: 250px;float: left;margin: 0px 0px 0px 10px"
        cdkDrag *ngFor="let status of board.statuses, let i = index">
 
     <div class="insideContainer border-dark">
@@ -57,19 +57,20 @@
                  [value]="status.title"
                  (change)="saveEditStatus(i)"
                  (blur)="showEditTitleStatus(-1)"></h2>
+        <div class="btn-group" data-toggle="dropdown">
+          <p class="btn" style="border-radius: 10px;padding-bottom: 3px" data-bs-toggle="dropdown"
+             aria-expanded="false">
+            <i class="ti-more"></i>
+          </p>
+          <ul class="dropdown-menu" style="border-radius: 10px;position: relative">
+            <li><label style="border-radius: 6px" class="dropdown-item" for="titleStatus{{status.id}}"
+                       (click)="showEditTitleStatus(status.id)">Change name</label></li>
+            <li><label style="border-radius: 6px" class="dropdown-item"
+                       (click)="deleteStatus(status.id)">Delete</label></li>
+          </ul>
+        </div>
         <div style="text-align: right" class="dropdown">
-          <div class="btn-group" data-toggle="dropdown">
-            <p class="btn" style="border-radius: 10px;padding-bottom: 3px" data-bs-toggle="dropdown"
-               aria-expanded="false">
-              <i class="ti-more"></i>
-            </p>
-            <ul class="dropdown-menu" style="border-radius: 10px;position: relative">
-              <li><label style="border-radius: 6px" class="dropdown-item" for="titleStatus{{status.id}}"
-                         (click)="showEditTitleStatus(status.id)">Change name</label></li>
-              <li><label style="border-radius: 6px" class="dropdown-item"
-                         (click)="deleteStatus(status.id)">Delete</label></li>
-            </ul>
-          </div>
+
         </div>
       </div>
     </div>
@@ -125,7 +126,7 @@ Enter tag title..." class="form-control" type="text" formControlName="title" sty
 
   </div>
   <div class="container"
-       style=" border-radius: 11px;width: 235px; position: relative; top: -80px; background-color: #d5caca">
+       style=" border-radius: 11px;margin-left: 10px;width: 235px; position: relative; top: -80px; background-color: #d5caca">
     <div class="example-list" style="width: 215px; border-radius: 10px">
       <div class="example-box row" [hidden]="!isShowAddStatusBox" style="height: 137px;background-color: #ece6e6">
         <div class="row">
