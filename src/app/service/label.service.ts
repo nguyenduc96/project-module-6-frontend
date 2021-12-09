@@ -31,4 +31,6 @@ export class LabelService {
   getById(id: number): Observable<Label> {
     return this.http.get<Label>(API_URL + `/find/${id}`);
   }
+
+
 }

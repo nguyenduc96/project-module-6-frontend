@@ -15,8 +15,8 @@ import {Label} from '../model/label';
 import {Color} from '../model/color';
 import {ActivatedRoute} from '@angular/router';
 import {BoardService} from '../service/board/board.service';
-import {SocketService} from "../service/socket.service";
-import {Notification} from "../model/notification";
+import {SocketService} from '../service/socket.service';
+import {Notification} from '../model/notification';
 import {CommentService} from '../service/comment.service';
 import {UserService} from '../service/user.service';
 import {Comment} from '../model/comment';
@@ -41,6 +41,9 @@ export class TaskComponent implements OnInit {
   colors: Color[];
   notification: Notification[];
 
+
+  labelInTask = new Set<Label>();
+
   comment: Comment = {};
 
   newComment: FormGroup = new FormGroup({
@@ -62,6 +65,8 @@ export class TaskComponent implements OnInit {
     color: new FormControl(),
     board: new FormControl(),
   });
+
+  labelEdit: Label = {};
 
   taskId: number;
   taskDetail: Task = {};
@@ -109,6 +114,14 @@ export class TaskComponent implements OnInit {
 
   labelIdEdit: number;
 
+  userAssign: User[] = [];
+
+  userInBoard: User[] = [];
+
+
+  userInBoardId: number;
+
+
   constructor(private boardService: BoardService,
               private taskService: TaskService,
               private statusService: StatusService,
@@ -131,7 +144,6 @@ export class TaskComponent implements OnInit {
       this.colors = data;
     });
     this.getAllPermissions();
-
   }
 
   ngOnInit() {
@@ -150,11 +162,13 @@ export class TaskComponent implements OnInit {
 
   getAllUserInAssign(id) {
     this.emailInAssign = new Set();
+    this.userAssign = [];
     this.assignService.getAllUsersInAssignByTaskId(id).subscribe(data => {
-      data.forEach( user => {console.log(this.emailInAssign);
+      data.forEach(user => {
         this.emailInAssign.add(user.email);
-      })
-    })
+        this.userAssign.push(user);
+      });
+    });
   }
 
   addUserToTask(email: string) {
@@ -165,20 +179,20 @@ export class TaskComponent implements OnInit {
       task: {
         id: this.taskDetail.id
       }
-    }
+    };
     this.assignService.addMemberToAssign(this.assign).subscribe(data => {
       console.log(data);
       this.getAllUserInAssign(this.taskDetail.id);
       showToastSuccess('Thêm thành công');
     }, error => {
       if (error.status === 404) {
-        showPopupError('Thông báo','Không tìm thấy người dùng');
+        showPopupError('Thông báo', 'Không tìm thấy người dùng');
       } else if (error.status === 409) {
-        showPopupError('Thông báo','Người dùng đã có trong danh sách');
+        showPopupError('Thông báo', 'Người dùng đã có trong danh sách');
       } else {
-        showPopupError('Thông báo','Có lỗi xảy ra');
+        showPopupError('Thông báo', 'Có lỗi xảy ra');
       }
-    })
+    });
   }
 
   addUserToBoard(formAddUser: NgForm) {
@@ -202,10 +216,10 @@ export class TaskComponent implements OnInit {
       showToastSuccess('Thêm thành công');
     }, (err) => {
       if (err.status === 404) {
-        showPopupError('Thông báo','Email không tồn tại');
+        showPopupError('Thông báo', 'Email không tồn tại');
         $('#email').val('');
       } else if (err.status === 409) {
-        showPopupError('Thông báo','Email đã tồn tại');
+        showPopupError('Thông báo', 'Email đã tồn tại');
         $('#email').val('');
       }
     });
@@ -226,10 +240,12 @@ export class TaskComponent implements OnInit {
   }
 
   getUserInBoard(id: number) {
+    this.userInBoard = [];
     this.boardService.getAllUserInBoard(id).subscribe(data => {
       data.forEach(user => {
         this.emailInBoard.add(user.email);
         this.emailInBoardArray.push(user.email);
+        this.userInBoard.push(user);
       });
     });
   }
@@ -240,15 +256,15 @@ export class TaskComponent implements OnInit {
   }
 
   getBoard(id: number) {
-    let user = JSON.parse(localStorage.getItem('user'))
+    let user = JSON.parse(localStorage.getItem('user'));
     this.socketService.getCurrentNotification(user.id);
-    this.socketService.getCurrentBoard(id,"");
+    this.socketService.getCurrentBoard(id, '');
     this.socketService.connectToBoardSocket(id);
     this.socketService.connectToNotificationByUserId(user.id);
     this.socketService.notification.subscribe(data => {
       this.notification = data;
       console.log(data);
-    })
+    });
     this.socketService.board.subscribe(data => {
       this.board = data;
       this.projectId = this.board.project;
@@ -279,11 +295,11 @@ export class TaskComponent implements OnInit {
   dropTask(event: CdkDragDrop<Task[], any>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-       this.moveInArray(event);
-       if(event.previousIndex != event.currentIndex) {
-         this.addNoti("Đã di chuyển 1 thẻ ở bảng " +  this.board.title)
-         this.socketService.sendTask(this.board.id, this.board);
-       }
+      this.moveInArray(event);
+      if (event.previousIndex != event.currentIndex) {
+        this.addNoti('Đã di chuyển 1 thẻ ở bảng ' + this.board.title);
+        this.socketService.sendTask(this.board.id, this.board);
+      }
     } else {
       transferArrayItem(
         event.previousContainer.data,
@@ -297,13 +313,13 @@ export class TaskComponent implements OnInit {
 
   dropStatus(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.board.statuses, event.previousIndex, event.currentIndex);
-    if(event.previousIndex != event.currentIndex) {
+    if (event.previousIndex != event.currentIndex) {
       for (let i = 0; i < this.board.statuses.length; i++) {
-        this.board.statuses[i].position =  i;
+        this.board.statuses[i].position = i;
         console.log(this.board.statuses[i].title + ' ' + this.board.statuses[i].position);
       }
-      this.addNoti("Đã di chuyển 1 cột ở bảng " +  this.board.title)
-        this.socketService.sendTask(this.board.id, this.board)
+      this.addNoti('Đã di chuyển 1 cột ở bảng ' + this.board.title);
+      this.socketService.sendTask(this.board.id, this.board);
     }
   }
 
@@ -318,7 +334,7 @@ export class TaskComponent implements OnInit {
     for (let i = 0; i < this.board.statuses.length; i++) {
       console.log(this.board.statuses[i].title + ' ' + this.board.statuses[i].position);
     }
-    this.addNoti("Đã di chuyển 1 thẻ ở bảng " +  this.board.title)
+    this.addNoti('Đã di chuyển 1 thẻ ở bảng ' + this.board.title);
     this.socketService.sendTask(this.board.id, this.board);
   }
 
@@ -328,7 +344,7 @@ export class TaskComponent implements OnInit {
 
   private moveInArray(event: CdkDragDrop<Task[], any>) {
     for (let i = 0; i < event.container.data.length; i++) {
-     event.container.data[i].position = i;
+      event.container.data[i].position = i;
     }
 
   }
@@ -371,14 +387,17 @@ export class TaskComponent implements OnInit {
   addNewTask(i: number) {
     this.newTask.get('status').setValue({id: this.statusId});
     this.newTask.get('position').setValue(this.board.statuses[i].tasks.length);
-    this.taskService.addNew(this.newTask.value).subscribe(data => {console.log(data); this.getBoard(this.board.id); });
+    this.taskService.addNew(this.newTask.value).subscribe(data => {
+      console.log(data);
+      this.getBoard(this.board.id);
+    });
     this.newTask = new FormGroup({
       title: new FormControl(),
       position: new FormControl(99999),
       status: new FormControl(),
     });
     this.getBoard(this.board.id);
-    this.addNoti("Đã thêm 1 thẻ mới ở bảng " +  this.board.title);
+    this.addNoti('Đã thêm 1 thẻ mới ở bảng ' + this.board.title);
     successAlert();
   }
 
@@ -394,18 +413,27 @@ export class TaskComponent implements OnInit {
 
 
   showTaskDetail(id: number) {
-    this.taskService.findById(id).subscribe(data => {this.taskDetail = data; }, error => { console.log('khong lay duoc detail'); });
+    this.taskService.findById(id).subscribe(data => {
+      this.taskDetail = data;
+    }, error => {
+      console.log('khong lay duoc detail');
+    });
     this.taskService.findById(id).subscribe(data => {
       this.taskDetail = data;
       this.getAllUserInAssign(id);
       this.showCommentByTaskId(id);
+      this.getLabelByTaskId(id);
     }, error => {
       console.log('khong lay duoc detail');
     });
   }
 
   editTaskDetail() {
-    this.taskService.editTask(this.taskDetail.id, this.taskDetail).subscribe(data => {console.log(data); this.getBoard(this.board.id);; });
+    this.taskService.editTask(this.taskDetail.id, this.taskDetail).subscribe(data => {
+      console.log(data);
+      this.getBoard(this.board.id);
+      ;
+    });
   }
 
   showDescriptionEdit() {
@@ -417,7 +445,7 @@ export class TaskComponent implements OnInit {
   }
 
   deleteTask() {
-    this.taskService.deleteTask(this.taskDetail.id).subscribe(() => this.getBoard(this.board.id))
+    this.taskService.deleteTask(this.taskDetail.id).subscribe(() => this.getBoard(this.board.id));
     this.taskDetail = {};
   }
 
@@ -428,7 +456,7 @@ export class TaskComponent implements OnInit {
   }
 
   setStatusId(id: number) {
-    this.statusId  = id;
+    this.statusId = id;
     this.showTaskAddBox();
   }
 
@@ -439,7 +467,10 @@ export class TaskComponent implements OnInit {
   addNewStatus() {
     this.newStatus.get('board').setValue({id: this.board.id});
     this.newStatus.get('position').setValue(this.board.statuses.length);
-    this.statusService.addNewStatus(this.newStatus.value).subscribe(data => {console.log(data);this.getBoard(this.board.id); });
+    this.statusService.addNewStatus(this.newStatus.value).subscribe(data => {
+      console.log(data);
+      this.getBoard(this.board.id);
+    });
     this.newStatus = new FormGroup({
       title: new FormControl(),
       position: new FormControl(this.board.statuses.length),
@@ -467,7 +498,11 @@ export class TaskComponent implements OnInit {
         id: this.board.id,
       }
     };
-    this.statusService.editStatus(status.id, status).subscribe(data => {console.log(data); this.getBoard(this.board.id); this.statusEditId = -1; });
+    this.statusService.editStatus(status.id, status).subscribe(data => {
+      console.log(data);
+      this.getBoard(this.board.id);
+      this.statusEditId = -1;
+    });
   }
 
   deleteStatus(id: number) {
@@ -524,12 +559,12 @@ export class TaskComponent implements OnInit {
   }
 
   addNoti(value: string) {
-    let user = JSON.parse(localStorage.getItem('user'))
+    let user = JSON.parse(localStorage.getItem('user'));
     let noti = {
       sender: {id: user.id},
       action: value,
     };
-    this.socketService.sendNotification(this.board.id, noti );
+    this.socketService.sendNotification(this.board.id, noti);
   }
 
 
@@ -548,5 +583,47 @@ export class TaskComponent implements OnInit {
 
   setLabelId(id: number) {
     this.labelIdEdit = id;
+    this.labelService.getById(id).subscribe(data => {
+      this.labelEdit = data;
+    })
+  }
+
+
+  getLabelByTaskId(id: number) {
+    this.labelInTask = new Set<Label>();
+    this.taskService.getLabelByTaskId(id).subscribe(data => {
+      for (let label of data) {
+        this.labelInTask.add(label);
+
+      }
+      console.log(this.labelInTask);
+    });
+  }
+
+  addLabelToTask(label: Label) {
+    this.taskDetail.labels = [label];
+    this.taskService.editTask(this.taskDetail.id, this.taskDetail).subscribe(data => {
+      this.getLabelByTaskId(this.taskDetail.id);
+    });
+  }
+
+  checkUniqueLabel(label: Label) {
+    for (let l of this.labelInTask) {
+      if (l.id === label.id) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  removeUserInBoard(id: number) {
+    this.permissionService.removeBoardPermission(id, this.boardId).subscribe(data => {
+      this.getBoard(this.boardId);
+      this.getUserInBoard(this.boardId);
+    });
+  }
+
+  setUserId(id: number) {
+    this.userInBoardId = id;
   }
 }

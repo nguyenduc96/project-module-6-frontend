@@ -19,6 +19,10 @@ export class PermissionService {
     return this.http.get<Permission[]>(`${URL}/permission/get-all`);
   }
 
+  removeBoardPermission(userId: number, boardId: number): Observable<any> {
+    return this.http.delete<any>(`${URL}/permission/${userId}/${boardId}`);
+  }
+
   addBoardPermission(boardPermission: BoardPermission): Observable<BoardPermission> {
     return this.http.post<BoardPermission>(`${URL}/permission/add-board-permission`, boardPermission);
   }
