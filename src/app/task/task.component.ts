@@ -103,6 +103,9 @@ export class TaskComponent implements OnInit {
 
   comments: Comment[] = [];
 
+  isShowFormAddLabel: boolean = false;
+  boardIdAddLabel: number;
+
   constructor(private boardService: BoardService,
               private taskService: TaskService,
               private statusService: StatusService,
@@ -119,15 +122,20 @@ export class TaskComponent implements OnInit {
       const id = +param.get('id');
       this.boardId = id;
       this.getBoard(id);
+      this.getUserInBoard(id);
     });
     this.colorService.getAll().subscribe(data => {
       this.colors = data;
     });
     this.getAllPermissions();
-    this.getUserInBoard();
+
   }
 
   ngOnInit() {
+  }
+
+  showFormAddLabel() {
+    this.isShowFormAddLabel = !this.isShowFormAddLabel;
   }
 
   getAllPermissions() {
@@ -157,6 +165,7 @@ export class TaskComponent implements OnInit {
     }
     this.assignService.addMemberToAssign(this.assign).subscribe(data => {
       console.log(data);
+      this.getAllUserInAssign(this.taskDetail.id);
       showToastSuccess('Thêm thành công');
     }, error => {
       if (error.status === 404) {
@@ -186,6 +195,7 @@ export class TaskComponent implements OnInit {
     this.permissionService.addBoardPermission(this.boardPermission).subscribe(data => {
       console.log(data);
       $('#email').val('');
+      this.getUserInBoard(this.boardId);
       showToastSuccess('Thêm thành công');
     }, (err) => {
       if (err.status === 404) {
@@ -212,8 +222,8 @@ export class TaskComponent implements OnInit {
     return this.emailInAssign.has(email);
   }
 
-  getUserInBoard() {
-    this.boardService.getAllUserInBoard(this.boardId).subscribe(data => {
+  getUserInBoard(id: number) {
+    this.boardService.getAllUserInBoard(id).subscribe(data => {
       data.forEach(user => {
         this.emailInBoard.add(user.email);
         this.emailInBoardArray.push(user.email);
@@ -247,6 +257,7 @@ export class TaskComponent implements OnInit {
   }
 
   getUserByProject(id) {
+    this.emailsConvert = [];
     this.projectService.getUserByProjectId(id).subscribe(data => {
       for (let user of data) {
         this.emails.add(user.email);
@@ -462,7 +473,7 @@ export class TaskComponent implements OnInit {
 
   // Label function
 
-  addNewLabel() {
+  addNewLabel(newLabel: FormGroup) {
     this.newLabel.get('board').setValue({id: this.board.id});
     this.newLabel.get('color').setValue({id: this.newLabel.get('color').value});
     this.labelService.addNewLabel(this.newLabel.value).subscribe(data => {
@@ -528,4 +539,8 @@ export class TaskComponent implements OnInit {
     $('email-add-task').val(email);
   }
 
+  setBoardIdAddLabel(boardId: number) {
+    this.boardIdAddLabel = boardId;
+    this.showFormAddLabel();
+  }
 }
