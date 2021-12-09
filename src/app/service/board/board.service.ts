@@ -15,6 +15,10 @@ export class BoardService {
     return this.http.get<Board[]>(`${API_URL}/${BOARD}`);
   }
 
+  getAllByProjectId(id: number): Observable<Board[]> {
+    return this.http.get<Board[]>(`${API_URL}/${BOARD}/${id}`);
+  }
+
   create(board: Board): Observable<Board[]> {
     return this.http.post<Board[]>(`${API_URL}/${BOARD}`, board);
   }

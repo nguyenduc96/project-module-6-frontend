@@ -26,6 +26,8 @@ import {TaskFile} from '../model/taskFile';
 import {log} from 'util';
 import {SocketService} from "../service/socket.service";
 import {Notification} from "../model/notification";
+import {BoardPermission} from "../model/board-permission";
+import {BoardPermissionService} from "../service/board-permission.service";
 
 declare var $: any;
 
@@ -48,6 +50,8 @@ export class TaskComponent implements OnInit {
 
   comment: Comment = {};
 
+  permission: BoardPermission = {}
+
   newComment: FormGroup = new FormGroup({
     content: new FormControl(),
   });
@@ -67,7 +71,7 @@ export class TaskComponent implements OnInit {
     color: new FormControl(),
     board: new FormControl(),
   });
-
+  currentUser = JSON.parse(localStorage.getItem('user'));
   taskId: number;
   taskDetail: Task = {};
   statusId: number;
@@ -78,7 +82,7 @@ export class TaskComponent implements OnInit {
   isShowDeadlineInput: boolean = false;
   isShowAddStatusBox: boolean = false;
   isSearchTask: boolean = false;
-
+  isViewer: boolean = false;
   boardId: number;
 
   constructor(private boardService: BoardService,
@@ -90,30 +94,31 @@ export class TaskComponent implements OnInit {
               private commentService: CommentService,
               private userService: UserService,
               private activatedRoute: ActivatedRoute,
-              private socketService: SocketService) {}
+              private socketService: SocketService,
+              private storage: AngularFireStorage,
+              private boardPermissionService: BoardPermissionService) {}
 
 
   ngOnInit(): void {
+    let user = JSON.parse(localStorage.getItem('user'))
     this.activatedRoute.paramMap.subscribe(param => {
       const id = +param.get('id');
       this.boardId = id;
       this.getBoard(id);
+      this.boardPermissionService.getMyPermission(user.id,id).subscribe(data => {
+        this.permission = data;
+        this.isViewer = (this.permission.permission.id == 1);
+      })
     });
     this.colorService.getAll().subscribe(data => {
       this.colors = data;
     });
+
   }
 
   getBoard(id: number) {
-    let user = JSON.parse(localStorage.getItem('user'))
-    this.socketService.getCurrentNotification(user.id);
-    this.socketService.getCurrentBoard(id);
+    this.socketService.getCurrentBoard(id, "");
     this.socketService.connectToBoardSocket(id);
-    this.socketService.connectToNotificationByUserId(user.id);
-    this.socketService.notification.subscribe(data => {
-      this.notification = data;
-      console.log(data);
-    })
     this.socketService.board.subscribe(data => {
       this.board = data;
     })
@@ -172,26 +177,12 @@ export class TaskComponent implements OnInit {
     this.socketService.sendTask(this.board.id, this.board);
   }
 
-  // private sendTo() {
-  //   this.socketService.sendBoard(this.board.id)
-  // }
-
   private moveInArray(event: CdkDragDrop<Task[], any>) {
     for (let i = 0; i < event.container.data.length; i++) {
      event.container.data[i].position = i;
     }
-
   }
 
-  // private moveTask(event: CdkDragDrop<Task[], any>, i: number, task: Task) {
-  //   this.taskService.sortTask(event.container.data[i].id, task).subscribe();
-  // }
-  //
-  // private moveStatus(id: number, status: Status) {
-  //   this.statusService.editStatus(id, status).subscribe(data => {
-  //   });
-  //
-  // }
 
   // Lấy danh sách các list connect nhau
   listConnectTo(): string[] {
@@ -219,11 +210,12 @@ export class TaskComponent implements OnInit {
               }
               this.taskFile.name = url;
               this.taskFileService.addTaskFile(this.taskFile). subscribe( data => {
-                console.log(data)
               })
             }
+            this.addNoti("Đã thêm file vào thẻ " + this.taskDetail.title.substr(0,10) + "...")
+            showToastSuccess("Thêm file thành công!")
           }, () => {
-            let title = "Cập nhật ảnh đại diện thất bại";
+            let title = "Thêm file thất bại";
             showToastError(title)
           });
         })
@@ -239,16 +231,23 @@ export class TaskComponent implements OnInit {
 
 
   //add comment
-
   addNewComment(formComment: NgForm){
+    let user = JSON.parse(localStorage.getItem('user'))
     this.comment = formComment.value;
     this.comment.task = {
       id: this.taskDetail.id
     }
-    this.commentService.addComment(this.comment).subscribe(data => {
-      this.showTaskDetail(this.taskDetail.id)
-      successAlert();
-    })
+    this.comment.user = {
+      id: user.id
+    }
+    // this.commentService.addComment(this.comment).subscribe(data => {
+    //   this.showTaskDetail(this.taskDetail.id)
+    // })
+    this.socketService.sendComment(this.taskDetail.id, this.comment);
+    showToastSuccess("Đã thêm bình luận");
+    this.addNoti("Đã thêm bình luận vào thẻ " + this.taskDetail.title.substr(0,10) + "...")
+    formComment.reset();
+    this.comment = {};
   }
 
   addNewTask(i: number) {
@@ -260,7 +259,7 @@ export class TaskComponent implements OnInit {
       position: new FormControl(99999),
       status: new FormControl(),
     });
-    this.getBoard(this.board.id);
+    this.socketService.getCurrentBoard(this.board.id, "");
     this.addNoti("Đã thêm 1 thẻ mới ở bảng " +  this.board.title);
     successAlert();
   }
@@ -269,9 +268,9 @@ export class TaskComponent implements OnInit {
     this.isShowTaskAddBox = !this.isShowTaskAddBox;
   }
 
-  showCommentByTaskId( id: number){
-    this.commentService.findById(id).subscribe(data => { this.comments = data});
-  }
+  // showCommentByTaskId( id: number){
+  //   this.commentService.findById(id).subscribe(data => {this.comments = data});
+  // }
 
   showTaskFileByTaskId(id : number){
     this.taskFileService.getAllByTaskId(id).subscribe( data => {
@@ -283,12 +282,24 @@ export class TaskComponent implements OnInit {
   // show comment/taskFile By Task
 
   showTaskDetail(id: number) {
-    this.taskService.findById(id).subscribe(data => {this.taskDetail = data; this.showCommentByTaskId(id); this.showTaskFileByTaskId(id) }, error => { console.log('khong lay duoc detail'); });
+    this.taskService.findById(id).subscribe(data => {
+      this.taskDetail = data;
+      // this.showCommentByTaskId(id);
+      this.showTaskFileByTaskId(id) });
+    this.socketService.connectToComment(id);
+    this.socketService.getCurrentComment(id);
+    this.socketService.comment.subscribe(comment => {
+      this.comments = comment;
+    })
   }
 
 
   editTaskDetail() {
-    this.taskService.editTask(this.taskDetail.id, this.taskDetail).subscribe(data => {console.log(data); this.getBoard(this.board.id);; });
+    this.taskService.editTask(this.taskDetail.id, this.taskDetail).subscribe(data => {
+      console.log(data);
+      this.socketService.getCurrentBoard(this.board.id, "");
+      this.addNoti("Đã chỉnh sửa 1 thẻ ở bảng " + this.board.title  )
+    });
   }
 
   showDescriptionEdit() {
@@ -300,7 +311,10 @@ export class TaskComponent implements OnInit {
   }
 
   deleteTask() {
-    this.taskService.deleteTask(this.taskDetail.id).subscribe(() => this.getBoard(this.board.id))
+    this.taskService.deleteTask(this.taskDetail.id).subscribe(() => {
+      this.socketService.getCurrentBoard(this.board.id, "");
+      this.addNoti("Đã xoá 1 thẻ ở bảng " + this.board.title  )
+    })
     this.taskDetail = {};
   }
 
@@ -328,7 +342,8 @@ export class TaskComponent implements OnInit {
       position: new FormControl(this.board.statuses.length),
       board: new FormControl(),
     });
-    this.getBoard(this.board.id);
+    this.socketService.getCurrentBoard(this.board.id, "");
+    this.addNoti("Đã thêm 1 cột ở bảng " + this.board.title  )
     successAlert();
   }
 
@@ -350,11 +365,18 @@ export class TaskComponent implements OnInit {
         id: this.board.id,
       }
     };
-    this.statusService.editStatus(status.id, status).subscribe(data => {console.log(data); this.getBoard(this.board.id); this.statusEditId = -1; });
+    this.statusService.editStatus(status.id, status).subscribe(data => {
+      this.addNoti("Đã sửa 1 cột ở bảng " + this.board.title)
+      this.socketService.getCurrentBoard(this.board.id, "");
+      this.statusEditId = -1;
+    });
   }
 
   deleteStatus(id: number) {
-    this.statusService.deleteStatus(id).subscribe(() => this.getBoard(this.board.id));
+    this.statusService.deleteStatus(id).subscribe(() => {
+      this.socketService.getCurrentBoard(this.board.id, "");
+      this.addNoti("Đã xoá 1 cột ở bảng " + this.board.title)
+    });
   }
 
   // Label function
@@ -412,9 +434,23 @@ export class TaskComponent implements OnInit {
     let noti = {
       sender: {id: user.id},
       action: value,
+      link: `/tasks/list/${this.board.id}`,
     };
     this.socketService.sendNotification(this.board.id, noti );
   }
 
 
+  search(boardId: number) {
+    let title = $("#title-search-task").val()
+    this.socketService.getCurrentBoard(boardId, title);
+  }
+
+  deleteComment(id) {
+    this.commentService.deleteComment(id).subscribe(() => {
+      this.socketService.getCurrentComment(this.taskDetail.id);
+      this.socketService.comment.subscribe(comment => {
+        this.comments = comment;
+      })
+    })
+  }
 }

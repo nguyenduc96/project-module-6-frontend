@@ -14,4 +14,8 @@ export class NotificationService {
   getAllNoti(id: number) : Observable<Notification[]>{
     return this.http.get<Notification[]>(API_URL+ `/${id}`);
   }
+
+  markAsReadNoti(id: number): Observable<Notification> {
+    return this.http.put<Notification>(API_URL + `/${id}`, {});
+  }
 }

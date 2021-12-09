@@ -17,13 +17,13 @@ import {ErrorInterceptor} from './login/helper/ErrorInterceptor';
 import {HomeComponent} from './home/home.component';
 import {SharedModule} from './shared/shared.module';
 import { TestPipe } from './test.pipe';
+import { SearchBoardFillterPipe } from './project/search-board-fillter.pipe';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-
   ],
   imports: [
     BrowserModule,
@@ -43,8 +43,6 @@ import { TestPipe } from './test.pipe';
     {provide: HTTP_INTERCEPTORS, useClass: JwtResponse, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
 
-  ],
-  exports: [
   ],
   bootstrap: [AppComponent]
 })

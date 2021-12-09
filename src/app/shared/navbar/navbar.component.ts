@@ -8,6 +8,11 @@ import {UserService} from '../../service/user.service';
 import {Observable} from 'rxjs';
 import {showToastError, showToastNotice, showToastSuccess} from '../../note';
 import {finalize} from 'rxjs/operators';
+import {SocketService} from "../../service/socket.service";
+import {Notification} from "../../model/notification";
+import {NotificationService} from "../../service/notification.service";
+import {Board} from "../../model/board";
+import {BoardService} from "../../service/board/board.service";
 
 @Component({
   selector: 'app-navbar',
@@ -20,15 +25,31 @@ export class NavbarComponent implements OnInit {
   downloadURL: Observable<string>;
   currentUser: any;
   user: User;
+  notification: Notification[];
+  board: Board[];
+  isCheckNoti: boolean = true;
+  searchTitleBoard;
   constructor(private storage: AngularFireStorage,
               private _authenticationService: AuthenticationService,
               private _userService: UserService,
-              private router: Router) {
+              private router: Router,
+              private socketService: SocketService,
+              private notificationService: NotificationService,
+              private boardService: BoardService) {
     this.getUser();
   }
 
 
   ngOnInit(): void {
+    let user = JSON.parse(localStorage.getItem('user'));
+    this.socketService.getCurrentNotification(user.id);
+    this.socketService.connectToNotificationByUserId(user.id);
+    this.socketService.notification.subscribe(data => {
+      this.notification = data;
+      this.isCheckNoti = false;
+      console.log(data);
+    });
+    this.getAllBoard();
   }
 
 
@@ -43,6 +64,12 @@ export class NavbarComponent implements OnInit {
   logout() {
     this._authenticationService.logout();
     this.router.navigateByUrl("/login");
+  }
+
+  getAllBoard() {
+    this.boardService.getAll().subscribe(data => {
+      this.board = data;
+    })
   }
 
   onFileSelected(event) {
@@ -80,5 +107,29 @@ export class NavbarComponent implements OnInit {
           console.log(url);
         }
       });
+  }
+
+  markAsRead(id: number) {
+    let user = JSON.parse(localStorage.getItem('user'));
+    this.notificationService.markAsReadNoti(id).subscribe(() => {
+      this.socketService.getCurrentNotification(user.id);
+    })
+  }
+
+  // checkNotification() {
+  //   for(let noti of this.notification) {
+  //     if(noti.status == false) {
+  //       return false;
+  //     }
+  //   }
+  //   return true;
+  // }
+
+  readNoti() {
+    this.isCheckNoti = true;
+  }
+
+  resetSearch() {
+    this.searchTitleBoard = '';
   }
 }

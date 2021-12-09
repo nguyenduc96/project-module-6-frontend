@@ -4,6 +4,9 @@ import {NavbarComponent} from './navbar/navbar.component';
 import {FooterComponent} from './footer/footer.component';
 import {SidebarComponent} from './sidebar/sidebar.component';
 import {RouterModule} from '@angular/router';
+import {FormsModule} from "@angular/forms";
+import {Ng2SearchPipeModule} from "ng2-search-filter";
+import {SearchBoardFillterPipe} from "../project/search-board-fillter.pipe";
 
 
 
@@ -12,15 +15,19 @@ import {RouterModule} from '@angular/router';
     NavbarComponent,
     FooterComponent,
     SidebarComponent,
+    SearchBoardFillterPipe,
   ],
   exports: [
     NavbarComponent,
     FooterComponent,
-    SidebarComponent
+    SidebarComponent,
+
   ],
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    FormsModule,
+    Ng2SearchPipeModule,
   ]
 })
 export class SharedModule { }

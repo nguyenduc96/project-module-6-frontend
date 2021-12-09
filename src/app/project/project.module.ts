@@ -7,6 +7,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { DetailComponent } from './detail/detail.component';
 import {Ng2SearchPipeModule} from 'ng2-search-filter';
 import {TestPipe} from '../test.pipe';
+import {SearchBoardFillterPipe} from "./search-board-fillter.pipe";
 
 @NgModule({
   declarations: [
@@ -14,7 +15,9 @@ import {TestPipe} from '../test.pipe';
     DetailComponent,
     TestPipe,
   ],
-  exports: [],
+    exports: [
+        TestPipe,
+    ],
   imports: [
     CommonModule,
     ProjectRoutingModule,

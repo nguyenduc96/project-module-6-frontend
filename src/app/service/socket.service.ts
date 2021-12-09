@@ -5,9 +5,8 @@ import {BehaviorSubject} from "rxjs";
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import {API_URL} from "../url-constant";
-import {Task} from "../model/task";
-import {Board} from "../model/board";
 import {NotificationService} from "./notification.service";
+import {CommentService} from "./comment.service";
 const SOCKET_URL = `${environment.apiUrl}`;
 
 @Injectable({
@@ -16,16 +15,19 @@ const SOCKET_URL = `${environment.apiUrl}`;
 export class SocketService {
   stompClient: any;
   stompClientNoti: any;
+  stompClientComment:  any;
   board = new BehaviorSubject ({});
   notification = new BehaviorSubject([]);
+  comment = new BehaviorSubject([]);
 
   constructor(private boardService: BoardService,
-              private notificationService: NotificationService) {
+              private notificationService: NotificationService,
+              private commentService: CommentService) {
   }
 
   // Fix cung title search
-  getCurrentBoard(id: number) {
-    this.boardService.getBoardById(id, "").subscribe( data => {
+  getCurrentBoard(id: number, title?: string) {
+    this.boardService.getBoardById(id, title).subscribe( data => {
         this.board.next(data);
     })
   }
@@ -40,14 +42,11 @@ export class SocketService {
       })
   }
 
-  // sendBoard(id: number) {
-  //   this.stompClient.send(`/app/board/${id}` , {}, )
-  // }
-
   sendTask(id: number, board: any ) {
     this.stompClient.send( `/app/task/board/${id}`, {} , JSON.stringify(board))
   }
 
+  // connect to notification
   connectToNotificationByUserId(id: number) {
     let socket = new SockJS(API_URL + '/n3');
     this.stompClientNoti = Stomp.over(socket);
@@ -67,4 +66,27 @@ export class SocketService {
       this.notification.next(data);
     })
   }
+
+
+  // connect to comment
+  connectToComment(id: number) {
+    let socket = new SockJS(API_URL + '/n3');
+    this.stompClientComment = Stomp.over(socket);
+    this.stompClientComment.connect({}, frame => {
+      this.stompClientComment.subscribe(`/topic/comment/task/${id}`, (data) => {
+        this.comment.next(JSON.parse(data.body));
+      });
+    })
+  }
+
+  sendComment(id: number, comment: any) {
+    this.stompClientComment.send(`/app/comment/task/${id}`, {} , JSON.stringify(comment));
+  }
+
+  getCurrentComment(id: number) {
+    this.commentService.findById(id).subscribe(data => {
+      this.comment.next(data);
+    })
+  }
+
 }
