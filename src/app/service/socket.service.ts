@@ -15,15 +15,17 @@ const SOCKET_URL = `${environment.apiUrl}`;
 })
 export class SocketService {
   stompClient: any;
+  stompClientNoti: any;
   board = new BehaviorSubject ({});
   notification = new BehaviorSubject([]);
 
   constructor(private boardService: BoardService,
-              private notiServier: NotificationService) {
+              private notificationService: NotificationService) {
   }
 
+  // Fix cung title search
   getCurrentBoard(id: number) {
-    this.boardService.getBoardById(id).subscribe( data => {
+    this.boardService.getBoardById(id, "").subscribe( data => {
         this.board.next(data);
     })
   }
@@ -46,24 +48,24 @@ export class SocketService {
     this.stompClient.send( `/app/task/board/${id}`, {} , JSON.stringify(board))
   }
 
-  connectToNotificationBoard(id: number) {
+  connectToNotificationByUserId(id: number) {
     let socket = new SockJS(API_URL + '/n3');
-    this.stompClient = Stomp.over(socket);
-    this.stompClient.connect({}, frame => {
-      this.stompClient.subscribe(`/topic/notification/board/${id}`, (data) => {
+    this.stompClientNoti = Stomp.over(socket);
+    this.stompClientNoti.connect({}, frame => {
+      this.stompClientNoti.subscribe(`/topic/notification/board/user/${id}`, (data) => {
         this.notification.next(JSON.parse(data.body));
-        console.log('da lay duoc notimoi')
+        console.log('da lay duoc noti moi')
       });
     })
   }
 
   sendNotification(id: number, notification: any) {
-    this.stompClient.send(`/app/notification/board/${id}`,{}, JSON.stringify(notification))
+    this.stompClientNoti.send(`/app/notification/board/${id}`,{}, JSON.stringify(notification))
   }
 
   getCurrentNotification(id: number) {
-    this.notiServier.getAllNoti(id).subscribe(data => {
-      console.log(data);
+    this.notificationService.getAllNoti(id).subscribe(data => {
+      console.log('ben socket chay');
       this.notification.next(data);
     })
   }

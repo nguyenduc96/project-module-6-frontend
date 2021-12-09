@@ -71,7 +71,6 @@ export class TaskComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     this.activatedRoute.paramMap.subscribe(param => {
       const id = +param.get('id');
       this.boardId = id;
@@ -82,13 +81,15 @@ export class TaskComponent implements OnInit {
     });
   }
 
-  private getBoard(id: number) {
-    this.socketService.getCurrentNotification(id);
+  getBoard(id: number) {
+    let user = JSON.parse(localStorage.getItem('user'))
+    this.socketService.getCurrentNotification(user.id);
     this.socketService.getCurrentBoard(id);
     this.socketService.connectToBoardSocket(id);
-    this.socketService.connectToNotificationBoard(id);
+    this.socketService.connectToNotificationByUserId(user.id);
     this.socketService.notification.subscribe(data => {
       this.notification = data;
+      console.log(data);
     })
     this.socketService.board.subscribe(data => {
       this.board = data;
@@ -264,7 +265,7 @@ export class TaskComponent implements OnInit {
   }
 
   deleteStatus(id: number) {
-    this.statusService.deleteStatus(id).subscribe(() => this.getBoard(this.board.id) );
+    this.statusService.deleteStatus(id).subscribe(() => this.getBoard(this.board.id));
   }
 
   // Label function
