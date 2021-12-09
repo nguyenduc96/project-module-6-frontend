@@ -104,7 +104,10 @@ export class TaskComponent implements OnInit {
   comments: Comment[] = [];
 
   isShowFormAddLabel: boolean = false;
+
   boardIdAddLabel: number;
+
+  labelIdEdit: number;
 
   constructor(private boardService: BoardService,
               private taskService: TaskService,
@@ -502,7 +505,7 @@ export class TaskComponent implements OnInit {
   editLabel() {
     this.newLabel.get('board').setValue({id: this.board.id});
     this.newLabel.get('color').setValue({id: this.newLabel.get('color').value});
-    this.labelService.addNewLabel(this.newLabel.value).subscribe(data => {
+    this.labelService.editLabel(this.labelIdEdit, this.newLabel.value).subscribe(data => {
       this.getLabels();
       this.newLabel = new FormGroup({
         id: new FormControl(),
@@ -514,13 +517,12 @@ export class TaskComponent implements OnInit {
   }
 
   deleteLabel() {
-    this.labelService.deleteLabel(this.newLabel.get('id').value).subscribe(() => {
+    this.labelService.deleteLabel(this.labelIdEdit).subscribe(() => {
       this.getLabels();
-      successAlert();
+      showToastSuccess('Xoá thành công');
     });
   }
 
-  // Notification function
   addNoti(value: string) {
     let user = JSON.parse(localStorage.getItem('user'))
     let noti = {
@@ -542,5 +544,9 @@ export class TaskComponent implements OnInit {
   setBoardIdAddLabel(boardId: number) {
     this.boardIdAddLabel = boardId;
     this.showFormAddLabel();
+  }
+
+  setLabelId(id: number) {
+    this.labelIdEdit = id;
   }
 }
