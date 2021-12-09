@@ -54,7 +54,6 @@ export class SocketService {
     this.stompClientNoti.connect({}, frame => {
       this.stompClientNoti.subscribe(`/topic/notification/board/user/${id}`, (data) => {
         this.notification.next(JSON.parse(data.body));
-        console.log('da lay duoc noti moi')
       });
     })
   }
@@ -65,7 +64,6 @@ export class SocketService {
 
   getCurrentNotification(id: number) {
     this.notificationService.getAllNoti(id).subscribe(data => {
-      console.log('ben socket chay');
       this.notification.next(data);
     })
   }
