@@ -8,6 +8,10 @@ import {showPopupError, showToastError, showToastSuccess} from '../../note';
 import {ListProjectService} from '../../ListProjectSerice';
 import {SendProjectService} from '../../SendProjectService';
 import {BoardService} from '../../service/board/board.service';
+import {UserService} from '../../service/user.service';
+import {SocketService} from "../../service/socket.service";
+
+declare var $: any;
 
 @Component({
   selector: 'app-detail',
@@ -19,7 +23,13 @@ export class DetailComponent implements OnInit {
 
   user: User = {};
 
-  id: number;
+  projectId: number;
+
+  emails = [];
+
+  emailInProjects = new Set();
+
+  searchText;
 
   newBoard: FormGroup = new FormGroup({
     id: new FormControl(),
@@ -27,40 +37,74 @@ export class DetailComponent implements OnInit {
     project: new FormControl(),
   });
 
+  email: string;
+
+  isInputEmail: boolean = false;
+
   constructor(private projectService: ProjectService,
               private boardService: BoardService,
               private activatedRouter: ActivatedRoute,
               private router: Router,
               private listProjectService: ListProjectService,
-              private sendProject: SendProjectService) {
+              private sendProject: SendProjectService,
+              private userService: UserService,
+              private socketService: SocketService) {
     this.getProject();
+    this.getUserInProject();
+    this.getAllEmail();
   }
 
   ngOnInit() {
 
   }
 
+  getAllEmail() {
+    this.userService.getAllEmail().subscribe(data => {
+      this.emails = data;
+    });
+  }
+
+  getUserInProject() {
+    this.projectService.getUserByProjectId(this.projectId).subscribe(data => {
+      for (let user of data) {
+        this.emailInProjects.add(user.email);
+      }
+    });
+  }
+
   getProject() {
     this.activatedRouter.paramMap.subscribe(params => {
-      this.id = +params.get('id');
-      this.projectService.getProject(this.id).subscribe(project => {
+      this.projectId = +params.get('id');
+      this.projectService.getProject(this.projectId).subscribe(project => {
         this.project = project;
       });
     });
   }
 
   addUser(formAddUser: NgForm) {
-    this.user = formAddUser.value;
-    this.projectService.addMember(this.project.id, this.user).subscribe(() => {
+    let email = $('#email').val();
+    this.user = {
+      email: email
+    };
+    this.projectService.addMember(this.project.id, this.user).subscribe((data) => {
       showToastSuccess('Thêm thành công');
+      for (let u of data.users) {this.emailInProjects.add(u.email);}
     }, error => {
-      showPopupError('Thêm thất bại', 'Tên thành viên không đúng hoặc bạn không có quyền thêm thành viên');
+      if (error.status === 409) {
+        showPopupError('Thêm thất bại', 'Thành viên đã có trong dự án');
+      } else if (error.status === 304) {
+        showPopupError('Thêm thất bại', 'Bạn không có quyền thêm thành viên');
+      } else {
+        showPopupError('Thêm thất bại', 'Email thành viên không đúng');
+      }
     });
+    this.addNotiOne("Đã thêm bạn vào dự án " + this.project.title, email)
+    formAddUser.reset();
+
   }
 
   deleteProject() {
     this.projectService.removeProject(this.project.id).subscribe((data) => {
-      console.table(data)
       this.listProjectService.addProjects(data);
       this.router.navigateByUrl('/home');
       showToastSuccess('Xóa thành công');
@@ -71,7 +115,7 @@ export class DetailComponent implements OnInit {
 
   editProject(formEdit: NgForm) {
     this.project = formEdit.value;
-    this.projectService.updateProject(this.id, this.project).subscribe((data) => {
+    this.projectService.updateProject(this.projectId, this.project).subscribe((data) => {
       this.sendProject.sendProject(data);
       formEdit.reset();
       this.router.navigateByUrl('/home');
@@ -82,7 +126,7 @@ export class DetailComponent implements OnInit {
   }
 
   saveBoard() {
-    this.newBoard.get('project').setValue({ id: this.project.id});
+    this.newBoard.get('project').setValue({id: this.project.id});
     this.boardService.create(this.newBoard.value).subscribe(() => {
       this.getProject();
       showToastSuccess('Success!');
@@ -96,7 +140,8 @@ export class DetailComponent implements OnInit {
   }
 
   showBoardDetail(id: number) {
-    this.boardService.getBoardById(id).subscribe(data => {
+    let title = '';
+    this.boardService.getBoardById(id, title).subscribe(data => {
       this.newBoard = new FormGroup({
         id: new FormControl(data.id),
         title: new FormControl(data.title),
@@ -111,5 +156,32 @@ export class DetailComponent implements OnInit {
       this.getProject();
       showToastSuccess('Delete Board!');
     });
+  }
+
+  inputEmail(email: any) {
+    $('#email').val(email);
+  }
+
+  checkEmail(email: string) {
+    return this.emailInProjects.has(email);
+  }
+
+  searchEmail() {
+    let email = $('#email').val();
+    this.isInputEmail = !(email === '' || email === null || email === undefined);
+  }
+
+  // Notification
+  addNotiOne(value: String, email: string ) {
+    let user = JSON.parse(localStorage.getItem('user'));
+    let noti = {
+      sender: {id: user.id},
+      action: value,
+      receiver: {
+        email : email
+      },
+      link: `/projects/${this.projectId}`,
+    };
+    this.socketService.sendOneNotification(noti);
   }
 }

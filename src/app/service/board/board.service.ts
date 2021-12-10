@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {API_URL, BOARD} from '../../url-constant';
 import {Board} from '../../model/board';
+import {User} from '../../model/user';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,10 @@ export class BoardService {
   }
   getAll(): Observable<Board[]> {
     return this.http.get<Board[]>(`${API_URL}/${BOARD}`);
+  }
+
+  getAllByProjectId(id: number): Observable<Board[]> {
+    return this.http.get<Board[]>(`${API_URL}/${BOARD}/${id}`);
   }
 
   create(board: Board): Observable<Board[]> {
@@ -26,7 +31,11 @@ export class BoardService {
     return this.http.delete(`${API_URL}/${BOARD}/${id}`);
   }
 
-  getBoardById(id: number): Observable<Board> {
-    return this.http.get<Board>(`${API_URL}/${BOARD}/${id}`);
+  getBoardById(id: number, title?: string): Observable<Board> {
+    return this.http.get<Board>(`${API_URL}/${BOARD}/${id}?title=${title}`);
+  }
+
+  getAllUserInBoard(id: number): Observable<User[]> {
+    return this.http.get<User[]>(`${API_URL}/${BOARD}/${id}/get-user`);
   }
 }

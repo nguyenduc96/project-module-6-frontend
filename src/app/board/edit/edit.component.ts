@@ -29,7 +29,8 @@ export class EditComponent implements OnInit {
   ) {
     this.activatedRoute.paramMap.subscribe(paramMap => {
       this.id = +paramMap.get('id');
-      this.boardService.getBoardById(this.id).subscribe(board => {
+      let title = '';
+      this.boardService.getBoardById(this.id, title).subscribe(board => {
         this.board = board;
         this.editBoardForm = new FormGroup({
           id: new FormControl(this.board.id),

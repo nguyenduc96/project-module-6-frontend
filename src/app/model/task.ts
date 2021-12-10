@@ -7,7 +7,7 @@ export interface Task {
   deadline?: string;
   image?: string;
   position?: number;
-  labels?: Label;
+  labels?: Label[];
   status?: {
     id: number;
   };

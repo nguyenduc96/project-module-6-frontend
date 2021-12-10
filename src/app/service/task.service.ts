@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Task} from '../model/task';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
+  import {Label} from '../model/label';
 
 const API_URL = `${environment.apiUrl}/tasks`;
 
@@ -12,6 +13,10 @@ const API_URL = `${environment.apiUrl}/tasks`;
 export class TaskService {
 
   constructor(private http: HttpClient) {
+  }
+
+  getAll(statusId: number, title: string): Observable<Task[]> {
+    return this.http.get<Task[]>(API_URL + `/${statusId}?title=${title}`);
   }
 
   sortTask(id: number, task: Task): Observable<Task> {
@@ -32,5 +37,9 @@ export class TaskService {
 
   deleteTask(id: number): Observable<any> {
     return this.http.delete<any>(API_URL + `/${id}`);
+  }
+
+  getLabelByTaskId(id: number): Observable<Label[]> {
+    return this.http.get<Label[]>(API_URL + `/${id}/get-label`);
   }
 }

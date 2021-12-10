@@ -41,13 +41,13 @@
 </div>
 
 
-  <div *ngIf="project.boards.length == 0">
+  <div *ngIf="project.boards?.length == 0">
     <h3 class="card-title">
       Hiện tại dự án chưa có bảng nào
     </h3>
   </div>
-  <div class="row" *ngIf="project.boards.length > 0">
-    <div class="text-center"
+  <div class="row" *ngIf="project.boards?.length > 0">
+    <div class="text-center "
          *ngFor="let b of project.boards"
          style="margin: 35px 0px 0px 40px; width: 200px; height:100px; background-color: rgb(238,238,238);padding: 30px 0px 0px 0px;
 border-radius: 10px"
@@ -61,33 +61,51 @@ border-radius: 10px"
 
 
 
-
-<!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-     aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="staticBackdropLabel">Thêm người vào dự án</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <form #formAddUser='ngForm' (ngSubmit)="addUser(formAddUser)">
-        <div class="modal-body">
-
-          <div>
-<!--            <label for="username">Nhập tên thành viên</label>-->
-            <input style="margin-bottom: 15px;width: 60%" class="form-control" placeholder="Nhập tên thành viên" type="text" id="username"  ngModel name="username">
-          </div>
-
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Đóng</button>
-            <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Thêm </button>
-          </div>
+  <!-- Modal -->
+  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+       aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Thêm người vào dự án</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-      </form>
+        <form #formAddUser='ngForm' (ngSubmit)="addUser(formAddUser)">
+          <div class="modal-body">
+            <div>
+              <label>Nhập email thành viên</label>
+
+              <div><input style="margin-bottom: 15px;width: 60%; background-color: #0e4cfd" class="form"
+                          id="email"
+                          placeholder="Nhập email thành viên" autocomplete="off" type="text" [(ngModel)]="email"
+                          name="email" (input)="searchEmail()">
+
+                <div *ngIf="isInputEmail">
+                  <div>Email</div>
+                  <div style="max-height: 200px;overflow-y: auto">
+                    <div *ngFor="let e of emails | convertFilter:email">
+                      <ng-container>
+                        <div style="cursor: pointer;">
+                          <button type="button" style="border: none; background-color: #FFFFFF;" [disabled]="checkEmail(e)" (click)="inputEmail(e)" >{{e}}</button>
+                          <sup style="color: red" *ngIf="checkEmail(e)"> Đã trong dự án</sup>
+                        </div>
+                      </ng-container>
+
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Đóng</button>
+              <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Thêm</button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
-</div>
 
 <div class="modal fade" id="staticDelete" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="staticDeleteLabel" aria-hidden="true">
@@ -171,26 +189,5 @@ border-radius: 10px"
     </div>
   </div>
 </div>
-
-<!-- Modal Edit & Delete Board-->
-<!--<div class="modal fade" id="editBoard" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">-->
-<!--  <div class="modal-dialog">-->
-<!--    <div class="modal-content">-->
-<!--      <div class="modal-header">-->
-<!--        <h5 class="modal-title" id="">Edit Board</h5>-->
-<!--        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
-<!--      </div>-->
-<!--      <form [formGroup]="newBoard" (ngSubmit)="saveBoard()">-->
-<!--      <div class="modal-body">-->
-<!--        <input type="text" formControlName="title">-->
-<!--      </div>-->
-<!--      <div class="modal-footer">-->
-<!--        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="deleteBoard()">Delete</button>-->
-<!--        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save Change</button>-->
-<!--      </div>-->
-<!--      </form>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
 
 </div>

@@ -26,8 +26,10 @@ export class DetailComponent implements OnInit {
 
   ngOnInit() {
   }
+
   getBoardDetail(id) {
-    return this.boardService.getBoardById(id).subscribe(book => {
+    let title = '';
+    return this.boardService.getBoardById(id, title).subscribe(book => {
       this.board = book;
       this.boardForm = new FormGroup({
         id: new FormControl(book.id),
@@ -35,4 +37,6 @@ export class DetailComponent implements OnInit {
       });
     });
   }
+
+
 }
