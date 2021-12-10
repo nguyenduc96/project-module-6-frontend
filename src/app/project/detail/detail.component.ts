@@ -114,14 +114,21 @@ export class DetailComponent implements OnInit {
   }
 
   editProject(formEdit: NgForm) {
+    let type = $('#type').val();
     this.project = formEdit.value;
+    this.project.type = type;
     this.projectService.updateProject(this.projectId, this.project).subscribe((data) => {
       this.sendProject.sendProject(data);
       formEdit.reset();
       this.router.navigateByUrl('/home');
       showToastSuccess('Sửa thành công');
     }, error => {
-      showPopupError('Sửa thất bại', 'Bạn không có quyền sửa dự án này');
+      if (error.status === 304) {
+        showPopupError('Sửa thất bại', 'Bạn không có quyền sửa dự án này');
+        this.router.navigateByUrl('/home');
+        formEdit.reset();
+
+      }
     });
   }
 

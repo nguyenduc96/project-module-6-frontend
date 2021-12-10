@@ -55,28 +55,28 @@ border-radius: 10px"
       <a routerLink="/tasks/list/{{b.id}}" style="text-decoration: none;color: #232323; font-size: 20px;margin-right: 10%">{{b.title}}
       </a>
       <a class="ti-pencil" data-bs-toggle="modal"
-         data-bs-target="#editBoard" (click)="showBoardDetail(b.id)">Edit</a>
+         data-bs-target="#editBoard" (click)="showBoardDetail(b.id)"></a>
     </div>
   </div>
 
 
 
-  <!-- Modal -->
+  <!-- Modal add member to project -->
   <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
        aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="staticBackdropLabel">Thêm người vào dự án</h5>
+          <h5 class="modal-title" style="font-weight: bold" id="staticBackdropLabel">Thêm người vào dự án</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form #formAddUser='ngForm' (ngSubmit)="addUser(formAddUser)">
           <div class="modal-body">
-            <div>
+            <div >
               <label>Nhập email thành viên</label>
 
-              <div><input style="margin-bottom: 15px;width: 60%; background-color: #0e4cfd" class="form"
-                          id="email"
+              <div style="width: 100%"><input style="margin-bottom: 15px;width: 100%; border: 1px solid rgba(70,69,69,0.66);background-color: #FAFBFC;color: black!important;"
+                          id="email" class="form-control"
                           placeholder="Nhập email thành viên" autocomplete="off" type="text" [(ngModel)]="email"
                           name="email" (input)="searchEmail()">
 
@@ -96,8 +96,9 @@ border-radius: 10px"
                 </div>
 
               </div>
+              <hr>
             </div>
-            <div class="modal-footer">
+            <div style="margin-top: 20px">
               <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Đóng</button>
               <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Thêm</button>
             </div>
@@ -107,6 +108,7 @@ border-radius: 10px"
     </div>
   </div>
 
+<!--  modal delete project-->
 <div class="modal fade" id="staticDelete" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="staticDeleteLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -128,6 +130,7 @@ border-radius: 10px"
   </div>
 </div>
 
+<!--  modal edit project-->
 <div class="modal fade" id="staticEdit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="staticEditLabel" aria-hidden="true" >
   <div class="modal-dialog" >
@@ -144,7 +147,7 @@ border-radius: 10px"
             </div>
             <div>
               <label for="type">Loại dự án</label>
-              <select style="background-color:  #FAFBFC;height: 42px;border: 2px solid #DFE1E6;color: black !important;" class="form-control" id="type" name="type" ngModel>
+              <select style="background-color:  #FAFBFC;height: 42px;border: 2px solid #DFE1E6;color: black !important;" class="form-control" id="type" name="type">
                 <option style="background-color: rgba(9,8,17,0.4)" class="form-control" value="1" [selected]="true">Dự án cá nhân</option>
                 <option style="background-color: rgba(9,8,17,0.4)" class="form-control" value="2">Dự án nhóm</option>
               </select>
@@ -181,7 +184,7 @@ border-radius: 10px"
         </div>
         <div style="margin: 5px 0px 35px 15px;padding-bottom: 20px">
           <button type="button" style="float: left" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" style="float: left" class="btn btn-success">Save</button>
+          <button type="submit" style="float: left" class="btn btn-success" data-bs-dismiss="modal">Save</button>
         </div>
 
       </form>
@@ -189,5 +192,29 @@ border-radius: 10px"
     </div>
   </div>
 </div>
+
+
+<!--  modal edit board-->
+  <div class="modal fade" id="editBoard" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" style="font-weight: bold" id="">Chỉnh sửa bảng</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form [formGroup]="newBoard" (ngSubmit)="saveBoard()">
+          <div class="modal-body">
+            <label >Tên bảng</label>
+            <input type="text" class="form-control" style="border: 1px solid #1f1f1f;color: black !important;" formControlName="title">
+          </div>
+          <hr>
+          <div style="margin: 10px 0px 20px 15px">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="deleteBoard()">Xóa bảng</button>
+            <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Sửa bảng</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
 </div>

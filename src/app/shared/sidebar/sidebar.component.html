@@ -4,19 +4,17 @@
       <i style="color: rgba(28,27,27,0.77) " class="ti-user menu-icon"></i>
       <span class="menu-title" style="font-size: 20px;color: rgba(28,27,27,0.77)">Tài khoản</span>&nbsp;<i class="menu-arrow"></i>
     </a>
-    <div class="collapse" id="account" >
-      <ul class="nav flex-column sub-menu" style="border-radius: 0px 0px 10px 10px;margin-bottom: 3px;padding: 0px 10px 0px 0px">
+    <div class="collapse" id="account"  >
+      <ul class="nav flex-column sub-menu" style="border-radius: 0px 0px 10px 10px;margin-bottom: 3px;padding: 0px 10px 0px 10px">
         <li style="width: 100%">
           <a class="nav-link" routerLink="/user/change-password">
-            <i class="ti-pencil " style="font-size: 17px;color: rgba(28,27,27,0.77)"> Đổi mật khẩu</i>
+            <i class="ti-pencil " style="font-size: 17px;color: rgba(28,27,27,0.77)"> </i>&nbsp; Đổi mật khẩu
              &nbsp;
           </a>
         </li>
         <li><a class="nav-link" routerLink="/user/information">
-          <i class="ti-settings " style="font-size: 17px;color: rgba(28,27,27,0.77)"> Thông tin cá nhân</i>
-           &nbsp;
+          <i class="ti-settings " style="color: rgba(28,27,27,0.77)"> </i>&nbsp; Thông tin cá nhân
         </a></li>
-
       </ul>
     </div>
   </li>
@@ -27,9 +25,9 @@
       <i class="menu-arrow"></i>
     </a>
     <div class="collapse" id="project">
-      <ul class="nav flex-column sub-menu" style="border-radius: 0px 0px 10px 10px;padding: 0px 1px 10px 15px">
+      <ul class="nav flex-column sub-menu" style="border-radius: 0px 0px 10px 10px;padding: 0px 1px 10px 10px">
         <ng-container *ngFor="let project of projects">
-          <li class="nav-item"><a class="nav-link" routerLink="/projects/{{project.id}}"><i class="ti-harddrives"></i> &nbsp; {{project.title}} </a></li>
+          <li ><a class="nav-link" routerLink="/projects/{{project.id}}"><i class="ti-harddrives"></i> &nbsp; {{project.title}} </a></li>
         </ng-container>
         <!--        <li class="nav-item"> <a class="nav-link" routerLink="/projects/create"> Thêm dự án </a></li>-->
       </ul>
@@ -43,9 +41,9 @@
       <i class="menu-arrow"></i>
     </a>
     <div class="collapse" id="project-of-me">
-      <ul class="nav flex-column sub-menu" style="border-radius: 0px 0px 10px 10px;padding: 0px 1px 10px 15px">
+      <ul class="nav flex-column sub-menu" style="border-radius: 0px 0px 10px 10px;padding: 0px 1px 10px 10px">
         <ng-container *ngFor="let p of myProjects">
-          <li class="nav-item"> <a class="nav-link" routerLink="/projects/{{p.id}}"><i class="ti-harddrives" style=" color: rgba(28,27,27,0.77)"></i> &nbsp; {{p.title}}</a></li>
+          <li > <a class="nav-link" routerLink="/projects/{{p.id}}"><i class="ti-harddrives" style=" color: rgba(28,27,27,0.77)"></i> &nbsp; {{p.title}}</a></li>
         </ng-container>
       </ul>
     </div>
