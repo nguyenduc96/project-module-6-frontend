@@ -1,34 +1,41 @@
-<div class="row" style="margin: 25px 0px 0px 60px">
-  <div style="padding: 20px 0px 0px 20px;border-radius: 10px;
+<div class="container">
+<div class="row justify-content-center" style="margin: 35px 0px 0px 60px">
+  <div class="col-md-6" style="padding: 20px 0px 0px 20px;border-radius: 10px;
   width: 400px; height: 450px;
-  border: 1px solid rgba(224,217,217,0.45);background-color: rgba(199,191,191,0.62)">
-    <h1>Thông tin tài khoản</h1>
-    <img style="margin-left: 75px;width: 210px; height: 210px; border-radius: 100%" [src]="user?.avatar" alt="Day la anh dai dien">
+  border: 1px solid rgba(192,187,187,0.85);background-color: rgb(218,213,213) !important;">
+    <h1 style="color: #37404f">Thông tin tài khoản</h1>
+    <img style="margin: 10px 0px 10px 75px;width: 210px; height: 210px; border-radius: 100%" [src]="user?.avatar" alt="Day la anh dai dien">
     <!--    <label for="file" style="color: #eee4e4" title="Đổi ảnh đại diện"><i style="padding-top: 80%" class="ti-pencil"></i>-->
     <!--    Đổi ảnh đại diện-->
     <!--    </label>-->
-    <div style="margin-top: 15px">
+    <p style="text-align: center;margin:0px 25px 10px 0px "><label for="file" title="Đổi ảnh đại diện"><i class="ti-pencil"></i> Đổi ảnh đại diện</label></p>
+    <div style="margin: 15px 17px 0px 80px;font-size: 20px">
 <!--      <table style="width: 60%;height: 100px">-->
-        <div   style="border-radius: 7px;border: 1px solid rgba(227,213,213,0.5)">
+        <div style="margin: 0px 0px 5px 0px"  >
+<!--          <td>-->
+<!--            <div>-->
+<!--              Tên đăng nhập-->
+<!--            </div>-->
+<!--          </td>-->
           <td>
+
             <div>
-              Tên đăng nhập :
-            </div>
-          </td>
-          <td>
-            <div>
+              <i class="ti-user"></i>
               {{user?.username}}
             </div>
           </td>
+
         </div>
-        <div style="border-radius: 7px;border: 1px solid rgba(227,213,213,0.5);margin-top: 10px">
+        <div >
+<!--          <td>-->
+<!--            <div>-->
+<!--              Email-->
+<!--            </div>-->
+<!--          </td>-->
           <td>
+
             <div>
-              Email :
-            </div>
-          </td>
-          <td>
-            <div>
+              <i class="ti-email"></i>
               {{user?.email}}
             </div>
           </td>
@@ -45,3 +52,5 @@
        autocomplete="off"
        hidden
 />
+</div>
+</div>

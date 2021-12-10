@@ -27,7 +27,7 @@
       <i class="menu-arrow"></i>
     </a>
     <div class="collapse" id="project">
-      <ul class="nav flex-column sub-menu" style="border-radius: 0px 0px 10px 10px;margin-bottom: 5px">
+      <ul class="nav flex-column sub-menu" style="border-radius: 0px 0px 10px 10px;padding: 0px 1px 10px 15px">
         <ng-container *ngFor="let project of projects">
           <li class="nav-item"><a class="nav-link" routerLink="/projects/{{project.id}}"><i class="ti-harddrives"></i> &nbsp; {{project.title}} </a></li>
         </ng-container>
@@ -43,7 +43,7 @@
       <i class="menu-arrow"></i>
     </a>
     <div class="collapse" id="project-of-me">
-      <ul class="nav flex-column sub-menu" style="border-radius: 0px 0px 10px 10px;padding: 0px 1px 0px 15px">
+      <ul class="nav flex-column sub-menu" style="border-radius: 0px 0px 10px 10px;padding: 0px 1px 10px 15px">
         <ng-container *ngFor="let p of myProjects">
           <li class="nav-item"> <a class="nav-link" routerLink="/projects/{{p.id}}"><i class="ti-harddrives" style=" color: rgba(28,27,27,0.77)"></i> &nbsp; {{p.title}}</a></li>
         </ng-container>
