@@ -9,7 +9,6 @@ import {ListProjectService} from '../../ListProjectSerice';
 import {SendProjectService} from '../../SendProjectService';
 import {BoardService} from '../../service/board/board.service';
 import {UserService} from '../../service/user.service';
-import {log} from 'util';
 
 declare var $: any;
 
@@ -23,9 +22,11 @@ export class DetailComponent implements OnInit {
 
   user: User = {};
 
-  id: number;
+  projectId: number;
 
   emails = [];
+
+  emailInProjects = new Set();
 
   searchText;
 
@@ -47,23 +48,32 @@ export class DetailComponent implements OnInit {
               private sendProject: SendProjectService,
               private userService: UserService) {
     this.getProject();
+    this.getUserInProject();
+    this.getAllEmail();
   }
 
   ngOnInit() {
-    this.getAllEmail();
+
   }
 
   getAllEmail() {
     this.userService.getAllEmail().subscribe(data => {
-      console.table(data);
       this.emails = data;
+    });
+  }
+
+  getUserInProject() {
+    this.projectService.getUserByProjectId(this.projectId).subscribe(data => {
+      for (let user of data) {
+        this.emailInProjects.add(user.email);
+      }
     });
   }
 
   getProject() {
     this.activatedRouter.paramMap.subscribe(params => {
-      this.id = +params.get('id');
-      this.projectService.getProject(this.id).subscribe(project => {
+      this.projectId = +params.get('id');
+      this.projectService.getProject(this.projectId).subscribe(project => {
         this.project = project;
       });
     });
@@ -74,8 +84,9 @@ export class DetailComponent implements OnInit {
     this.user = {
       email: email
     };
-    this.projectService.addMember(this.project.id, this.user).subscribe(() => {
+    this.projectService.addMember(this.project.id, this.user).subscribe((data) => {
       showToastSuccess('Thêm thành công');
+      for (let u of data.users) {this.emailInProjects.add(u.email);}
     }, error => {
       if (error.status === 409) {
         showPopupError('Thêm thất bại', 'Thành viên đã có trong dự án');
@@ -85,11 +96,11 @@ export class DetailComponent implements OnInit {
         showPopupError('Thêm thất bại', 'Email thành viên không đúng');
       }
     });
+    formAddUser.reset();
   }
 
   deleteProject() {
     this.projectService.removeProject(this.project.id).subscribe((data) => {
-      console.table(data);
       this.listProjectService.addProjects(data);
       this.router.navigateByUrl('/home');
       showToastSuccess('Xóa thành công');
@@ -100,7 +111,7 @@ export class DetailComponent implements OnInit {
 
   editProject(formEdit: NgForm) {
     this.project = formEdit.value;
-    this.projectService.updateProject(this.id, this.project).subscribe((data) => {
+    this.projectService.updateProject(this.projectId, this.project).subscribe((data) => {
       this.sendProject.sendProject(data);
       formEdit.reset();
       this.router.navigateByUrl('/home');
@@ -147,11 +158,12 @@ export class DetailComponent implements OnInit {
     $('#email').val(email);
   }
 
-
+  checkEmail(email: string) {
+    return this.emailInProjects.has(email);
+  }
 
   searchEmail() {
     let email = $('#email').val();
     this.isInputEmail = !(email === '' || email === null || email === undefined);
-    console.log(this.email)
   }
 }

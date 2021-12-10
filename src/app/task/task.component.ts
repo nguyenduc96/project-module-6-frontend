@@ -9,23 +9,30 @@ import {Status} from '../model/status';
 import Swal from 'sweetalert2';
 import {Task} from '../model/task';
 import {showToastError, showToastNotice, showToastSuccess, successAlert} from '../note';
+import {showPopupError} from '../note';
 import {LabelService} from '../service/label.service';
 import {ColorService} from '../service/color.service';
 import {Label} from '../model/label';
 import {Color} from '../model/color';
 import {ActivatedRoute} from '@angular/router';
 import {BoardService} from '../service/board/board.service';
+import {SocketService} from '../service/socket.service';
+import {Notification} from '../model/notification';
 import {CommentService} from '../service/comment.service';
 import {UserService} from '../service/user.service';
 import {Comment} from '../model/comment';
+import {ProjectService} from '../service/project/project.service';
+import {User} from '../model/user';
+import {PermissionService} from '../service/permission.service';
+import {Permission} from '../model/permission';
+import {AssignService} from '../service/assign.service';
+import {Assign} from '../model/assign';
 import {TaskFileService} from '../service/task-file.service';
 import {finalize} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import {AngularFireStorage} from '@angular/fire/storage';
 import {TaskFile} from '../model/taskFile';
 import {log} from 'util';
-import {SocketService} from "../service/socket.service";
-import {Notification} from "../model/notification";
 import {BoardPermission} from "../model/board-permission";
 import {BoardPermissionService} from "../service/board-permission.service";
 
@@ -41,12 +48,14 @@ export class TaskComponent implements OnInit {
   labels: Label[];
   colors: Color[];
   notification: Notification[];
-  comments: any[];
   taskFiles: any[];
   selectedFile: File = null;
   downloadURL: Observable<string>;
 
   taskFile: TaskFile = {};
+
+
+  labelInTask = new Set<Label>();
 
   comment: Comment = {};
 
@@ -72,6 +81,9 @@ export class TaskComponent implements OnInit {
     board: new FormControl(),
   });
   currentUser = JSON.parse(localStorage.getItem('user'));
+
+  labelEdit: Label = {};
+
   taskId: number;
   taskDetail: Task = {};
   statusId: number;
@@ -85,12 +97,53 @@ export class TaskComponent implements OnInit {
   isViewer: boolean = false;
   boardId: number;
 
+  projectId: number;
+
+  isInputEmail: boolean = false;
+
+  email: string;
+
+  emails = new Set();
+
+  emailsConvert: any[] = [];
+
+  emailInBoard = new Set();
+
+  permissions: Permission[] = [];
+
+  boardPermission: BoardPermission = {};
+
+  permission: Permission = {};
+
+  emailInBoardArray: string[] = [];
+
+  emailInAssign = new Set();
+
+  assign: Assign = {};
+
+  comments: Comment[] = [];
+
+  isShowFormAddLabel: boolean = false;
+
+  boardIdAddLabel: number;
+
+  labelIdEdit: number;
+
+  userAssign: User[] = [];
+
+  userInBoard: User[] = [];
+
+
+  userInBoardId: number;
+
+
   constructor(private boardService: BoardService,
               private taskService: TaskService,
               private statusService: StatusService,
               private labelService: LabelService,
               private colorService: ColorService,
               private taskFileService: TaskFileService,
+              private projectService: ProjectService,
               private commentService: CommentService,
               private userService: UserService,
               private activatedRoute: ActivatedRoute,
@@ -105,15 +158,124 @@ export class TaskComponent implements OnInit {
       const id = +param.get('id');
       this.boardId = id;
       this.getBoard(id);
+      this.getUserInBoard(id)
       this.boardPermissionService.getMyPermission(user.id,id).subscribe(data => {
         this.permission = data;
         this.isViewer = (this.permission.permission.id == 1);
       })
+     ;
     });
     this.colorService.getAll().subscribe(data => {
       this.colors = data;
     });
+    this.getAllPermissions();
+  }
 
+
+  showFormAddLabel() {
+    this.isShowFormAddLabel = !this.isShowFormAddLabel;
+  }
+
+  getAllPermissions() {
+    this.permissionService.getPermissions().subscribe(data => {
+      console.log(data);
+      this.permissions = data;
+    });
+  }
+
+  getAllUserInAssign(id) {
+    this.emailInAssign = new Set();
+    this.userAssign = [];
+    this.assignService.getAllUsersInAssignByTaskId(id).subscribe(data => {
+      data.forEach(user => {
+        this.emailInAssign.add(user.email);
+        this.userAssign.push(user);
+      });
+    });
+  }
+
+  addUserToTask(email: string) {
+    this.assign = {
+      user: {
+        email: email
+      },
+      task: {
+        id: this.taskDetail.id
+      }
+    };
+    this.assignService.addMemberToAssign(this.assign).subscribe(data => {
+      console.log(data);
+      this.getAllUserInAssign(this.taskDetail.id);
+      showToastSuccess('Thêm thành công');
+    }, error => {
+      if (error.status === 404) {
+        showPopupError('Thông báo', 'Không tìm thấy người dùng');
+      } else if (error.status === 409) {
+        showPopupError('Thông báo', 'Người dùng đã có trong danh sách');
+      } else {
+        showPopupError('Thông báo', 'Có lỗi xảy ra');
+      }
+    });
+  }
+
+  addUserToBoard(formAddUser: NgForm) {
+    let permissionId = $('#permission').val();
+    let email = $('#email').val();
+    this.boardPermission = {
+      board: {
+        id: this.boardId
+      },
+      user: {
+        email: email
+      },
+      permission: {
+        id: permissionId
+      }
+    };
+    this.permissionService.addBoardPermission(this.boardPermission).subscribe(data => {
+      console.log(data);
+      $('#email').val('');
+      this.getUserInBoard(this.boardId);
+      showToastSuccess('Thêm thành công');
+    }, (err) => {
+      if (err.status === 404) {
+        showPopupError('Thông báo', 'Email không tồn tại');
+        $('#email').val('');
+      } else if (err.status === 409) {
+        showPopupError('Thông báo', 'Email đã tồn tại');
+        $('#email').val('');
+      }
+    });
+  }
+
+  searchEmail() {
+    let email = $('#email').val();
+    this.isInputEmail = !(email === '' || email === null || email === undefined);
+  }
+
+  checkEmail(email: string) {
+    return this.emailInBoard.has(email);
+  }
+
+
+  checkEmailInTask(email: string) {
+    return this.emailInAssign.has(email);
+  }
+
+  getUserInBoard(id: number) {
+    this.userInBoard = [];
+    this.boardService.getAllUserInBoard(id).subscribe(data => {
+      data.forEach(user => {
+        this.emailInBoard.add(user.email);
+        this.emailInBoardArray.push(user.email);
+        this.userInBoard.push(user);
+      });
+    });
+  }
+
+  searchTask(id: number) {
+    let title = $('#title-search-task').val();
+    this.socketService.getCurrentBoard(id, title);
   }
 
   getBoard(id: number) {
@@ -121,7 +283,22 @@ export class TaskComponent implements OnInit {
     this.socketService.connectToBoardSocket(id);
     this.socketService.board.subscribe(data => {
       this.board = data;
-    })
+      this.projectId = this.board.project;
+      this.getUserByProject(this.projectId);
+      this.getLabels();
+    }, error => {
+      console.log('Error');
+    });
+  }
+
+  getUserByProject(id) {
+    this.emailsConvert = [];
+    this.projectService.getUserByProjectId(id).subscribe(data => {
+      for (let user of data) {
+        this.emails.add(user.email);
+      }
+      this.emailsConvert.push(...this.emails);
+    });
   }
 
   private getLabels() {
@@ -134,11 +311,11 @@ export class TaskComponent implements OnInit {
   dropTask(event: CdkDragDrop<Task[], any>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-       this.moveInArray(event);
-       if(event.previousIndex != event.currentIndex) {
-         this.addNoti("Đã di chuyển 1 thẻ ở bảng " +  this.board.title)
-         this.socketService.sendTask(this.board.id, this.board);
-       }
+      this.moveInArray(event);
+      if (event.previousIndex != event.currentIndex) {
+        this.addNoti('Đã di chuyển 1 thẻ ở bảng ' + this.board.title);
+        this.socketService.sendTask(this.board.id, this.board);
+      }
     } else {
       transferArrayItem(
         event.previousContainer.data,
@@ -152,13 +329,13 @@ export class TaskComponent implements OnInit {
 
   dropStatus(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.board.statuses, event.previousIndex, event.currentIndex);
-    if(event.previousIndex != event.currentIndex) {
+    if (event.previousIndex != event.currentIndex) {
       for (let i = 0; i < this.board.statuses.length; i++) {
-        this.board.statuses[i].position =  i;
+        this.board.statuses[i].position = i;
         console.log(this.board.statuses[i].title + ' ' + this.board.statuses[i].position);
       }
-      this.addNoti("Đã di chuyển 1 cột ở bảng " +  this.board.title)
-        this.socketService.sendTask(this.board.id, this.board)
+      this.addNoti('Đã di chuyển 1 cột ở bảng ' + this.board.title);
+      this.socketService.sendTask(this.board.id, this.board);
     }
   }
 
@@ -173,13 +350,13 @@ export class TaskComponent implements OnInit {
     for (let i = 0; i < this.board.statuses.length; i++) {
       console.log(this.board.statuses[i].title + ' ' + this.board.statuses[i].position);
     }
-    this.addNoti("Đã di chuyển 1 thẻ ở bảng " +  this.board.title)
+    this.addNoti('Đã di chuyển 1 thẻ ở bảng ' + this.board.title);
     this.socketService.sendTask(this.board.id, this.board);
   }
 
   private moveInArray(event: CdkDragDrop<Task[], any>) {
     for (let i = 0; i < event.container.data.length; i++) {
-     event.container.data[i].position = i;
+      event.container.data[i].position = i;
     }
   }
 
@@ -253,7 +430,10 @@ export class TaskComponent implements OnInit {
   addNewTask(i: number) {
     this.newTask.get('status').setValue({id: this.statusId});
     this.newTask.get('position').setValue(this.board.statuses[i].tasks.length);
-    this.taskService.addNew(this.newTask.value).subscribe(data => {console.log(data); this.getBoard(this.board.id); });
+    this.taskService.addNew(this.newTask.value).subscribe(data => {
+      console.log(data);
+      this.getBoard(this.board.id);
+    });
     this.newTask = new FormGroup({
       title: new FormControl(),
       position: new FormControl(99999),
@@ -268,9 +448,9 @@ export class TaskComponent implements OnInit {
     this.isShowTaskAddBox = !this.isShowTaskAddBox;
   }
 
-  // showCommentByTaskId( id: number){
-  //   this.commentService.findById(id).subscribe(data => {this.comments = data});
-  // }
+  showCommentByTaskId( id: number){
+    this.commentService.findById(id).subscribe(data => {this.comments = data});
+  }
 
   showTaskFileByTaskId(id : number){
     this.taskFileService.getAllByTaskId(id).subscribe( data => {
@@ -284,13 +464,20 @@ export class TaskComponent implements OnInit {
   showTaskDetail(id: number) {
     this.taskService.findById(id).subscribe(data => {
       this.taskDetail = data;
-      // this.showCommentByTaskId(id);
       this.showTaskFileByTaskId(id) });
-    this.socketService.connectToComment(id);
-    this.socketService.getCurrentComment(id);
-    this.socketService.comment.subscribe(comment => {
-      this.comments = comment;
-    })
+      this.socketService.connectToComment(id);
+      this.socketService.getCurrentComment(id);
+      this.socketService.comment.subscribe(comment => {
+        this.comments = comment;
+      })
+    this.taskService.findById(id).subscribe(data => {
+      this.taskDetail = data;
+      this.getAllUserInAssign(id);
+      this.showCommentByTaskId(id);
+      this.getLabelByTaskId(id);
+    }, error => {
+      console.log('khong lay duoc detail');
+    });
   }
 
 
@@ -325,7 +512,7 @@ export class TaskComponent implements OnInit {
   }
 
   setStatusId(id: number) {
-    this.statusId  = id;
+    this.statusId = id;
     this.showTaskAddBox();
   }
 
@@ -381,7 +568,7 @@ export class TaskComponent implements OnInit {
 
   // Label function
 
-  addNewLabel() {
+  addNewLabel(newLabel: FormGroup) {
     this.newLabel.get('board').setValue({id: this.board.id});
     this.newLabel.get('color').setValue({id: this.newLabel.get('color').value});
     this.labelService.addNewLabel(this.newLabel.value).subscribe(data => {
@@ -410,7 +597,7 @@ export class TaskComponent implements OnInit {
   editLabel() {
     this.newLabel.get('board').setValue({id: this.board.id});
     this.newLabel.get('color').setValue({id: this.newLabel.get('color').value});
-    this.labelService.addNewLabel(this.newLabel.value).subscribe(data => {
+    this.labelService.editLabel(this.labelIdEdit, this.newLabel.value).subscribe(data => {
       this.getLabels();
       this.newLabel = new FormGroup({
         id: new FormControl(),
@@ -422,21 +609,21 @@ export class TaskComponent implements OnInit {
   }
 
   deleteLabel() {
-    this.labelService.deleteLabel(this.newLabel.get('id').value).subscribe(() => {
+    this.labelService.deleteLabel(this.labelIdEdit).subscribe(() => {
       this.getLabels();
-      successAlert();
+      showToastSuccess('Xoá thành công');
     });
   }
 
   // Notification function
   addNoti(value: string) {
-    let user = JSON.parse(localStorage.getItem('user'))
+    let user = JSON.parse(localStorage.getItem('user'));
     let noti = {
       sender: {id: user.id},
       action: value,
       link: `/tasks/list/${this.board.id}`,
     };
-    this.socketService.sendNotification(this.board.id, noti );
+    this.socketService.sendNotification(this.board.id, noti);
   }
 
 
@@ -452,5 +639,63 @@ export class TaskComponent implements OnInit {
         this.comments = comment;
       })
     })
+  }
+  inputEmail(email: string) {
+    $('#email').val(email);
+  }
+
+  inputEmailAddTask(email: string) {
+    $('email-add-task').val(email);
+  }
+
+  setBoardIdAddLabel(boardId: number) {
+    this.boardIdAddLabel = boardId;
+    this.showFormAddLabel();
+  }
+
+  setLabelId(id: number) {
+    this.labelIdEdit = id;
+    this.labelService.getById(id).subscribe(data => {
+      this.labelEdit = data;
+    })
+  }
+
+
+  getLabelByTaskId(id: number) {
+    this.labelInTask = new Set<Label>();
+    this.taskService.getLabelByTaskId(id).subscribe(data => {
+      for (let label of data) {
+        this.labelInTask.add(label);
+
+      }
+      console.log(this.labelInTask);
+    });
+  }
+
+  addLabelToTask(label: Label) {
+    this.taskDetail.labels = [label];
+    this.taskService.editTask(this.taskDetail.id, this.taskDetail).subscribe(data => {
+      this.getLabelByTaskId(this.taskDetail.id);
+    });
+  }
+
+  checkUniqueLabel(label: Label) {
+    for (let l of this.labelInTask) {
+      if (l.id === label.id) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  removeUserInBoard(id: number) {
+    this.permissionService.removeBoardPermission(id, this.boardId).subscribe(data => {
+      this.getBoard(this.boardId);
+      this.getUserInBoard(this.boardId);
+    });
+  }
+
+  setUserId(id: number) {
+    this.userInBoardId = id;
   }
 }

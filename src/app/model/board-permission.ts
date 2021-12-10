@@ -1,3 +1,10 @@
+import {Board} from './board';
+import {User} from './user';
+import {Permission} from './permission';
+
 export interface BoardPermission {
-  permission?: any;
+  id?: number;
+  board?: Board;
+  user?: User;
+  permission?: Permission;
 }

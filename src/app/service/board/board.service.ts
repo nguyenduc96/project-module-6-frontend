@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {API_URL, BOARD} from '../../url-constant';
 import {Board} from '../../model/board';
+import {User} from '../../model/user';
 
 @Injectable({
   providedIn: 'root'
@@ -32,5 +33,9 @@ export class BoardService {
 
   getBoardById(id: number, title?: string): Observable<Board> {
     return this.http.get<Board>(`${API_URL}/${BOARD}/${id}?title=${title}`);
+  }
+
+  getAllUserInBoard(id: number): Observable<User[]> {
+    return this.http.get<User[]>(`${API_URL}/${BOARD}/${id}/get-user`);
   }
 }
