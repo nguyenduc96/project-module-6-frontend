@@ -59,7 +59,7 @@ export class TaskComponent implements OnInit {
 
   comment: Comment = {};
 
-  permission: BoardPermission = {}
+  boardPer: BoardPermission = {}
 
   newComment: FormGroup = new FormGroup({
     content: new FormControl(),
@@ -149,7 +149,9 @@ export class TaskComponent implements OnInit {
               private activatedRoute: ActivatedRoute,
               private socketService: SocketService,
               private storage: AngularFireStorage,
-              private boardPermissionService: BoardPermissionService) {}
+              private boardPermissionService: BoardPermissionService,
+              private assignService: AssignService,
+              private permissionService: PermissionService) {}
 
 
   ngOnInit(): void {
@@ -161,7 +163,7 @@ export class TaskComponent implements OnInit {
       this.getUserInBoard(id)
       this.boardPermissionService.getMyPermission(user.id,id).subscribe(data => {
         this.permission = data;
-        this.isViewer = (this.permission.permission.id == 1);
+        this.isViewer = (this.boardPer.permission.id == 1);
       })
      ;
     });
@@ -203,6 +205,11 @@ export class TaskComponent implements OnInit {
         id: this.taskDetail.id
       }
     };
+    let boardPerMission = {
+      user: {
+        email: email
+      }
+    }
     this.assignService.addMemberToAssign(this.assign).subscribe(data => {
       console.log(data);
       this.getAllUserInAssign(this.taskDetail.id);
@@ -216,6 +223,7 @@ export class TaskComponent implements OnInit {
         showPopupError('Thông báo', 'Có lỗi xảy ra');
       }
     });
+    this.addNotiOne("Đã thêm bạn vào 1 thẻ ", email);
   }
 
   addUserToBoard(formAddUser: NgForm) {
@@ -246,6 +254,8 @@ export class TaskComponent implements OnInit {
         $('#email').val('');
       }
     });
+    this.addNotiOne("Đã thêm bạn vào 1 bảng ", email);
+    this.boardPermission = {};
   }
 
   searchEmail() {
@@ -571,6 +581,7 @@ export class TaskComponent implements OnInit {
   addNewLabel(newLabel: FormGroup) {
     this.newLabel.get('board').setValue({id: this.board.id});
     this.newLabel.get('color').setValue({id: this.newLabel.get('color').value});
+
     this.labelService.addNewLabel(this.newLabel.value).subscribe(data => {
       successAlert();
       this.getLabels();
@@ -624,6 +635,19 @@ export class TaskComponent implements OnInit {
       link: `/tasks/list/${this.board.id}`,
     };
     this.socketService.sendNotification(this.board.id, noti);
+  }
+
+  addNotiOne(value: String, email: string ) {
+    let user = JSON.parse(localStorage.getItem('user'));
+    let noti = {
+      sender: {id: user.id},
+      action: value,
+      receiver: {
+        email : email
+      },
+      link: `/tasks/list/${this.board.id}`,
+    };
+    this.socketService.sendOneNotification(noti);
   }
 
 

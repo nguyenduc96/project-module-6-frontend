@@ -9,6 +9,7 @@ import {ListProjectService} from '../../ListProjectSerice';
 import {SendProjectService} from '../../SendProjectService';
 import {BoardService} from '../../service/board/board.service';
 import {UserService} from '../../service/user.service';
+import {SocketService} from "../../service/socket.service";
 
 declare var $: any;
 
@@ -46,7 +47,8 @@ export class DetailComponent implements OnInit {
               private router: Router,
               private listProjectService: ListProjectService,
               private sendProject: SendProjectService,
-              private userService: UserService) {
+              private userService: UserService,
+              private socketService: SocketService) {
     this.getProject();
     this.getUserInProject();
     this.getAllEmail();
@@ -96,7 +98,9 @@ export class DetailComponent implements OnInit {
         showPopupError('Thêm thất bại', 'Email thành viên không đúng');
       }
     });
+    this.addNotiOne("Đã thêm bạn vào dự án " + this.project.title, email)
     formAddUser.reset();
+
   }
 
   deleteProject() {
@@ -165,5 +169,19 @@ export class DetailComponent implements OnInit {
   searchEmail() {
     let email = $('#email').val();
     this.isInputEmail = !(email === '' || email === null || email === undefined);
+  }
+
+  // Notification
+  addNotiOne(value: String, email: string ) {
+    let user = JSON.parse(localStorage.getItem('user'));
+    let noti = {
+      sender: {id: user.id},
+      action: value,
+      receiver: {
+        email : email
+      },
+      link: `/projects/${this.projectId}`,
+    };
+    this.socketService.sendOneNotification(noti);
   }
 }

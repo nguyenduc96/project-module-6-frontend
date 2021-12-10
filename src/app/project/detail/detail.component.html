@@ -1,21 +1,5 @@
 <div style="margin: 10px 0px 0px 20px">
   <h2 style="color: #f5f1f1;font-size: 35px">{{project?.title}}</h2>
-<!--  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">-->
-<!--    Thêm thành viên-->
-<!--  </button>-->
-
-
-<!--  <div *ngIf="project.boards.length == 0">-->
-<!--    <h3 class="card-title">-->
-<!--      Hiện tại dự án chưa có bảng nào-->
-<!--    </h3>-->
-<!--  </div>-->
-
-<!--  <div>-->
-<!--    <div *ngFor="let b of project.boards">-->
-<!--      <p><a routerLink="/tasks/list"></a>{{b.title}}</p>-->
-<!--    </div>-->
-<!--  </div>-->
 
 <div class="dropdown show">
   <div><strong>Thông tin dự án : {{project?.title}} </strong><a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -41,11 +25,10 @@
     </h3>
   </div>
   <div class="row" *ngIf="project.boards?.length > 0">
-    <div class="text-center"
+    <div class="text-center "
          *ngFor="let b of project.boards"
          style="margin: 35px 0px 0px 40px; width: 200px; height:100px; background-color: rgba(148,144,147,0.58);padding: 30px 0px 0px 0px;
-border-radius: 10px"
-    >
+        border-radius: 10px">
       <a routerLink="/tasks/list/{{b.id}}"
          style="text-decoration: none;color: white; font-size: 20px;margin-right: 10%">{{b.title}}
       </a>
@@ -53,6 +36,7 @@ border-radius: 10px"
          data-bs-target="#editBoard" (click)="showBoardDetail(b.id)">Edit</a>
     </div>
   </div>
+
 
 
   <!-- Modal -->

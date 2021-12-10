@@ -61,6 +61,10 @@ export class SocketService {
     this.stompClientNoti.send(`/app/notification/board/${id}`,{}, JSON.stringify(notification))
   }
 
+  sendOneNotification(notification: any) {
+    this.stompClientNoti.send(`/app/notification/one`, {} , JSON.stringify(notification))
+  }
+
   getCurrentNotification(id: number) {
     this.notificationService.getAllNoti(id).subscribe(data => {
       this.notification.next(data);
